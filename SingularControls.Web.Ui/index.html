@@ -18,7 +18,29 @@
             // configure routes
             app.config(['$routeProvider', function ($routeProvider) {
 
-                $routeProvider.when("/", { templateUrl: "Ng/Views/Home.html" });
+                $routeProvider.when("/", { templateUrl: "Ng/Views/Home.html", controller: "homeController" });
+
+            }]);
+
+            // configure forms stuff
+            app.config(['sgControlsConfigProvider', function (sgControlsConfigProvider) {
+
+                // add wrapper
+                sgControlsConfigProvider.addControlWrapper("sgAll", function (label, control) {
+                    return "<p>" + label + "<span>" + control + "</span></p>";
+                });
+
+            }]);
+
+
+            // controllers
+            app.controller("homeController", ["$scope", function ($scope) {
+
+                $scope.GetData = function () {
+                    return {
+                        call: "dummy", data: "here"
+                    };
+                };
 
             }]);
 
