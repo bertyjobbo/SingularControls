@@ -18,29 +18,52 @@
             // configure routes
             app.config(['$routeProvider', function ($routeProvider) {
 
-                $routeProvider.when("/", { templateUrl: "Ng/Views/Home.html", controller: "homeController" });
+                $routeProvider
+                    .when("/", { templateUrl: "Ng/Views/Home.html", controller: "homeController" })
+                    .when("/about", { templateUrl: "Ng/Views/About.html", controller: "aboutController" });
 
             }]);
 
             // configure forms stuff
             app.config(['sgControlsConfigProvider', function (sgControlsConfigProvider) {
 
-                // add wrapper
-                sgControlsConfigProvider.addControlWrapper("sgAll", function (label, control) {
-                    return "<p>" + label + "<span>" + control + "</span></p>";
-                });
+                // config
+                sgControlsConfigProvider
+
+                    // add wrapper
+                    .addControlWrapper("sgAll", function (label, control) {
+                        return "<p>" + label + "<span>" + control + "</span></p>";
+                    })
+
+                    // add translation method promise
+                    .setTranslationRequestPromise(function (requests, $http) {
+
+                        return $http.post("/api/translation/translations", requests);
+
+                    })
+
+                    // set translation cache length
+                    .setMaxTranslationCacheLength(1000);
 
             }]);
 
 
             // controllers
-            app.controller("homeController", ["$scope", function ($scope) {
+            app
+            .controller("homeController", ["$scope", "sgControlsConfig", function ($scope, sgControlsConfig) {
 
                 $scope.GetData = function () {
                     return {
                         call: "dummy", data: "here"
                     };
                 };
+
+                $scope.LabelFromCache = sgControlsConfig.getTranslationFromCache("Common", "Here is a label");
+
+            }])
+            .controller("aboutController", ["$scope", "sgControlsConfig", function ($scope, sgControlsConfig) {
+
+                $scope.LabelFromCache = sgControlsConfig.getTranslationFromCache("Common", "Here is a label");
 
             }]);
 
@@ -50,7 +73,7 @@
     </script>
 </head>
 <body ng-app="SingularControls.TestApp">
-    <h1>Testing SingularControls</h1>
+    <h1>Test</h1>
     <section ng-view=""></section>
 </body>
 </html>
