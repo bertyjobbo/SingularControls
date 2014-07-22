@@ -129,7 +129,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
     // create directive
     app.directive("sgLangAggregator", ["sgControlsConfig", function (sgControlsConfig) {
 
-        var setTranslationsInAggregator = function() {
+        var setTranslationsInAggregator = function(element) {
 
             // set elements
             for (var key in sgControlsConfig.currentTranslationResponses) {
@@ -137,6 +137,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
                 var resp = sgControlsConfig.currentTranslationResponses[key];
 
                 resp.element.after(resp.value);
+                resp.element.remove();
             }
 
             // clear requests
@@ -145,12 +146,15 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 
             // clear responses
             sgControlsConfig.currentTranslationResponses = {};
+
+            //
+            element.remove();
         };
 
         return {
             restrict: "E",
             transclude: false,
-            link: function() {
+            link: function(scope, element, attrs) {
 
                 if (sgControlsConfig.getTranslationRequestPromise && sgControlsConfig.currentTranslationRequestsLength > 0) {
 
@@ -179,14 +183,14 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
                             }
                         });
 
-                        setTranslationsInAggregator();
+                        setTranslationsInAggregator(element);
 
                     }).error(function(data) {
                         console.log("Error getting translation data: " +
                         (data.Message || "Unknown error"));
                     });
                 } else {
-                    setTranslationsInAggregator();
+                    setTranslationsInAggregator(element);
                 }
 
             }

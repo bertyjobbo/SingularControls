@@ -19,7 +19,7 @@ namespace SingularControls.Web.Ui.ApiControllers
             foreach (var translationRequest in requests)
             {
                 var keyArr = translationRequest.Key.Split(':');
-                var value = "**" + keyArr[0] + "-" + keyArr[1] + "**";
+                var value = "**" + keyArr[0] + ": " + keyArr[1] + "**";
                 output.Add(new TranslationResponse
                 {
                     ListAndKey = translationRequest.Key,
