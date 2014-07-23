@@ -1,9 +1,11 @@
 ﻿
 <h4>About</h4>
 
-<p><sg-lang sg-lang-list="Common">Here is a label</sg-lang></p>
-<p><sg-lang sg-lang-list="Common">Here is a label2</sg-lang></p>
-<p><sg-lang sg-lang-list="Common">Here is a label3</sg-lang></p>
+<p><sg-translation>Common:Label from element</sg-translation></p>
+<p class="sg-translation">Common:Label from class</p>
+<p sg-translation="Common:Label from attribute"></p>
+
+<h1 class="sg-translation">Common:Extra translation from about.html</h1>
 
 
 <p>Label from cache = {{ LabelFromCache }}</p>
@@ -11,6 +13,6 @@
 <p><a ng-href="/#/">Click here to see cached translations in action</a></p>
 
 <!-- this *should* be last on the page -->
-<sg-lang-aggregator></sg-lang-aggregator>
+<sg-translations-processor></sg-translations-processor>
 
 

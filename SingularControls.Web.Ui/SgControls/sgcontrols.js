@@ -9,7 +9,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 (function (namespace, app) {
 
     // controls provider
-    namespace.SgControlsProvider =  function () {
+    namespace.SgControlsProvider = [function () {
 
         // this
         var ts = this;
@@ -35,50 +35,51 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 
         // add to translation requests
         ts.addTranslationForCurrentRequest = function (element, attrs) {
-            
-            // get list / key
-            var list = attrs.sgLangList;
-            var key = element.html().toLowerCase();
 
-            // get from cache
-            var fromCache = ts.getTranslationFromCache(list, key);
-            
-            // check
-            if (fromCache) {
-                ts.currentTranslationResponses[list + ":" + key] = {
-                    element: element,
-                    value: fromCache
-                };
-            } else {
+            // start key
+            var key;
 
-                // add to current requests
-                ts.currentTranslationRequests[list + ":" + key] = element;
-                ts.currentTranslationRequestsLength++;
+            // check how to get
+            key = attrs.sgTranslation;
+            if (!key)
+                key = element.html();
+
+            // check if key present (if not, don't proceed)
+            if (key) {
+
+
+                // get from cache
+                var fromCache = ts.translationCache[key];
+
+                // check
+                if (fromCache) {
+                    ts.currentTranslationResponses[key] = {
+                        element: element,
+                        value: fromCache
+                    };
+                } else {
+
+                    // add to current requests
+                    ts.currentTranslationRequests[key] = element;
+                    ts.currentTranslationRequestsLength++;
+                }
             }
 
         };
 
-        // http
-        ts.http = undefined;
-        
         // get translations
         ts.getTranslationsForCurrentRequest = function () {
-            return ts.getTranslationRequestPromise(ts.currentTranslationRequests, ts.http);
+            return ts.getTranslationRequestPromise(ts.currentTranslationRequests, ts.$http);
         };
 
         // PUBLIC!!
-        ts.setTranslationRequestPromise = function(promise) {
+        ts.setTranslationRequestPromise = function (promise) {
             ts.getTranslationRequestPromise = promise;
             return ts;
         };
 
         // translation method
         ts.getTranslationRequestPromise = undefined;
-
-        // get translation 
-        ts.getTranslationFromCache = function(list, key) {
-            return ts.translationCache[list + ":" + key];
-        };
 
         // max cache length
         ts.maxTranslationCacheLength = 1000;
@@ -87,20 +88,102 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
         ts.translationCacheLength = 0;
 
         // PUBLIC
-        ts.setMaxTranslationCacheLength = function(lngth) {
+        ts.setMaxTranslationCacheLength = function (lngth) {
             ts.maxTranslationCacheLength = lngth < 500 ? 500 : lngth;
             return ts;
         };
 
+        // Get translations
+        ts.getTranslations = function (arrayOfKeys) {
+
+            // output
+            var output = {};
+
+            // batched
+            var batched = {};
+            var batchedCount = 0;
+
+            // promise
+            var deferred = ts.$q.defer();
+
+            // loop
+            arrayOfKeys.forEach(function (key) {
+
+                var found = ts.translationCache[key];
+                if (found) {
+                    output[key] = found;
+                } else {
+                    batched[key] = {};
+                    batchedCount++;
+                }
+
+            });
+
+            if (batchedCount > 0) {
+
+                // run promise
+                ts.getTranslationRequestPromise(batched, ts.$http).success(function (data) {
+
+                    data.forEach(function (tranlsation) {
+                        output[tranlsation.Key] = tranlsation.Value;
+                        if (ts.translationCacheLength < ts.maxTranslationCacheLength) {
+                            ts.translationCache[tranlsation.Key] = tranlsation.Value;
+                            ts.translationCacheLength++;
+                        }
+
+                    });
+
+                    deferred.resolve(output);
+
+                });
+            } else {
+                deferred.resolve(output);
+            }
+
+            // return promise
+            return deferred.promise;
+        };
+
+        ts.$q = undefined;
+        ts.$http = undefined;
+
         // provide
-        ts.$get = ["$http", function ($http) {
-            ts.http = $http;
+        ts.$get = ["$q", "$http", function ($q, $http) {
+            ts.$q = $q;
+            ts.$http = $http;
             return ts;
         }];
-    };
+
+    }];
 
     // add provider to app
     app.provider("sgControlsConfig", namespace.SgControlsProvider);
+
+    // translations provider
+    namespace.SgTranslationService = ["sgControlsConfigProvider", function (sgControlsConfigProvider) {
+
+        // this
+        var ts = this;
+
+        // get translations
+        ts.getTranslations = function (arrayOfKeys) {
+            return sgControlsConfigProvider.getTranslations(arrayOfKeys);
+        };
+
+        // empty cache
+        ts.emptyCache = function () {
+            sgControlsConfigProvider.translationCache = {};
+        };
+
+        // get
+        ts.$get = [function () {
+            return ts;
+        }];
+
+    }];
+
+    // add service
+    app.provider("sgTranslationService", namespace.SgTranslationService);
 
     // create directive
     app.directive("sgForm", ["sgControlsConfig", function (sgControlsConfig) {
@@ -127,17 +210,42 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
     }]);
 
     // create directive
-    app.directive("sgLangAggregator", ["sgControlsConfig", function (sgControlsConfig) {
+    app.directive("sgTranslation", ["sgControlsConfig", function (sgControlsConfig) {
 
-        var setTranslationsInAggregator = function(element) {
+        return {
+
+            // settings
+            restrict: "AEC",
+            requires: "sgTranslationsProcessor",
+            transclude: false,
+
+            // link
+            link: function (scope, element, attrs) {
+
+                //element.attr("style", "display:none");
+                sgControlsConfig.addTranslationForCurrentRequest(element, attrs);
+            }
+
+        };
+
+    }]);
+
+    // create directive
+    app.directive("sgTranslationsProcessor", ["sgControlsConfig", function (sgControlsConfig) {
+
+        var setTranslationsInAggregator = function (aggregator) {
 
             // set elements
             for (var key in sgControlsConfig.currentTranslationResponses) {
 
                 var resp = sgControlsConfig.currentTranslationResponses[key];
 
-                resp.element.after(resp.value);
-                resp.element.remove();
+                if (resp.element.hasClass("sg-translation") || resp.element.toString().toLowerCase() !== "sg-translation") {
+                    resp.element.html(resp.value);
+                } else {
+                    resp.element.after(resp.value);
+                    resp.element.remove();
+                }
             }
 
             // clear requests
@@ -147,73 +255,54 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
             // clear responses
             sgControlsConfig.currentTranslationResponses = {};
 
-            //
-            element.remove();
+
+            // remove
+            aggregator.remove();
         };
 
         return {
-            restrict: "E",
-            transclude: false,
-            link: function(scope, element, attrs) {
+            restrict: "AEC",
+            transclude: true,
+            link: function (scope, aggregator, attrs) {
 
                 if (sgControlsConfig.getTranslationRequestPromise && sgControlsConfig.currentTranslationRequestsLength > 0) {
 
                     // get 
-                    sgControlsConfig.getTranslationsForCurrentRequest().success(function(data) {
+                    sgControlsConfig.getTranslationsForCurrentRequest().success(function (data) {
 
                         // loop data
-                        data.forEach(function(dataItem) {
+                        data.forEach(function (dataItem) {
 
                             // find element
-                            var foundInRequests = sgControlsConfig.currentTranslationRequests[dataItem.ListAndKey];
+                            var foundInRequests = sgControlsConfig.currentTranslationRequests[dataItem.Key];
 
                             // check
                             if (foundInRequests) {
 
                                 // add to responses and cache
-                                sgControlsConfig.currentTranslationResponses[dataItem.ListAndKey] = {
+                                sgControlsConfig.currentTranslationResponses[dataItem.Key] = {
                                     element: foundInRequests,
-                                    value: dataItem.TranslatedValue
+                                    value: dataItem.Value
                                 };
 
                                 if (sgControlsConfig.translationCacheLength < sgControlsConfig.maxTranslationCacheLength) {
-                                    sgControlsConfig.translationCache[dataItem.ListAndKey] = dataItem.TranslatedValue;
+                                    sgControlsConfig.translationCache[dataItem.Key] = dataItem.Value;
                                     sgControlsConfig.translationCacheLength++;
                                 }
                             }
                         });
 
-                        setTranslationsInAggregator(element);
+                        setTranslationsInAggregator(aggregator);
 
-                    }).error(function(data) {
+                    }).error(function (data) {
                         console.log("Error getting translation data: " +
                         (data.Message || "Unknown error"));
                     });
                 } else {
-                    setTranslationsInAggregator(element);
+                    setTranslationsInAggregator(aggregator);
                 }
 
             }
-        };
-
-    }]);
-
-    // create directive
-    app.directive("sgLang", ["sgControlsConfig", function (sgControlsConfig) {
-
-        return {
-
-            // settings
-            restrict: "E",
-            requires: "sgLangAggregator",
-            transclue: true,
-
-            // link
-            link: function (scope, element, attrs) {
-                element.attr("style", "display:none");
-                sgControlsConfig.addTranslationForCurrentRequest(element, attrs);
-            }
-
         };
 
     }]);

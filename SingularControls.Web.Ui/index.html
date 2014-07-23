@@ -4,7 +4,7 @@
     <title>Testing SingularControls</title>
     <script src="Scripts/angular.js"></script>
     <script src="Scripts/angular-route.js"></script>
-    <script src="SgControls/sgcontrols.min.js"></script>
+    <script src="SgControls/sgcontrols.js"></script>
     <script>
         // create namespace
         var SingularControls = {};
@@ -38,7 +38,9 @@
                     // add translation method promise
                     .setTranslationRequestPromise(function (requests, $http) {
 
-                        return $http.post("/api/translation/translations", requests);
+                        // TODO - how do you get languageCode?
+                        var langCode = "en-GB";
+                        return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
 
                     })
 
@@ -50,7 +52,7 @@
 
             // controllers
             app
-            .controller("homeController", ["$scope", "sgControlsConfig", function ($scope, sgControlsConfig) {
+            .controller("homeController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
 
                 $scope.GetData = function () {
                     return {
@@ -58,12 +60,18 @@
                     };
                 };
 
-                $scope.LabelFromCache = sgControlsConfig.getTranslationFromCache("Common", "Here is a label");
+                $scope.LabelFromCache = "NOT WORKED";
+                sgTranslationService.getTranslations(["Common:Label from controller"]).then(function (data) {
+                    $scope.LabelFromCache = data["Common:Label from controller"];
+                });
 
             }])
-            .controller("aboutController", ["$scope", "sgControlsConfig", function ($scope, sgControlsConfig) {
+            .controller("aboutController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
 
-                $scope.LabelFromCache = sgControlsConfig.getTranslationFromCache("Common", "Here is a label");
+                $scope.LabelFromCache = "NOT WORKED";
+                sgTranslationService.getTranslations(["Common:Label from controller"]).then(function (data) {
+                    $scope.LabelFromCache = data["Common:Label from controller"];
+                });
 
             }]);
 
