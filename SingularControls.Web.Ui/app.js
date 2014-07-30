@@ -2,26 +2,19 @@
 
 
 // create
-SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate','sgRoute','sgForm']);
+SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm']);
 
 // closure
 (function (app) {
 
-    // configure routes
-    app.config(['$routeProvider', function ($routeProvider) {
-
-        $routeProvider
-            .when("/", { templateUrl: "Ng/Views/Home.html", controller: "homeController" })
-            .when("/about", { templateUrl: "Ng/Views/About.html", controller: "aboutController" });
-
-    }]);
-
     // configure sg routes
-    app.config(['sgRouteConfigProvider', function (sgRouteConfigProvider) {
+    app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
 
-        sgRouteConfigProvider.configureViewRequestMethod(function(controller,action) {
-            return "Ng/Views/" + controller + "/" + action + ".html";
-        });
+        sgRouteConfigProvider
+            .configureViewRequestMethod(function (controller, action) {
+                return "Ng/Views/" + controller + "/" + action + ".html";
+            })
+            .addRoutesToMyApp($routeProvider);
 
     }]);
 
@@ -46,10 +39,10 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
     }]);
 
     // configure forms
-    app.config(['sgFormConfigProvider', function(sgFormConfigProvider) {
-        
+    app.config(['sgFormConfigProvider', function (sgFormConfigProvider) {
+
         // add wrapper
-        sgFormConfigProvider.addControlWrapper("sgAll", function(label, control) {
+        sgFormConfigProvider.addControlWrapper("sgAll", function (label, control) {
             return "<p>" + label + "<span>" + control + "</span></p>";
         });
     }]);
@@ -57,28 +50,29 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
 
     // controllers
     app
-    .controller("homeController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
 
-        $scope.GetData = function () {
-            return {
-                call: "dummy", data: "here"
-            };
-        };
-
-        $scope.LabelFromCache = "NOT WORKED";
-        sgTranslationService.getTranslations(["Common:Label from controller"]).then(function (data) {
-            $scope.LabelFromCache = data["Common:Label from controller"];
-        });
-
+    // home
+    .controller("homeController", ["$scope", function ($scope) {
+        $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+            console.log(d);
+            console.log(e);
+            console.log(f);
+            console.log(g);
+            console.log(h);
+            console.log(i);
+            console.log(j);
+        }
     }])
-    .controller("aboutController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
 
-        $scope.LabelFromCache = "NOT WORKED";
-        sgTranslationService.getTranslations(["Common:Label from controller"]).then(function (data) {
-            $scope.LabelFromCache = data["Common:Label from controller"];
-        });
+    // system
+    .controller("systemController", ["$scope", function ($scope) {
 
     }]);
+
+
 
 })(SingularControls.TestApp);
 
