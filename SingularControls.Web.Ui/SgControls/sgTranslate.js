@@ -1,27 +1,21 @@
 ﻿
 'use strict';
 
+// namespace
+if (window.SingularControls == undefined)
+    window.SingularControls = {};
+
 // app
-var SingularControls = {};
-SingularControls.Module = angular.module("sgControls", ['ng']);
+SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
 // form directive
 (function (namespace, app) {
 
     // controls provider
-    namespace.SgControlsProvider = [function () {
+    namespace.SgTranslateConfigProvider = [function () {
 
         // this
         var ts = this;
-
-        // wrappers
-        var wrappers = {};
-
-        // PUBLIC!!
-        ts.addControlWrapper = function (which, callback) {
-            wrappers[which] = callback;
-            return ts;
-        };
 
         // PUBLIC!!
         ts.setTranslationRequestPromise = function (promise) {
@@ -49,10 +43,10 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
     }];
 
     // add provider to app
-    app.provider("sgControlsConfig", namespace.SgControlsProvider);
+    app.provider("sgTranslateConfig", namespace.SgTranslateConfigProvider);
 
     // factory for sg translation
-    namespace.SgTranslationFactory = ["sgControlsConfigProvider", function (sgControlsConfigProvider) {
+    namespace.SgTranslationFactory = ["sgTranslateConfigProvider", function (sgTranslateConfigProvider) {
 
         var factory = {
 
@@ -83,7 +77,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 
                     // get from cache
                     var fromCache = factory.translationCache[key];
-                    
+
                     // check
                     if (fromCache) {
                         factory.currentTranslationResponses[key] = {
@@ -102,7 +96,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 
             // get translations
             getTranslationsForCurrentRequest: function () {
-                return sgControlsConfigProvider.getTranslationRequestPromise(factory.currentTranslationRequests, factory.$http);
+                return sgTranslateConfigProvider.getTranslationRequestPromise(factory.currentTranslationRequests, factory.$http);
             },
 
             // cache length
@@ -137,11 +131,11 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
                 if (batchedCount > 0) {
 
                     // run promise
-                    sgControlsConfigProvider.getTranslationRequestPromise(batched, factory.$http).success(function (data) {
+                    sgTranslateConfigProvider.getTranslationRequestPromise(batched, factory.$http).success(function (data) {
 
                         data.forEach(function (tranlsation) {
                             output[tranlsation.Key] = tranlsation.Value;
-                            if (factory.translationCacheLength < sgControlsConfigProvider.maxTranslationCacheLength) {
+                            if (factory.translationCacheLength < sgTranslateConfigProvider.maxTranslationCacheLength) {
                                 factory.translationCache[tranlsation.Key] = tranlsation.Value;
                                 factory.translationCacheLength++;
                             }
@@ -206,30 +200,6 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
     app.provider("sgTranslationService", namespace.SgTranslationService);
 
     // create directive
-    app.directive("sgForm", ["sgControlsConfig", function (sgControlsConfig) {
-
-        return {
-
-            //scope: {
-
-            //},
-
-            restrict: "E",
-
-            link: function (scope, element, attrs) {
-
-                // firstly, get data
-                var data = scope.$eval(attrs.datasource);
-
-                //
-                //console.log("WHATS NEXT", data, sgControlsConfig.wrappers["sgAll"]);
-            }
-
-        };
-
-    }]);
-
-    // create directive
     app.directive("sgTranslation", ["sgTranslationFactory", function (sgTranslationFactory) {
 
         return {
@@ -251,7 +221,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
     }]);
 
     // create directive
-    app.directive("sgTranslationsProcessor", ["sgControlsConfig", "sgTranslationFactory", function (sgControlsConfig, sgTranslationFactory) {
+    app.directive("sgTranslationsProcessor", ["sgTranslateConfig", "sgTranslationFactory", function (sgTranslateConfig, sgTranslationFactory) {
 
         var setTranslationsInAggregator = function (aggregator) {
 
@@ -285,7 +255,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
             transclude: true,
             link: function (scope, aggregator, attrs) {
 
-                if (sgControlsConfig.getTranslationRequestPromise && sgTranslationFactory.currentTranslationRequestsLength > 0) {
+                if (sgTranslateConfig.getTranslationRequestPromise && sgTranslationFactory.currentTranslationRequestsLength > 0) {
 
                     // get 
                     sgTranslationFactory.getTranslationsForCurrentRequest().success(function (data) {
@@ -305,7 +275,7 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
                                     value: dataItem.Value
                                 };
 
-                                if (sgTranslationFactory.translationCacheLength < sgControlsConfig.maxTranslationCacheLength) {
+                                if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
                                     sgTranslationFactory.translationCache[dataItem.Key] = dataItem.Value;
                                     sgTranslationFactory.translationCacheLength++;
                                 }
@@ -327,4 +297,4 @@ SingularControls.Module = angular.module("sgControls", ['ng']);
 
     }]);
 
-})(SingularControls, SingularControls.Module);
+})(SingularControls, SingularControls.TranslateModule);
