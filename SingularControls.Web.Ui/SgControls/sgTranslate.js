@@ -65,15 +65,28 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 // start key
                 var key;
+                var fromTitle = false;
 
-                // check how to get
-                key = attrs.sgTranslation;
-                
-                if (!key)
-                    key = element.html();
+                // title
+                if (attrs.hasSgTranslateTitle) {
+                    key = attrs.sgTranslateTitle;
+                    attrs.hasSgTranslateTitle = undefined;
+                    fromTitle = true;
+                } else {
+                    // class
+                    if (element.hasClass("sg-translate")) {
+                        key = element.html();
+                    } else
 
-                if (!key)
-                    key = element.attr("sg-translate");
+                        // attribute
+                        if (element.attr("sg-translate") !== undefined) {
+                            key = attrs.sgTranslate;
+                        } else
+                            // element
+                            if (element[0].tagName == "SG-TRANSLATE") {
+                                key = element.html();
+                            }
+                }
 
                 // check if key present (if not, don't proceed)
                 if (key) {
@@ -86,12 +99,14 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                     if (fromCache) {
                         factory.currentTranslationResponses[key] = {
                             element: element,
-                            value: fromCache
+                            value: fromCache,
+                            attrs: attrs,
+                            hasSgTranslateTitle:fromTitle
                         };
                     } else {
 
                         // add to current requests
-                        factory.currentTranslationRequests[key] = element;
+                        factory.currentTranslationRequests[key] = { element: element, attrs: attrs, hasSgTranslateTitle: fromTitle }
                         factory.currentTranslationRequestsLength++;
                     }
                 }
@@ -225,6 +240,28 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
     }]);
 
     // create directive
+    app.directive("sgTranslateTitle", ["sgTranslationFactory", function (sgTranslationFactory) {
+
+        return {
+
+            // settings
+            restrict: "A",
+            requires: "sgTranslateProcessor",
+            transclude: false,
+
+            // link
+            link: function (scope, element, attrs) {
+
+                attrs.hasSgTranslateTitle = true;
+                //element.attr("style", "display:none");
+                sgTranslationFactory.addTranslationForCurrentRequest(element, attrs);
+            }
+
+        };
+
+    }]);
+
+    // create directive
     app.directive("sgTranslateProcessor", ["sgTranslateConfig", "sgTranslationFactory", function (sgTranslateConfig, sgTranslationFactory) {
 
         var setTranslationsInAggregator = function (aggregator) {
@@ -234,13 +271,25 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 var resp = sgTranslationFactory.currentTranslationResponses[key];
 
-                if (resp.element.hasClass("sg-translation") || resp.element.toString().toLowerCase() !== "sg-translation") {
-                    resp.element.html(resp.value);
+                // check for title
+                if (resp.hasSgTranslateTitle) {
+                    resp.element.attr("title", resp.value);
+                    resp.element.removeAttr("sg-translate-title");
                 } else {
-                    resp.element.after(resp.value);
-                    resp.element.remove();
+
+                    // class or attribute
+                    if (resp.element.hasClass("sg-translate") || resp.element.attr("sg-translate") !== undefined) {
+                        resp.element.html(resp.value);
+                    } else
+
+                        // element
+                        if (resp.element[0].tagName == "SG-TRANSLATE") {
+                            resp.element.after(resp.value);
+                            resp.element.remove();
+                        }
                 }
             }
+
 
             // clear requests
             sgTranslationFactory.currentTranslationRequests = {};
@@ -257,7 +306,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         return {
             restrict: "AEC",
             transclude: true,
-            link: function (scope, aggregator, attrs) {
+            link: function (scope, aggregator) {
 
                 if (sgTranslateConfig.getTranslationRequestPromise && sgTranslationFactory.currentTranslationRequestsLength > 0) {
 
@@ -275,8 +324,10 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                                 // add to responses and cache
                                 sgTranslationFactory.currentTranslationResponses[dataItem.Key] = {
-                                    element: foundInRequests,
-                                    value: dataItem.Value
+                                    element: foundInRequests.element,
+                                    value: dataItem.Value,
+                                    attrs: foundInRequests.attrs,
+                                    hasSgTranslateTitle: foundInRequests.hasSgTranslateTitle
                                 };
 
                                 if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {

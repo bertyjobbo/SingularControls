@@ -79,7 +79,6 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
         sgTranslationService
             .getTranslations(["Common:Example using controller","Common:Example 2 using controller"])
             .then(function (data) {
-                console.log(data);
                 $scope.translation = data["Common:Example using controller"];
                 $scope.translation2 = data["Common:Example 2 using controller"];
             });
