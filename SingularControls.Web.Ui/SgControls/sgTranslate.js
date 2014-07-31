@@ -68,8 +68,12 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 // check how to get
                 key = attrs.sgTranslation;
+                
                 if (!key)
                     key = element.html();
+
+                if (!key)
+                    key = element.attr("sg-translate");
 
                 // check if key present (if not, don't proceed)
                 if (key) {
@@ -200,13 +204,13 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
     app.provider("sgTranslationService", namespace.SgTranslationService);
 
     // create directive
-    app.directive("sgTranslation", ["sgTranslationFactory", function (sgTranslationFactory) {
+    app.directive("sgTranslate", ["sgTranslationFactory", function (sgTranslationFactory) {
 
         return {
 
             // settings
             restrict: "AEC",
-            requires: "sgTranslationsProcessor",
+            requires: "sgTranslateProcessor",
             transclude: false,
 
             // link
@@ -221,7 +225,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
     }]);
 
     // create directive
-    app.directive("sgTranslationsProcessor", ["sgTranslateConfig", "sgTranslationFactory", function (sgTranslateConfig, sgTranslationFactory) {
+    app.directive("sgTranslateProcessor", ["sgTranslateConfig", "sgTranslationFactory", function (sgTranslateConfig, sgTranslationFactory) {
 
         var setTranslationsInAggregator = function (aggregator) {
 

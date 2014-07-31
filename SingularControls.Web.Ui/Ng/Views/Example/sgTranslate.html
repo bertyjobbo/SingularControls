@@ -1,0 +1,57 @@
+﻿<h2>sgTranslate example</h2>
+<p>The <code>sgTranslate</code> directive allows the developer to localize text strings. So instead of using <code>Hello this is text</code> (and hoping they read/speak English) they would use <code>&lt;sg-translate&gt;Hello this is text&lt;/sg-translate&gt;</code> (or via class or attribute).</p>
+<p class="alert alert-warning">Note: <code>&lt;sg-translate-processor&gt;&lt;/sg-translate-processor&gt;</code> <strong>MUST</strong> be included at the <strong>END</strong> of each page which uses the directives.</p>
+<p class="alert alert-warning">Note: To use example 4, you must inject <code>sgTranslationService</code> into your controller.</p>
+<h2>Example 1 - using element</h2>
+<p><sg-translate>Common:Example using element</sg-translate></p>
+<pre>&lt;sg-translate&gt;Common:Example using element&lt;/sg-translate&gt;</pre>
+
+
+<h3>Example 2 - using class</h3>
+<p class="sg-translate">Common:Example using class</p>
+<pre>&lt;p class="sg-translate"&gt;Common:Example using class&lt;/p&gt;</pre>
+
+<h3>Example 3 - using attribute</h3>
+<p sg-translate="Common:Example using attribute"></p>
+<pre>&lt;p sg-translate="Common:Example using attribute"&gt;&lt;/p&gt;</pre>
+
+<h3>Example 4 - from JavaScript</h3>
+<p>{{ translation }}</p>
+<p>{{ translation2 }}</p>
+<pre>
+sgTranslationService
+    .getTranslations(["Common:Example using controller","Common:Example 2 using controller"])
+    .then(function (data) {
+        console.log(data);
+        $scope.translation = data["Common:Example using controller"];
+        $scope.translation2 = data["Common:Example 2 using controller"];
+    });
+</pre>
+
+
+<h3>Configuration</h3>
+<p>In these examples, the translation calls a web service which simply looks at the requested value and returns it with some decoration. But obviously this would be replaced by whatever data call you needed to make. The configuration example below shows this. Also not the max cache length - all translations are cached until this max length has been reached.</p>
+<p class="alert alert-warning">Note: if you don't call <code>.setTranslationRequestPromise</code> to tell the translator how to get your translations, the translator directive will simple fail silently.</p>
+<pre>
+// configure translate stuff
+app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
+    
+    // config
+    sgTranslateConfigProvider
+        
+        // add translation method promise
+        .setTranslationRequestPromise(function (requests, $http) {
+            
+            // TODO - get this from current user??
+            var langCode = "en-GB";
+            return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
+            
+        })
+            
+        // set translation cache length
+        .setMaxTranslationCacheLength(1000);
+}]);
+</pre>
+
+<sg-translate-processor></sg-translate-processor>
+

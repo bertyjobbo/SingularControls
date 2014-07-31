@@ -1,5 +1,4 @@
-﻿
-
+﻿'use strict';
 
 // create
 SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm']);
@@ -11,7 +10,7 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
     app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
 
         sgRouteConfigProvider
-            .configureViewRequestMethod(function(controller, action) {
+            .configureViewRequestMethod(function (controller, action) {
                 return "Ng/Views/" + controller + "/" + action + ".html";
             })
             .onPageNotFound("/system/pagenotfound/")
@@ -62,12 +61,28 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
 
         $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
 
-           
+
         }
     }])
 
     // system
     .controller("systemController", ["$scope", function ($scope) {
+
+    }])
+
+    // example
+    .controller("exampleController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
+
+        // include
+        $scope.include = "Ng/Views/Example/" + $scope.sgRoute.param1 + ".html";
+
+        sgTranslationService
+            .getTranslations(["Common:Example using controller","Common:Example 2 using controller"])
+            .then(function (data) {
+                console.log(data);
+                $scope.translation = data["Common:Example using controller"];
+                $scope.translation2 = data["Common:Example 2 using controller"];
+            });
 
     }]);
 
