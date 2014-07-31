@@ -62,19 +62,7 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
 
         $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
 
-            cack.cack();
-            //throw "Test exception";
-
-            //console.log(a);
-            //console.log(b);
-            //console.log(c);
-            //console.log(d);
-            //console.log(e);
-            //console.log(f);
-            //console.log(g);
-            //console.log(h);
-            //console.log(i);
-            //console.log(j);
+           
         }
     }])
 
