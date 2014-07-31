@@ -84,6 +84,7 @@
     <Content Include="Global.asax" />
     <Content Include="Ng\Views\Example\get.html" />
     <Content Include="Ng\Views\Example\sgForm.html" />
+    <Content Include="Ng\Views\Example\sgBootstrap.html" />
     <Content Include="Ng\Views\Example\sgTranslate.html" />
     <Content Include="Ng\Views\Example\sgRoute.html" />
     <Content Include="Ng\Views\Home\Index.html" />
@@ -114,6 +115,7 @@
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.9.0.min.map" />
+    <Content Include="SgControls\sgBootstrap.js" />
     <Content Include="SgControls\sgForm.min.js.map">
       <DependentUpon>sgForm.min.js</DependentUpon>
     </Content>

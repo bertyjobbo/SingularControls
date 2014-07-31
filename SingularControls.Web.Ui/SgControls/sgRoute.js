@@ -187,7 +187,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                                     // check if page not found set
                                     if (sgRouteConfig.pageNotFoundRouteOrFunction !== undefined) {
-
+                                        console.log(sgRouteConfig.pageNotFoundRouteOrFunction);
                                         // check it's a string (route)
                                         if (typeof sgRouteConfig.pageNotFoundRouteOrFunction == "string") {
                                             if ($location.$$path !== sgRouteConfig.pageNotFoundRouteOrFunction) {

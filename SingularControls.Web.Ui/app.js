@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 // create
-SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm']);
+SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgBootstrap']);
 
 // closure
 (function (app) {
@@ -56,6 +56,34 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
     // controllers
     app
 
+        // nav
+        .controller("navController", ["$scope", function ($scope) {
+
+            $scope.sgetMenuData = function () {
+                return {
+
+                    brand: {
+                        href: "/#/",
+                        text: "Singular Controls"
+                    },
+
+                    items: [
+                    { href: "/#/", text: "home" },
+                    {
+                        text: "Dropdown",
+                        items: [
+                              { href: "/#/1/", text: 1 },
+                              { href: "/#/2/", text: 2 },
+                              { href: "/#/3/", text: 3 }]
+                    }],
+
+                    searchbar: '<form class="navbar-form navbar-right" role="search" ng-submit="bsNavCollapsed=true"><div class="form-group">'+'<input type="text" class="form-control" placeholder="Search">'+'</div>'+'<button type="submit" class="btn btn-default">Submit</button></form>'
+
+                };
+            };
+
+        }])
+
     // home
     .controller("homeController", ["$scope", function ($scope, cack) {
 
@@ -77,7 +105,7 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
         $scope.include = "Ng/Views/Example/" + $scope.sgRoute.param1 + ".html";
 
         sgTranslationService
-            .getTranslations(["Common:Example using controller","Common:Example 2 using controller"])
+            .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
             .then(function (data) {
                 $scope.translation = data["Common:Example using controller"];
                 $scope.translation2 = data["Common:Example 2 using controller"];
