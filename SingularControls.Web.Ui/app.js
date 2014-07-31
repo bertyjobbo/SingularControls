@@ -11,10 +11,17 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
     app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
 
         sgRouteConfigProvider
-            .configureViewRequestMethod(function (controller, action) {
+            .configureViewRequestMethod(function(controller, action) {
                 return "Ng/Views/" + controller + "/" + action + ".html";
             })
-            .addRoutesToMyApp($routeProvider);
+            .onPageNotFound("/system/pagenotfound/")
+            //.onPageNotFound(function() { alert("Page not found"); })
+            .onError("/system/error/")
+            //.onError(function(exception, cause) {
+            //    alert(exception);
+            //    alert(cause);
+            //})
+            .finalize($routeProvider);
 
     }]);
 
@@ -47,23 +54,27 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
         });
     }]);
 
-
     // controllers
     app
 
     // home
-    .controller("homeController", ["$scope", function ($scope) {
+    .controller("homeController", ["$scope", function ($scope, cack) {
+
         $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-            console.log(d);
-            console.log(e);
-            console.log(f);
-            console.log(g);
-            console.log(h);
-            console.log(i);
-            console.log(j);
+
+            cack.cack();
+            //throw "Test exception";
+
+            //console.log(a);
+            //console.log(b);
+            //console.log(c);
+            //console.log(d);
+            //console.log(e);
+            //console.log(f);
+            //console.log(g);
+            //console.log(h);
+            //console.log(i);
+            //console.log(j);
         }
     }])
 

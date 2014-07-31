@@ -10,32 +10,65 @@ if (window.SingularControls == undefined)
 SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
 // 
-(function(app, namespace) {
-    
+(function (app, namespace) {
+
     // add config provider
-    namespace.SgRouteConfigProvider = [function() {
+    namespace.SgRouteConfigProvider = ["$provide", function ($provide) {
 
         // this
         var ts = this;
 
         // default request methods
-        ts.viewRequestMethod = function(controller, action) {
+        ts.viewRequestMethod = function (controller, action) {
             return "/Views/" + controller + "/" + action + ".html";
         };
 
         // add method to get view
-        ts.configureViewRequestMethod = function(callback) {
+        ts.configureViewRequestMethod = function (callback) {
             ts.viewRequestMethod = callback;
             return ts;
         };
 
+        // on page not found
+        ts.pageNotFoundRouteOrFunction = undefined;
+        ts.onPageNotFound = function (routeOrFunction) {
+            ts.pageNotFoundRouteOrFunction = routeOrFunction;
+            return ts;
+        };
+
+        // on error
+        ts.onError = function (routeOrFunction) {
+
+            // set factory
+            $provide.factory("$exceptionHandler", ["$injector", function ($injector) {
+                var $location;
+
+                return function (exception, cause) {
+
+                    // handle custom
+                    if (typeof routeOrFunction == "function") {
+                        routeOrFunction(exception, cause);
+                    } else if (typeof routeOrFunction == "string") {
+                        $location = $location || $injector.get("$location");
+                        $location.path(routeOrFunction);
+                    }
+                    console.log("Error handled by sgRoute. Exception =  " + exception);
+                    console.log("Error handled by sgRoute. Cause =  " + cause);
+
+                };
+            }]);
+
+            //
+            return ts;
+        };
+
         // add routes to app
-        ts.addRoutesToMyApp = function($routeProvider) {
+        ts.finalize = function ($routeProvider) {
 
             // CONSTANT ROUTE
             var constRoute = {
                 //templateUrl: $a.getRootedUrl("Singular/NgView/partials/_router/")
-                
+
             };
 
             // ROUTE CONFIG
@@ -60,8 +93,10 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
         };
 
+        // 
+
         // get
-        this.$get = [function() {
+        this.$get = [function () {
             return ts;
         }];
 
@@ -90,10 +125,10 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
         }
 
         return {
-            
+
             restrict: "A",
             link: function (scope, element, attrs) {
-                
+
                 // add props to root scope
                 $rootScope.sgroute = {
                     controller: undefined,
@@ -150,10 +185,20 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                 })
                                 .error(function (data, status, headers, config) {
 
-                                    if ($location.$$path !== "/system/pagenotfound" || $location.$$path !== "/system/pagenotfound/")
-                                        $location.path("/system/pagenotfound/");
-                                });
+                                    // check if page not found set
+                                    if (sgRouteConfig.pageNotFoundRouteOrFunction !== undefined) {
 
+                                        // check it's a string (route)
+                                        if (typeof sgRouteConfig.pageNotFoundRouteOrFunction == "string") {
+                                            if ($location.$$path !== sgRouteConfig.pageNotFoundRouteOrFunction) {
+                                                $location.path(sgRouteConfig.pageNotFoundRouteOrFunction);
+                                            }
+                                        } else if (typeof sgRouteConfig.pageNotFoundRouteOrFunction == "function") {
+                                            sgRouteConfig.pageNotFoundRouteOrFunction();
+                                        }
+                                    }
+
+                                });
                         } else {
 
                             // compile cached
