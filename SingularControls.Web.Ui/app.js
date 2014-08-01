@@ -1,7 +1,7 @@
 ﻿'use strict';
 
 // create
-SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgBootstrap']);
+SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm','sgElements']);
 
 // closure
 (function (app) {
@@ -59,28 +59,28 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
         // nav
         .controller("navController", ["$scope", function ($scope) {
 
-            $scope.sgetMenuData = function () {
-                return {
+            //$scope.getMenuData = function () {
+            //    return {
 
-                    brand: {
-                        href: "/#/",
-                        text: "Singular Controls"
-                    },
+            //        brand: {
+            //            href: "/#/",
+            //            text: "Singular Controls"
+            //        },
 
-                    items: [
-                    { href: "/#/", text: "home" },
-                    {
-                        text: "Dropdown",
-                        items: [
-                              { href: "/#/1/", text: 1 },
-                              { href: "/#/2/", text: 2 },
-                              { href: "/#/3/", text: 3 }]
-                    }],
+            //        items: [
+            //        { href: "/#/", text: "Home" },
+            //        {
+            //            text: "Dropdown",
+            //            items: [
+            //                  { href: "/#/1/", text: 1 },
+            //                  { href: "/#/2/", text: 2 },
+            //                  { href: "/#/3/", text: 3 }]
+            //        }],
 
-                    searchbar: '<form class="navbar-form navbar-right" role="search" ng-submit="bsNavCollapsed=true"><div class="form-group">'+'<input type="text" class="form-control" placeholder="Search">'+'</div>'+'<button type="submit" class="btn btn-default">Submit</button></form>'
+            //        searchbar: '<form class="navbar-form navbar-right" role="search" ng-submit="bsNavCollapsed=true"><div class="form-group">'+'<input type="text" class="form-control" placeholder="Search">'+'</div>'+'<button type="submit" class="btn btn-default">Submit</button></form>'
 
-                };
-            };
+            //    };
+            //};
 
         }])
 

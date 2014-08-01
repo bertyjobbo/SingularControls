@@ -3,40 +3,41 @@
 <head>
     <title>Testing SingularControls</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!--<link href="Content/bootstrap.min.css" rel="stylesheet" />-->
-    <link href="Content/paxton-bootstrap-min-v1.0.0.css" rel="stylesheet" />
+    <link href="Content/normalize.css?v=3.0.1" rel="stylesheet" />
+    <link href="Content/sg-controls.min.css?v=1.0.0" rel="stylesheet" />
     <script src="Scripts/angular.js"></script>
     <!--<script src="Scripts/angular-ui/ui-bootstrap-tpls.min.js"></script>-->
     <script src="Scripts/angular-route.js"></script>
     <script src="SgControls/sgForm.js"></script>
     <script src="SgControls/sgTranslate.js"></script>
     <script src="SgControls/sgRoute.js"></script>
-    <script src="SgControls/sgBootstrap.js"></script>
+    <script src="SgControls/sgElements.js"></script>
     <script src="app.js"></script>
-    <style>
-        .sg-main {
-            padding: 10px;
-        }
-    </style>
 </head>
 <body ng-app="SingularControls.TestApp">
-
-    <!-- container -->
-    <div class="container-fluid">
-        <!-- header -->
-        <header>
-            <div ng-include="'Ng/Views/Shared/NavBar.html'"></div>
-        </header>
-        <!-- end header -->
-        
-        <!-- main -->
-        <section sg-view class="sg-main">
-            
-        </section>
-        <!-- end main -->
-
-    </div>
-    <!-- end container -->
-
+    <header>
+        <h1><span class="hidden">Singular Controls</span>[Logo]</h1>
+        <button sg-nav></button>
+        <nav sg-nav>
+            <ul role="menu">
+                <li role="menuitem"><a href="/#/">Home</a></li>
+                <li role="combobox">
+                    Examples
+                    <ul role="menu">
+                        <li role="menuitem"><a href="/#/example/get/sgroute/">sgRoute</a></li>
+                        <li role="menuitem"><a href="/#/example/get/sgform/">sgForm</a></li>
+                        <li role="menuitem"><a href="/#/example/get/sgtranslate/">sgTranslate</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form><input type="search" role="search" /><button type="submit">Search</button></form>
+            <div>
+                <a role="button" href="http://google.co.uk">Button 1</a>
+                <button type="button">Button 2</button>
+                <input type="submit" value="Button 3" />
+            </div>
+        </nav>
+    </header>
+    <section sg-view></section>
 </body>
 </html>

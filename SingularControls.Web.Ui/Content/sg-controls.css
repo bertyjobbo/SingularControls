@@ -1,0 +1,247 @@
+﻿@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+/*#region vars*/
+/*#endregion vars */
+/*#region mixins*/
+/*#endregion */
+/*#region top-level styles */
+* {
+  font-family: 'PT Sans', sans-serif;
+}
+html,
+body {
+  color: #555555;
+}
+a {
+  color: #56aa1c;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 4px 0;
+}
+p {
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+section {
+  padding: 8px;
+}
+.hidden {
+  display: none;
+}
+.showing {
+  display: block;
+}
+.italic {
+  font-style: italic;
+}
+.non-italic {
+  font-style: normal;
+}
+.strong {
+  font-weight: bold;
+}
+.non-strong {
+  font-weight: normal;
+}
+/*#endregion top-level styles */
+/*#region buttons*/
+button,
+input[type=submit],
+input[type=button],
+a[role=button] {
+  background: #56aa1c;
+  border: 1px solid #56aa1c;
+  color: #ffffff;
+  padding: 4px 6px;
+}
+button:hover,
+input[type=submit]:hover,
+input[type=button]:hover,
+a[role=button]:hover {
+  background: #ffffff;
+  color: #56aa1c;
+  text-decoration: none;
+}
+/*#endregion buttons*/
+/*#region form-controls */
+input:not([type="submit"]),
+textarea,
+select {
+  border: 1px solid #eeeeee;
+  padding: 4px 8px;
+  margin: 0 8px 0 0;
+  transition: 0.25s ease-in-out all;
+  color: #555555;
+}
+input:not([type="submit"]):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  /*border-color: @color-alt;*/
+  box-shadow: 0 0 10px #00a9ff;
+}
+/*#endregion form-controls */
+/*#region nav*/
+header {
+  overflow: hidden;
+  background: #56aa1c;
+  color: #ffffff;
+  padding: 8px;
+}
+header a {
+  color: #ffffff;
+}
+header button,
+header input[type=submit],
+header input[type=button],
+header a[role=button] {
+  background: #56aa1c;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+}
+header button:hover,
+header input[type=submit]:hover,
+header input[type=button]:hover,
+header a[role=button]:hover {
+  background: #ffffff;
+  border: 1px solid #ffffff;
+  color: #56aa1c;
+}
+header input:not([type="submit"]):focus,
+header textarea:focus,
+header select:focus {
+  outline: none;
+  /*border-color: @color-alt;*/
+  box-shadow: 0 0 10px #00a9ff;
+}
+header > button[role="menubar"] {
+  display: none;
+}
+nav {
+  overflow: hidden;
+  float: right;
+}
+header > h1,
+nav > form,
+nav > ul,
+nav > div {
+  float: left;
+  margin: 0 8px 0 0;
+  padding: 8px 8px 8px 0;
+  overflow: hidden;
+}
+nav ul,
+nav li {
+  list-style-type: none;
+}
+nav > ul > li {
+  float: left;
+  margin-right: 8px;
+}
+nav > ul > li > ul {
+  display: none;
+  padding: 0;
+  position: absolute;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+}
+nav > ul > li > ul > li > a {
+  color: #56aa1c;
+  display: block;
+  padding: 4px;
+}
+nav > ul > li > ul > li > a:hover {
+  background: #56aa1c;
+  color: #ffffff;
+  text-decoration: none;
+}
+nav > ul > li[role="combobox"]:hover {
+  cursor: pointer;
+}
+nav > ul > li[role="combobox"]:hover ul {
+  display: block;
+}
+nav.hidden {
+  display: block;
+}
+@media screen and (max-width: 950px) {
+  nav {
+    float: none;
+    display: none;
+    clear: both;
+    transition: all 0.5s linear;
+  }
+  nav.hidden {
+    display: none;
+  }
+  nav > ul > li {
+    float: none;
+    margin-right: 0;
+  }
+  header > button[role="menubar"] {
+    display: block;
+    float: right;
+    margin-right: 8px;
+    line-height: 0.4;
+    border: 0;
+    padding: 0;
+    transform: scale(4, 1);
+    background: none;
+    color: #ffffff;
+    font-size: 28.8px;
+    font-weight: bold;
+    margin: 8px 16px 0 0;
+  }
+  header > button[role="menubar"]:hover {
+    background: none;
+    color: #ffffff;
+  }
+  nav > form,
+  nav > ul,
+  nav > div {
+    float: none;
+    margin: 0 0 0 0;
+    padding: 16px 8px 16px 8px;
+    overflow: hidden;
+    border-top: 1px solid #5fbc1f;
+  }
+  nav > ul > li > ul {
+    display: block;
+    padding: inherit;
+    position: relative;
+    background: none;
+    border: none;
+    margin-left: 16px;
+  }
+  nav > ul > li > ul > li > a {
+    color: inherit;
+    padding: 0;
+  }
+  nav > ul > li > ul > li > a:hover {
+    background: inherit;
+    color: inherit;
+    text-decoration: underline;
+  }
+  nav > ul > li[role="combobox"] {
+    font-style: italic;
+  }
+  nav > ul > li[role="combobox"] ul {
+    font-style: normal;
+  }
+  nav > ul > li[role="combobox"]:hover {
+    cursor: default;
+  }
+  nav > ul > li[role="combobox"]:hover ul {
+    display: block;
+  }
+}
+/*#endregion nav*/
+/*# sourceMappingURL=sg-controls.css.map */
