@@ -80,16 +80,16 @@ SingularControls.SgDeviceModule = angular.module("sgDevice", ['ng']);
             var matched = false;
 
             // check support, fail silently if not
-            if (window.matchMedia.matches) {
+            if (window.matchMedia) {
                 
                 // matched
                 matched = true;
 
                 // run
                 ts.whens.forEach(function(theWhen) {
-                    console.log(theWhen);
+                    
                     // check media is relevant
-                    if (window.matchMedia(theWhen.mediaQuery)) {
+                    if (window.matchMedia(theWhen.mediaQuery).matches) {
 
                         runFunctionsAndLoad(theWhen.arrayOfJsFiles, theWhen.configFunction);
                     }

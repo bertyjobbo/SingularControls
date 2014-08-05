@@ -14,7 +14,7 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
     app.config(['sgDeviceProvider', function (sgDeviceProvider) {
 
         sgDeviceProvider
-            .when("screen and (min-width: 481px)", ['/testbig.js'], function () {
+            .when("(min-device-width: 481px)", ['/testbig.js'], function () {
                 console.log("config for >= 480px");
                 big = true;
             })
@@ -24,7 +24,6 @@ SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute'
             })
             .else(['/small.js', '/big.js'], function() {
                 console.log("Else called");
-                alert("matchMedia NOT WORKING. FUCK BEANS.")
             })
             .finalize();
 
