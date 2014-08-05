@@ -1,10 +1,38 @@
 ﻿'use strict';
 
 // create
-SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm','sgElements']);
+SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgElements', 'sgDevice']);
 
 // closure
 (function (app) {
+
+    // big or small?
+    var big = false;
+    var small = false;
+
+    // device specific stuff
+    app.config(['sgDeviceProvider', function (sgDeviceProvider) {
+
+        sgDeviceProvider
+            .when("screen and (min-width: 481px)", ['/testbig.js'], function () {
+                console.log("config for >= 480px");
+                big = true;
+            })
+            .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", ['/testsmall.js'], function () {
+                console.log("config for <= 481px");
+                small = true;
+            })
+            .else(['/small.js', '/big.js'], function() {
+                console.log("Else called");
+                alert("matchMedia NOT WORKING. FUCK BEANS.")
+            })
+            .finalize();
+
+        // big or small?
+        console.log("Big? ", big);
+        console.log("Small? ", small);
+
+    }]);
 
     // configure sg routes
     app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {

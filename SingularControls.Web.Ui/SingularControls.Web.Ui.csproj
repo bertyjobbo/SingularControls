@@ -89,7 +89,6 @@
     <Content Include="Ng\Views\Example\sgTranslate.html" />
     <Content Include="Ng\Views\Example\sgRoute.html" />
     <Content Include="Ng\Views\Home\Index.html" />
-    <Content Include="Ng\Views\Shared\NavBar.html" />
     <Content Include="Ng\Views\System\Error.html" />
     <Content Include="Ng\Views\System\PageNotFound.html" />
     <Content Include="Scripts\version.json" />
@@ -103,7 +102,7 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="packages.config" />
-    <Content Include="SgControls\sgBootstrap.js" />
+    <Content Include="SgControls\sgDevice.js" />
     <Content Include="SgControls\sgElements.min.js">
       <DependentUpon>sgElements.js</DependentUpon>
     </Content>
@@ -456,7 +455,9 @@
     <Compile Include="Translations\TranslationCache.cs" />
     <Compile Include="Translations\TranslationFactory.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Ng\Views\Shared\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
