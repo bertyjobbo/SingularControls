@@ -86,6 +86,8 @@
     <Content Include="Ng\Views\Example\get.html" />
     <Content Include="Ng\Views\Example\sgForm.html" />
     <Content Include="Ng\Views\Example\sgBootstrap.html" />
+    <Content Include="Ng\Views\Example\sgElements.html" />
+    <Content Include="Ng\Views\Example\sgDevice.html" />
     <Content Include="Ng\Views\Example\sgTranslate.html" />
     <Content Include="Ng\Views\Example\sgRoute.html" />
     <Content Include="Ng\Views\Home\Index.html" />

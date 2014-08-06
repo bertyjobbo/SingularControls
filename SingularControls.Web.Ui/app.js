@@ -1,147 +1,187 @@
 ﻿'use strict';
 
-// create
-SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgElements', 'sgDevice']);
+// namespace
+if (window.SingularControls == undefined)
+    window.SingularControls = {};
 
-// closure
-(function (app) {
+// get device provider
+var sgDeviceProviderPreAppStart = new SingularControls.SgDeviceProviderPreAppStart();
 
-    // big or small?
-    var big = false;
-    var small = false;
+// all scripts
+var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
 
-    // device specific stuff
-    app.config(['sgDeviceProvider', function (sgDeviceProvider) {
+// set up device loads
+sgDeviceProviderPreAppStart
 
-        sgDeviceProvider
-            .when("(min-device-width: 481px)", ['/testbig.js'], function () {
-                console.log("config for >= 480px");
-                big = true;
-            })
-            .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", ['/testsmall.js'], function () {
-                console.log("config for <= 481px");
-                small = true;
-            })
-            .else(['/small.js', '/big.js'], function() {
-                console.log("Else called");
-            })
-            .finalize();
+    // big screen
+    .when("(min-device-width: 481px)", allScripts, function () {
+        console.log("config for >= 480px");
+    })
 
-        // big or small?
-        console.log("Big? ", big);
-        console.log("Small? ", small);
+    // small screen
+    .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", allScripts, function () {
+        console.log("config for <= 481px");
+    })
 
-    }]);
+    // no match
+    .else(allScripts, function () {
+        console.log("Else called");
+    })
 
-    // configure sg routes
-    app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
+    // go (callback is app setup!!)
+    .finalize(function () {
 
-        sgRouteConfigProvider
-            .configureViewRequestMethod(function (controller, action) {
-                return "Ng/Views/" + controller + "/" + action + ".html";
-            })
-            .onPageNotFound("/system/pagenotfound/")
-            //.onPageNotFound(function() { alert("Page not found"); })
-            .onError("/system/error/")
-            //.onError(function(exception, cause) {
-            //    alert(exception);
-            //    alert(cause);
-            //})
-            .finalize($routeProvider);
+        // set up device provider for angular
+        sgDeviceProviderPreAppStart.setUpForAngular();
 
-    }]);
+        // create
+        SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgElements', 'sgDevice']);
 
-    // configure translate stuff
-    app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
+        // closure
+        (function (app) {
 
-        // config
-        sgTranslateConfigProvider
+            // configure sg routes
+            app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
 
-            // add translation method promise
-            .setTranslationRequestPromise(function (requests, $http) {
+                sgRouteConfigProvider
+                    .configureViewRequestMethod(function (controller, action) {
+                        return "Ng/Views/" + controller + "/" + action + ".html";
+                    })
+                    .onPageNotFound("/system/pagenotfound/")
+                    //.onPageNotFound(function() { alert("Page not found"); })
+                    .onError("/system/error/")
+                    //.onError(function(exception, cause) {
+                    //    alert(exception);
+                    //    alert(cause);
+                    //})
+                    .finalize($routeProvider);
 
-                // TODO - how do you get languageCode?
-                var langCode = "en-GB";
-                return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
+            }]);
 
-            })
+            // configure translate stuff
+            app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
 
-            // set translation cache length
-            .setMaxTranslationCacheLength(1000);
+                // config
+                sgTranslateConfigProvider
 
-    }]);
+                    // add translation method promise
+                    .setTranslationRequestPromise(function (requests, $http) {
 
-    // configure forms
-    app.config(['sgFormConfigProvider', function (sgFormConfigProvider) {
+                        // TODO - how do you get languageCode?
+                        var langCode = "en-GB";
+                        return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
 
-        // add wrapper
-        sgFormConfigProvider.addControlWrapper("sgAll", function (label, control) {
-            return "<p>" + label + "<span>" + control + "</span></p>";
-        });
-    }]);
+                    })
 
-    // controllers
-    app
+                    // set translation cache length
+                    .setMaxTranslationCacheLength(1000);
 
-        // nav
-        .controller("navController", ["$scope", function ($scope) {
+            }]);
 
-            //$scope.getMenuData = function () {
-            //    return {
+            // configure forms
+            app.config(['sgFormConfigProvider', function (sgFormConfigProvider) {
 
-            //        brand: {
-            //            href: "/#/",
-            //            text: "Singular Controls"
-            //        },
+                // add wrapper
+                sgFormConfigProvider.addControlWrapper("sgAll", function (label, control) {
+                    return "<p>" + label + "<span>" + control + "</span></p>";
+                });
+            }]);
 
-            //        items: [
-            //        { href: "/#/", text: "Home" },
-            //        {
-            //            text: "Dropdown",
-            //            items: [
-            //                  { href: "/#/1/", text: 1 },
-            //                  { href: "/#/2/", text: 2 },
-            //                  { href: "/#/3/", text: 3 }]
-            //        }],
+            // controllers
+            app
 
-            //        searchbar: '<form class="navbar-form navbar-right" role="search" ng-submit="bsNavCollapsed=true"><div class="form-group">'+'<input type="text" class="form-control" placeholder="Search">'+'</div>'+'<button type="submit" class="btn btn-default">Submit</button></form>'
+                // nav
+                .controller("navController", ["$scope", function ($scope) {
 
-            //    };
-            //};
+                    //$scope.getMenuData = function () {
+                    //    return {
 
-        }])
+                    //        brand: {
+                    //            href: "/#/",
+                    //            text: "Singular Controls"
+                    //        },
 
-    // home
-    .controller("homeController", ["$scope", function ($scope, cack) {
+                    //        items: [
+                    //        { href: "/#/", text: "Home" },
+                    //        {
+                    //            text: "Dropdown",
+                    //            items: [
+                    //                  { href: "/#/1/", text: 1 },
+                    //                  { href: "/#/2/", text: 2 },
+                    //                  { href: "/#/3/", text: 3 }]
+                    //        }],
 
-        $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
+                    //        searchbar: '<form class="navbar-form navbar-right" role="search" ng-submit="bsNavCollapsed=true"><div class="form-group">'+'<input type="text" class="form-control" placeholder="Search">'+'</div>'+'<button type="submit" class="btn btn-default">Submit</button></form>'
 
+                    //    };
+                    //};
 
-        }
-    }])
+                }])
 
-    // system
-    .controller("systemController", ["$scope", function ($scope) {
+                // home
+                .controller("homeController", ["$scope", function ($scope, cack) {
 
-    }])
-
-    // example
-    .controller("exampleController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
-
-        // include
-        $scope.include = "Ng/Views/Example/" + $scope.sgRoute.param1 + ".html";
-
-        sgTranslationService
-            .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
-            .then(function (data) {
-                $scope.translation = data["Common:Example using controller"];
-                $scope.translation2 = data["Common:Example 2 using controller"];
-            });
-
-    }]);
+                    $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
 
 
+                    }
+                }])
 
-})(SingularControls.TestApp);
+                // system
+                .controller("systemController", ["$scope", function ($scope) {
 
+                }])
 
+                // example
+                .controller("exampleController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
+
+                    // include
+                    $scope.include = "Ng/Views/Example/" + $scope.sgRoute.param1 + ".html";
+
+                    sgTranslationService
+                        .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
+                        .then(function (data) {
+                            $scope.translation = data["Common:Example using controller"];
+                            $scope.translation2 = data["Common:Example 2 using controller"];
+                        });
+
+                }]);
+
+            // device specific stuff inner! Works either way.
+            app.run(['sgDeviceService', function (sgDeviceService) {
+
+                // big or small?
+                var big = false;
+                var small = false;
+
+                // set up
+                sgDeviceService
+
+                    // big
+                    .when("(min-device-width: 481px)", ['/testbig.js'], function () {
+                        console.log("config inner for >= 480px");
+                        big = true;
+                    })
+
+                    // small
+                    .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", ['/testsmall.js'], function () {
+                        console.log("config inner for <= 481px");
+                        small = true;
+                    })
+
+                    // else
+                    .else(['/small.js', '/big.js'], function () {
+                        console.log("Else inner called");
+                    })
+
+                    // go
+                    .finalize(function () {
+                        console.log("Big? ", big);
+                        console.log("Small? ", small);
+                    });
+
+            }]);
+
+        })(SingularControls.TestApp);
+
+    });

@@ -5,14 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="Content/normalize.css?v=3.0.1" rel="stylesheet" />
     <link href="Content/sg-controls.min.css?v=1.0.0" rel="stylesheet" />
-    <script src="Scripts/angular.js"></script>
-    <script src="Scripts/angular-route.js"></script>
-    <script src="SgControls/sgForm.js"></script>
-    <script src="SgControls/sgTranslate.js"></script>
-    <script src="SgControls/sgRoute.js"></script>
-    <script src="SgControls/sgElements.js"></script>
-    <script src="SgControls/sgDevice.js"></script>
-    <script src="app.js"></script>
 </head>
 <body ng-app="SingularControls.TestApp">
     <header>
@@ -41,5 +33,9 @@
         </nav>
     </header>
     <section sg-view></section>
+    <footer></footer>
+    <!-- SCRIPTS - must go here to use sgDevice outside of angular! -->
+    <script src="SgControls/sgDevice.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

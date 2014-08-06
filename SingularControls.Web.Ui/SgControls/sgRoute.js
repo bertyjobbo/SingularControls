@@ -172,11 +172,11 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                         // check 
                         if (cachedTemplate === undefined) {
-
+                            
                             // get
                             $http({ method: 'get', url: $route.current.templateUrl })
                                 .success(function (data) {
-
+                                    
                                     // put in cache
                                     $templateCache.put($route.current.templateUrl, data);
 

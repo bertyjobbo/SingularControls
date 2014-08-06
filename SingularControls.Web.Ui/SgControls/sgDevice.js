@@ -4,110 +4,186 @@
 if (window.SingularControls == undefined)
     window.SingularControls = {};
 
-// app
-SingularControls.SgDeviceModule = angular.module("sgDevice", ['ng']);
-
 // scope
-(function (app, namespace) {
+(function (namespace) {
 
-    // create provider
-    app.provider("sgDevice", [function () {
+    // check
+    namespace.SgDeviceProviderSet = false;
 
-        // this
-        var ts = this;
+    // create raw for pre-config access
+    namespace.SgDeviceProviderPreAppStart = function () {
 
-        // array of when's
-        ts.whens = [];
+        var innerObject = function() {
+            
+            // this
+            var ts = this;
 
-        // when function
-        ts.when = function (mediaQuery, arrayOfJsFiles, configFunction) {
+            // array of when's
+            ts.whens = [];
 
-            // push
-            ts.whens.push({
+            // when function
+            ts.when = function (mediaQuery, arrayOfJsFiles, configFunction) {
 
-                mediaQuery: mediaQuery,
-                arrayOfJsFiles: arrayOfJsFiles,
-                configFunction: configFunction
-
-            });
-
-            // fluent
-            return ts;
-        }
-
-        // else
-        ts.else = function(arrayOfJsFiles, configFunction) {
-
-            // else function
-            ts.elseFunction = function () {
-                runFunctionsAndLoad(arrayOfJsFiles, configFunction);
-            }
-
-            return ts;
-        }
-
-        // shared run methods
-        var runFunctionsAndLoad = function (arrayOfJsFiles, configFunction) {
-
-            //todo: wait for load before proceeding in loop
-            console.log("//todo: wait for load before proceeding in loop");
-
-            // load scripts
-            arrayOfJsFiles.forEach(function (jsFilePath) {
-
-                // check
-                if (alreadyLoadeds.indexOf(jsFilePath) == -1) {
-                    alreadyLoadeds.push(jsFilePath);
-                    var js = document.createElement("script");
-                    js.type = "text/javascript";
-                    js.src = jsFilePath;
-                    document.body.appendChild(js);
-                }
-
-            });
-
-            if (configFunction)
-                configFunction();
-        };
-
-        // already loadeds
-        var alreadyLoadeds = [];
-
-        // finalise
-        ts.finalize = function () {
-
-            // matched?
-            var matched = false;
-
-            // check support, fail silently if not
-            if (window.matchMedia) {
-                
-                // matched
-                matched = true;
-
-                // run
-                ts.whens.forEach(function(theWhen) {
-                    
-                    // check media is relevant
-                    if (window.matchMedia(theWhen.mediaQuery).matches) {
-
-                        runFunctionsAndLoad(theWhen.arrayOfJsFiles, theWhen.configFunction);
-                    }
+                // push
+                ts.whens.push({
+                    mediaQuery: mediaQuery,
+                    arrayOfJsFiles: arrayOfJsFiles,
+                    configFunction: configFunction
 
                 });
+
+                // fluent
+                return ts;
             }
 
-            // 
-            if (!matched && ts.elseFunction !== undefined) {
-                ts.elseFunction();
+            // else
+            ts.else = function (arrayOfJsFiles, configFunction) {
+
+                // else function
+                ts.elseFunction = function () {
+                    runFunctionsAndLoad(arrayOfJsFiles, configFunction, ts.elseCallback);
+                }
+
+                return ts;
             }
+
+            // else
+            ts.elseFunction = undefined;
+            ts.elseCallback = undefined;
+
+            // shared run methods
+            var runFunctionsAndLoad = function (arrayOfJsFiles, configFunction, callback) {
+
+                // counter
+                var theCounter = 0;
+
+                // inner function
+                var innerLoadFunc = function () {
+
+                    // check count
+                    if (theCounter < arrayOfJsFiles.length) {
+
+                        // get path
+                        var jsFilePath = arrayOfJsFiles[theCounter];
+
+                        // check already loaded
+                        if (alreadyLoadeds.indexOf(jsFilePath) > 0) {
+                            theCounter++;
+                            innerLoadFunc();
+                        } else {
+                            var jsElement = document.createElement("script");
+                            jsElement.onload = function (e) {
+                                console.log("Finished loading " + jsFilePath + ": ", e);
+                                theCounter++;
+                                innerLoadFunc();
+                            }
+                            jsElement.onerror = function(e) {
+                                console.log("Error loading " + jsFilePath + ": ", e);
+                                theCounter++;
+                                innerLoadFunc();
+                            }
+                            jsElement.src = jsFilePath;
+                            document.body.appendChild(jsElement);
+                        }
+                    } else {
+                        if (configFunction)
+                            configFunction();
+                        if (callback)
+                            callback();
+                    }
+                };
+
+                // go
+                innerLoadFunc();
+            };
+
+            // already loadeds
+            var alreadyLoadeds = [];
+
+            // finalise
+            ts.finalize = function (callback) {
+
+                // matched?
+                var matched = false;
+
+                // check support, fail silently if not
+                if (window.matchMedia) {
+
+                    // counter
+                    var theCounter = 0;
+
+                    // inner function
+                    var innerLoadFunc = function () {
+
+                        // check counter
+                        if (theCounter < ts.whens.length) {
+
+                            // get when
+                            var theWhen = ts.whens[theCounter];
+
+                            // check media is relevant
+                            if (window.matchMedia(theWhen.mediaQuery).matches) {
+                                matched = true;
+                                runFunctionsAndLoad(theWhen.arrayOfJsFiles, theWhen.configFunction, function () {
+                                    theCounter++;
+                                    innerLoadFunc();
+                                });
+                            } else {
+                                theCounter++;
+                                innerLoadFunc();
+                            }
+                        } else {
+                            // 
+                            if (!matched && ts.elseFunction !== undefined) {
+                                ts.elseCallback = callback;
+                                ts.elseFunction();
+                            } else {
+
+                                // callback
+                                if (callback) callback();
+                            }
+                        }
+                    };
+
+                    // go
+                    innerLoadFunc();
+                }
+            };
+
         };
 
-        // get
-        this.$get = [function () {
-            return ts;
-        }];
+        // set up angular
+        this.setUpForAngular = function() {
+              
+            // set up angular version
+            if (angular && !namespace.SgDeviceProviderSet) {
+                namespace.SgDeviceProviderSet = true;
+                namespace.SgDeviceModule = angular.module("sgDevice", ['ng']);
+                namespace.SgDeviceModule.config(["$provide", function ($provide) {
+                    $provide.service("sgDeviceService", function () {
+                        return new innerObject();
+                    });
+                }]);
+            }
 
-    }]);
+        };
 
-})(SingularControls.SgDeviceModule, SingularControls);
+        // get inner
+        var innerObjInstance = new innerObject();
+
+        // when
+        this.when = innerObjInstance.when;
+
+        // else
+        this.else = innerObjInstance.else;
+
+        // finalize
+        this.finalize = innerObjInstance.finalize;
+
+    };
+
+
+})(SingularControls);
+
+
+
