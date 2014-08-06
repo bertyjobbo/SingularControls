@@ -1,1 +1,79 @@
-﻿<h2>sgRoute example</h2>
+﻿<h2>sgRoute</h2>
+<p>The <code>sgRoute</code> tells <code>ngRoute</code> to behave in a way that is more akin to a RESTFul service (or similar, like ASP.NET MVC).</p>
+
+<p>For example if you wanted to return a specific user record you might use <code>http://mysite.com/user/get/123/</code></p>
+
+<p>This is of course configurable in angular using the <code>$routeProvider</code>:</p>
+<pre>
+$routeProvider.when("/user/get/:id", {
+    templateUrl: "/Views/userRecord.html",
+    controller: "userRecordController"
+});
+</pre>
+
+<p>...which is fine, however RESTFul-style "configuration by convention" can be achieved too. This is what <code>ngRoute</code> does. All it needs from you is a function to tell it how to get the views. Like so (taken from this site):</p>
+
+<pre>
+// configure sg routes
+app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
+    
+    sgRouteConfigProvider
+    .configureViewRequestMethod(function (controller, action) {
+            return "Ng/Views/" + controller + "/" + action + ".html";
+    })
+    .onPageNotFound("/system/pagenotfound/")                    
+    .onError("/system/error/")
+    .finalize($routeProvider);
+}]);
+</pre>
+
+<p>... and in your index.html use the <code>sg-view</code> attribute...</p>
+<pre>
+&lt;body ng-app=&quot;myApp&quot;&gt;
+        &lt;section sg-view&gt;&lt;/section&gt;
+&lt;/body&gt;
+</pre>
+
+<p>As a result of this configuration, the routing (unless you add further routes) will be set up to instantiate controllers / views by "convention", like so: <code>/{controller}/{view/action}/{param1}/{param2}/{param3}/etc...</code>. There are a maximum of 10 params after the view/action parameter, and the view/action parameter both loads the view and also tries to call a method on your controller. It's probably easier to explain like so:</p>
+
+<p>
+    <strong>Given this url: </strong> <code>http://mysite.com/user/get/123/</code>...<br />
+    <strong>It will look for: </strong> <code>"userController"</code> (controller name + "Controller")...<br />
+    <strong>And attempt to call the method: </strong> <code>$scope.getAction()</code> (action name + "Action")...<br />
+    <strong>And will have the available parameter1 value of  </strong> <code>123</code>
+</p>
+<p class="alert-warning">
+    <strong>Note:</strong> If you don't supply the controller or action portion of the url, the controller will be <code>"homeController"</code> and the action / view will be <code>"indexAction()"</code> / <code>"index"</code>. So for <code>http://mysite.com/</code> this will be the case or for <code>http://mysite.com/user/</code> the controller would be <code>"userController"</code> but the action / view would still be <code>"indexAction()"</code> / <code>"index"</code>. This just seemed like a good set of defaults. It may be configurable in future releases.
+</p>
+
+<h4>A note on params...</h4>
+<p>It is worth noting that the params in the url can be called anything in your controller. So take the example <code>http://mysite.com/home/index/1/2/3/4/5/6/7/8/9/10/</code>, the index action could be used like this:</p>
+<pre>
+app.controller("homeController",function($scope){
+    
+    $scope.indexAction = function(a,b,c,d,e,f,g,h,i,j){
+        
+        // the variables in the constructor will all have a value,
+        // but the point is, they can be called anything
+    
+    }
+});
+</pre>
+
+<h4>A note on shared controllers...</h4>
+<p>It's important to note that this solution means "shared" controllers. Similar to ASP.NET MVC, the routing simply invokes the constructor, followed by an action method at each request. So it's important to be aware of what will be called, and when. In the above example, anything outside of <code>$scope.indexAction()</code> will be called <strong>every time</strong> the controller is requested. But only the code inside the <code>$scope.indexAction()</code> will be called when the action/view is "index".</p>
+<h4>Other methods</h4>
+<p>
+    There are three other methods of note on the sgRoute fluent API:<br />
+    <code>.onPageNotFound(string or function)</code> - what happens when no template can be loaded (redirect or function)<br />
+    <code>.onError(string or function)</code> - takes over error handling throughout the app (redirect or function)<br />
+    <code>.finalize($routeProvider)</code> - <strong>must</strong> be called LAST and have $routeProvider passed to it.<br />
+</p>
+<h4>$scope.sgRoute</h4>
+<p>The object <code>$scope.sgRoute</code> is always available. It has all the routing information in it. It looks like this for this page:</p>
+<p><img alt="$scope.sgRoute" src="/ng/views/example/capture.PNG" /></p>
+<h4>Finally...</h4>
+<p>It really should be plainly obvious by now... but <code>sgRoute</code> <strong>depends on</strong> <code>ngRoute</code>. You must include it if you are using <code>sgRoute</code>.</p>
+
+
+

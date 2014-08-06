@@ -48,7 +48,6 @@ sgDeviceProviderPreAppStart
                         return "Ng/Views/" + controller + "/" + action + ".html";
                     })
                     .onPageNotFound("/system/pagenotfound/")
-                    //.onPageNotFound(function() { alert("Page not found"); })
                     .onError("/system/error/")
                     //.onError(function(exception, cause) {
                     //    alert(exception);
@@ -144,6 +143,8 @@ sgDeviceProviderPreAppStart
                             $scope.translation = data["Common:Example using controller"];
                             $scope.translation2 = data["Common:Example 2 using controller"];
                         });
+
+                    console.log($scope.sgRoute);
 
                 }]);
 

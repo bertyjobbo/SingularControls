@@ -1,17 +1,31 @@
 ﻿/*#region vars*/
 
 @import (css) url(http://fonts.googleapis.com/css?family=PT+Sans);
-@font-family-main: 'PT Sans', sans-serif;
+@import (css) url(normalize.css);
+@font-family-main: "Helvetica Neue",Helvetica,Arial,sans-serif;
 @font-size: 16px;
 
 @width-mobile: 950px;
 
 @color-text: #555;
-@color-brand: orange; /*#56aa1c;*/
+@color-brand: #00a9ff; /*#56aa1c;*/
 @color-alt: #00a9ff;
 @color-brand-light: lighten(@color-brand, 4%);
 @color-line: #eee;
 @color-lightest: #fff;
+@color-bg: #f5f5f5;
+@color-line-dark: #ccc;
+
+@color-danger: #c7254e;
+@color-bg-danger: #f9f2f4;
+@color-success: green;
+@color-bg-success: lighten(@color-success, 80%);
+@color-warning: darken(@color-bg-warning, 50%);
+@color-bg-warning: #fcf8e3;
+@color-info: @color-brand;
+@color-bg-info: lighten(@color-brand, 80%);
+
+
 @color-reverse: @color-lightest;
 @line-width: 1px;
 @padding: (@font-size / 2);
@@ -29,7 +43,7 @@
 .block() {
     background: @color-brand;
     color: @color-reverse;
-    padding: @padding;
+    padding: @padding 1vw;
 
     & a {
         color: @color-reverse;
@@ -67,6 +81,10 @@
     cursor: pointer;
 }
 
+.cursor-default() {
+    cursor: default;
+}
+
 .fuzzy-focus() {
     outline: none;
     /*border-color: @color-alt;*/
@@ -74,7 +92,7 @@
 }
 
 .fuzzy-focus-reverse() {
-   .fuzzy-focus;
+    .fuzzy-focus;
 }
 
 .button() {
@@ -109,8 +127,9 @@
     font-family: @font-family-main;
 }
 
-html, body {
-    color: @color-text;
+html {
+    color: @color-text;    
+    overflow-y: scroll;
 }
 
 a {
@@ -123,16 +142,60 @@ a:hover {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    margin: 0 0 (@padding /2) 0;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+}
+
+h2 {
+    margin-bottom: @padding * 2;
+    border-bottom: 1px solid @color-line;
+    padding-bottom: @padding / 2;
+}
+
+h3 {
+    margin-bottom: @padding;
+}
+
+h4 {
+    margin-bottom: @padding / 2;
+}
+
+h5 {
+    margin-bottom: 0;
+}
+
+h6 {
+    margin-bottom: 0;
 }
 
 p {
     line-height: 1.5;
     margin: 0 0 (@padding *2) 0;
+    font-size: @font-size * 0.8;
 }
 
 section {
     padding: @padding;
+}
+
+code, pre {
+    background-color: @color-bg;
+    font-size: 90%;
+    padding: (@padding/4)(@padding/2);
+}
+
+pre {
+    border: 1px solid @color-line-dark;
+    display: block;
+    font-size: @font-size * 0.8;
+    line-height: 1.42857;
+    margin: 0 0 (@padding * 2) 0;
+    padding: @padding;
+    word-break: break-all;
+    word-wrap: break-word;
 }
 
 .hidden {
@@ -157,6 +220,36 @@ section {
 
 .non-strong {
     font-weight: normal;
+}
+
+.alert {
+    padding: @padding;
+    background: @color-bg;
+    border: 1px solid @color-line-dark;
+}
+
+.alert-warning {
+    .alert;
+    background: @color-bg-warning;
+    color: @color-warning;
+}
+
+.alert-danger {
+    .alert;
+    background: @color-bg-danger;
+    color: @color-danger;
+}
+
+.alert-info {
+    .alert;
+    background: @color-bg-info;
+    color: @color-info;
+}
+
+.alert-success {
+    .alert;
+    background: @color-bg-success;
+    color: @color-success;
 }
 
 /*#endregion top-level styles */
@@ -194,6 +287,17 @@ header {
     .block;
 }
 
+body.header-fixed header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 98vw;
+}
+
+body.header-fixed {
+    padding-top: 80px;
+}
+
 header > button[role="menubar"] {
     display: none;
 }
@@ -210,27 +314,33 @@ header > h1, nav > form, nav > ul, nav > div {
     .containsFloatedElements;
 }
 
+nav > ul{
+    padding-top: (@padding *1.6);
+}
 nav ul, nav li {
     list-style-type: none;
 }
 
 nav > ul > li {
     float: left;
-    margin-right: @padding;
+    margin-right: @padding *2;
 }
 
 nav > ul > li > ul {
+    font-size: @font-size * 0.8;
     display: none;
     padding: 0;
-    position: absolute;
+    position: fixed;
+    margin-top: @padding;
     background: @color-lightest;
     .standard-border;
+    z-index: 9999;
 }
 
 nav > ul > li > ul > li > a {
     color: @color-brand;
     display: block;
-    padding: (@padding /2);
+    padding: (@padding);
 }
 
 nav > ul > li > ul > li > a:hover {
@@ -241,6 +351,7 @@ nav > ul > li > ul > li > a:hover {
 
 nav > ul > li[role="combobox"]:hover {
     .cursor-pointer;
+    padding-bottom: @padding;
 }
 
 nav > ul > li[role="combobox"]:hover ul {
@@ -269,6 +380,11 @@ nav.hidden {
         margin-right: 0;
     }
 
+    nav > ul > li[role="combobox"]:hover {
+    .cursor-default;
+    padding-bottom: 0;
+}
+
     header > button[role="menubar"] {
         display: block;
         float: right;
@@ -295,6 +411,10 @@ nav.hidden {
         padding: (@padding *2) @padding (@padding *2) @padding;
         .containsFloatedElements;
         border-top: 1px solid @color-brand-light;
+    }
+
+    nav > ul{
+        line-height: 1.5;
     }
 
     nav > ul > li > ul {

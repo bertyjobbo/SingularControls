@@ -83,6 +83,7 @@
     </Content>
     <Content Include="ExampleBootstrapNavbar.html" />
     <Content Include="Global.asax" />
+    <Content Include="Ng\Views\Example\Capture.PNG" />
     <Content Include="Ng\Views\Example\get.html" />
     <Content Include="Ng\Views\Example\sgForm.html" />
     <Content Include="Ng\Views\Example\sgBootstrap.html" />
