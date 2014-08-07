@@ -115,7 +115,16 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             // get translations
             getTranslationsForCurrentRequest: function () {
-                return sgTranslateConfigProvider.getTranslationRequestPromise(factory.currentTranslationRequests, factory.$http);
+
+                var requestsToSend = [];
+
+                for (var req in factory.currentTranslationRequests) {
+                    requestsToSend.push(req);
+                }
+
+                return sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend, factory.$http);
+
+                
             },
 
             // cache length
@@ -147,10 +156,16 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 });
 
-                if (batchedCount > 0) {
+                if (batchedCount > 0 && sgTranslateConfigProvider.getTranslationRequestPromise !== undefined) {
+
+                    // requests
+                    var requestsToSend = [];
+                    for (var req in batched) {
+                        requestsToSend.push(req);
+                    }
 
                     // run promise
-                    sgTranslateConfigProvider.getTranslationRequestPromise(batched, factory.$http).success(function (data) {
+                    sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend, factory.$http).success(function (data) {
 
                         data.forEach(function (tranlsation) {
                             output[tranlsation.Key] = tranlsation.Value;

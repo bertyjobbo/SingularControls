@@ -14,7 +14,7 @@ html {
   overflow-y: scroll;
 }
 a {
-  color: #00a9ff;
+  color: #0094ff;
   text-decoration: none;
 }
 a:hover {
@@ -121,7 +121,7 @@ blockquote {
   background: #f5f5f5;
   border: 1px solid #cccccc;
   background: #ffffff;
-  color: #00a9ff;
+  color: #0094ff;
 }
 .alert-success {
   padding: 8px;
@@ -136,8 +136,8 @@ button,
 input[type=submit],
 input[type=button],
 a[role=button] {
-  background: #00a9ff;
-  border: 1px solid #00a9ff;
+  background: #0094ff;
+  border: 1px solid #0094ff;
   color: #ffffff;
   padding: 4px 6px;
 }
@@ -146,7 +146,7 @@ input[type=submit]:hover,
 input[type=button]:hover,
 a[role=button]:hover {
   background: #ffffff;
-  color: #00a9ff;
+  color: #0094ff;
   text-decoration: none;
 }
 /*#endregion buttons*/
@@ -171,7 +171,7 @@ select:focus {
 /*#region nav*/
 header {
   overflow: hidden;
-  background: #00a9ff;
+  background: #0094ff;
   color: #ffffff;
   padding: 8px 1vw;
 }
@@ -182,7 +182,7 @@ header button,
 header input[type=submit],
 header input[type=button],
 header a[role=button] {
-  background: #00a9ff;
+  background: #0094ff;
   border: 1px solid #ffffff;
   color: #ffffff;
 }
@@ -192,7 +192,7 @@ header input[type=button]:hover,
 header a[role=button]:hover {
   background: #ffffff;
   border: 1px solid #ffffff;
-  color: #00a9ff;
+  color: #0094ff;
 }
 header input:not([type="submit"]):focus,
 header textarea:focus,
@@ -248,12 +248,12 @@ nav > ul > li[role='combobox'] > ul {
   z-index: 9999;
 }
 nav > ul > li[role='combobox'] > ul > li > a {
-  color: #00a9ff;
+  color: #0094ff;
   display: block;
   padding: 8px;
 }
 nav > ul > li[role='combobox'] > ul > li > a:hover {
-  background: #00a9ff;
+  background: #0094ff;
   color: #ffffff;
   text-decoration: none;
 }
@@ -310,7 +310,7 @@ nav.hidden {
     margin: 0 0 0 0;
     padding: 16px 8px 16px 8px;
     overflow: hidden;
-    border-top: 1px solid #14b0ff;
+    border-top: 1px solid #149dff;
   }
   nav > ul {
     line-height: 1.5;

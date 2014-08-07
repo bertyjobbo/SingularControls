@@ -48,7 +48,7 @@ sgDeviceProviderPreAppStart
                         return "Ng/Views/" + controller + "/" + action + ".html";
                     })
                     .onPageNotFound("/system/pagenotfound/")
-                    .onError("/system/error/")
+                    //.onError("/system/error/")
                     //.onError(function(exception, cause) {
                     //    alert(exception);
                     //    alert(cause);
@@ -65,7 +65,7 @@ sgDeviceProviderPreAppStart
 
                     // add translation method promise
                     .setTranslationRequestPromise(function (requests, $http) {
-
+                        
                         // TODO - how do you get languageCode?
                         var langCode = "en-GB";
                         return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);

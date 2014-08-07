@@ -36,6 +36,7 @@ sgTranslationService
 <h3>Configuration</h3>
 <p>In these examples, the translation calls a web service which simply looks at the requested value and returns it with some decoration. But obviously this would be replaced by whatever data call you needed to make. The configuration example below shows this. Also not the max cache length - all translations are cached until this max length has been reached.</p>
 <p class="alert alert-warning">Note: if you don't call <code>.setTranslationRequestPromise</code> to tell the translator how to get your translations, the translator directive will simple fail silently.</p>
+<p class="alert-warning"><strong>Note:</strong> the <code>requests</code> object which is presented in the <code>.setTranslationRequestPromise</code> method is an <strong>array of strings</strong>. If you are posting this to a RESTFul service, it will need to accept this as POST data.</p>
 <pre>
 // configure translate stuff
 app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
@@ -56,6 +57,7 @@ app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
         .setMaxTranslationCacheLength(1000);
 }]);
 </pre>
+
 
 <sg-translate-processor></sg-translate-processor>
 

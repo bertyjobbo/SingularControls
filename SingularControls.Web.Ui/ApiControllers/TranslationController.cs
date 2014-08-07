@@ -22,18 +22,9 @@ namespace SingularControls.Web.Ui.ApiControllers
 
         [Route("translations/{languageCode}")]
         [AcceptVerbs("POST")]
-        public IList<KeyValuePair<string, string>> GetTranslationResponses(Dictionary<string, object> requests, string languageCode)
+        public IList<KeyValuePair<string, string>> GetTranslationResponses(string[] requests, string languageCode)
         {
-            //var output = new List<KeyValuePair<string,string>>();
-            //foreach (var translationRequest in requests)
-            //{
-            //    var keyArr = translationRequest.Key.Split(':');
-            //    var value = "**" + keyArr[0] + ": " + keyArr[1] + "**";
-            //    output.Add(new KeyValuePair<string, string>(translationRequest.Key,value));
-            //}
-            //return output;
-
-            return _translationFactory.GetTranslations(requests.Select(x => x.Key).ToList(), languageCode);
+            return _translationFactory.GetTranslations(requests, languageCode);
         }
     }
 }
