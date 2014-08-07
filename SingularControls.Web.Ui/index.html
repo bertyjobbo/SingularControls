@@ -8,7 +8,7 @@
 </head>
 <body ng-app="SingularControls.TestApp" class="header-fixed">
     <header>
-        <h1><a href="/#/"><span class="hidden">Singular Controls</span></a></h1>
+        <h1><a sg-nav href="/#/"><span class="hidden">Singular Controls</span></a></h1>
         <button sg-nav></button>
         <nav sg-nav>
             <ul role="menu">
@@ -25,16 +25,18 @@
                 </li>
                 <li><a href="http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/encode.aspx" target="_blank">HTML encoder</a></li>
             </ul>
-            <form><input type="search" role="search" /><button type="submit">Search</button></form>
+            <!--<form><input type="search" role="search" /><button type="submit">Search</button></form>
             <div>
                 <a role="button" href="http://google.co.uk">Button 1</a>
                 <button type="button">Button 2</button>
                 <input type="submit" value="Button 3" />
-            </div>
+            </div>-->
         </nav>
     </header>
     <div class="pc-15"></div>
-    <section sg-view class="pc-70"></section>
+    <section class="pc-70">
+        <div class="padding-double" sg-view></div>
+    </section>
     <div class="pc-15"></div>
     <footer></footer>
     <!-- SCRIPTS - must go here to use sgDevice outside of angular! -->

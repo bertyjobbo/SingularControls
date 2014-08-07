@@ -142,6 +142,12 @@ html {
     color: @color-text;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 img {
     max-width: 100%;
 }
@@ -188,11 +194,20 @@ h6 {
 p {
     line-height: 1.5;
     margin: 0 0 (@padding *2) 0;
-    font-size: @font-size * 0.8;
+    font-size: @font-size * 0.9;
+}
+
+.padding{
+    padding: @padding;
+}
+.padding-double{
+    padding: @padding*2;
+}
+.padding-half{
+    padding: @padding /2;
 }
 
 section {
-    padding: @padding;
     .containsFloatedElements;
 }
 
@@ -279,17 +294,17 @@ blockquote {
     color: @color-success;
 }
 
-.inset{
-    background:@color-bg;
+.inset {
+    background: @color-bg;
     padding: @padding;
     border: 1px solid @color-line-dark;
-    display:block;
-    overflow:hidden;
+    display: block;
+    overflow: hidden;
 }
 
-.insert-transparent{
+.insert-transparent {
     .inset;
-    background:none;
+    background: none;
 }
 
 .pc-5 {
@@ -389,8 +404,8 @@ blockquote {
 
 .pc-100 {
     width: 100%;
-    float:none;
-    clear:both;
+    float: none;
+    clear: both;
 }
 
 @media screen and (max-width: @width-mobile) {
@@ -454,7 +469,7 @@ blockquote {
     }
 
     .pc-70 {
-       .floatnonefullwidth;
+        .floatnonefullwidth;
     }
 
     .pc-75 {
@@ -647,7 +662,7 @@ nav.hidden {
     }
 
     nav > ul {
-        line-height: 1.5;
+        line-height: 2;
     }
 
     nav > ul > li[role='combobox'] > ul {
@@ -658,6 +673,8 @@ nav.hidden {
         border: none;
         margin-left: (@padding * 2);
         margin-top: 0;
+        font-size: @font-size;
+        line-height: 2;
     }
 
     nav > ul > li[role='combobox'] > ul > li > a {

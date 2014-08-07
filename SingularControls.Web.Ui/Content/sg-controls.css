@@ -12,6 +12,11 @@
 html {
   color: #555555;
 }
+body {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
 img {
   max-width: 100%;
 }
@@ -51,10 +56,18 @@ h6 {
 p {
   line-height: 1.5;
   margin: 0 0 16px 0;
-  font-size: 12.8px;
+  font-size: 14.4px;
+}
+.padding {
+  padding: 8px;
+}
+.padding-double {
+  padding: 16px;
+}
+.padding-half {
+  padding: 4px;
 }
 section {
-  padding: 8px;
   overflow: hidden;
 }
 code,
@@ -535,7 +548,7 @@ nav.hidden {
     border-top: 1px solid #a1d043;
   }
   nav > ul {
-    line-height: 1.5;
+    line-height: 2;
   }
   nav > ul > li[role='combobox'] > ul {
     display: block;
@@ -545,6 +558,8 @@ nav.hidden {
     border: none;
     margin-left: 16px;
     margin-top: 0;
+    font-size: 16px;
+    line-height: 2;
   }
   nav > ul > li[role='combobox'] > ul > li > a {
     color: inherit;
