@@ -75,6 +75,7 @@
   <ItemGroup>
     <Content Include="app.js" />
     <Content Include="Content\github.PNG" />
+    <Content Include="Content\logo.PNG" />
     <Content Include="Content\normalize.css" />
     <Content Include="Content\nuget.PNG" />
     <Content Include="Content\sg-controls.css">
@@ -83,6 +84,7 @@
     <Content Include="Content\sg-controls.min.css">
       <DependentUpon>sg-controls.css</DependentUpon>
     </Content>
+    <Content Include="Content\site.css" />
     <Content Include="ExampleBootstrapNavbar.html" />
     <Content Include="Global.asax" />
     <Content Include="Ng\Views\Example\Capture.PNG" />

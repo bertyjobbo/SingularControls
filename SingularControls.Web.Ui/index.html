@@ -4,10 +4,11 @@
     <title>Testing SingularControls</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="Content/sg-controls.min.css?v=1.0.0" rel="stylesheet" />
+    <link href="Content/site.css?v=1.0.0" rel="stylesheet" />
 </head>
 <body ng-app="SingularControls.TestApp" class="header-fixed">
     <header>
-        <h1><span class="hidden">Singular Controls</span>[Logo]</h1>
+        <h1><a href="/#/"><span class="hidden">Singular Controls</span></a></h1>
         <button sg-nav></button>
         <nav sg-nav>
             <ul role="menu">
@@ -32,7 +33,9 @@
             </div>
         </nav>
     </header>
-    <section sg-view></section>
+    <div class="pc-15"></div>
+    <section sg-view class="pc-70"></section>
+    <div class="pc-15"></div>
     <footer></footer>
     <!-- SCRIPTS - must go here to use sgDevice outside of angular! -->
     <script src="SgControls/sgDevice.js"></script>

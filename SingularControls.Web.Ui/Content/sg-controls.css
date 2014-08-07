@@ -17,7 +17,7 @@ img {
   max-width: 100%;
 }
 a {
-  color: #0094ff;
+  color: #99cc33;
   text-decoration: none;
 }
 a:hover {
@@ -56,6 +56,7 @@ p {
 }
 section {
   padding: 8px;
+  overflow: hidden;
 }
 code,
 pre {
@@ -124,7 +125,7 @@ blockquote {
   background: #f5f5f5;
   border: 1px solid #cccccc;
   background: #ffffff;
-  color: #0094ff;
+  color: #99cc33;
 }
 .alert-success {
   padding: 8px;
@@ -133,14 +134,232 @@ blockquote {
   background: #ffffff;
   color: #008000;
 }
+.inset {
+  background: #f5f5f5;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  display: block;
+  overflow: hidden;
+}
+.insert-transparent {
+  background: #f5f5f5;
+  padding: 8px;
+  border: 1px solid #cccccc;
+  display: block;
+  overflow: hidden;
+  background: none;
+}
+.pc-5 {
+  width: 5%;
+  float: left;
+  min-height: 1px;
+}
+.pc-10 {
+  width: 10%;
+  float: left;
+  min-height: 1px;
+}
+.pc-15 {
+  width: 15%;
+  float: left;
+  min-height: 1px;
+}
+.pc-20 {
+  width: 20%;
+  float: left;
+  min-height: 1px;
+}
+.pc-25 {
+  width: 25%;
+  float: left;
+  min-height: 1px;
+}
+.pc-30 {
+  width: 30%;
+  float: left;
+  min-height: 1px;
+}
+.pc-35 {
+  width: 35%;
+  float: left;
+  min-height: 1px;
+}
+.pc-40 {
+  width: 40%;
+  float: left;
+  min-height: 1px;
+}
+.pc-45 {
+  width: 45%;
+  float: left;
+  min-height: 1px;
+}
+.pc-50 {
+  width: 50%;
+  float: left;
+  min-height: 1px;
+}
+.pc-55 {
+  width: 55%;
+  float: left;
+  min-height: 1px;
+}
+.pc-60 {
+  width: 60%;
+  float: left;
+  min-height: 1px;
+}
+.pc-65 {
+  width: 65%;
+  float: left;
+  min-height: 1px;
+}
+.pc-70 {
+  width: 70%;
+  float: left;
+  min-height: 1px;
+}
+.pc-75 {
+  width: 75%;
+  float: left;
+  min-height: 1px;
+}
+.pc-80 {
+  width: 80%;
+  float: left;
+  min-height: 1px;
+}
+.pc-85 {
+  width: 85%;
+  float: left;
+  min-height: 1px;
+}
+.pc-90 {
+  width: 90%;
+  float: left;
+  min-height: 1px;
+}
+.pc-95 {
+  width: 95%;
+  float: left;
+  min-height: 1px;
+}
+.pc-100 {
+  width: 100%;
+  float: none;
+  clear: both;
+}
+@media screen and (max-width: 950px) {
+  /*.pc-5 {
+        width: 5%;
+        float: left;
+        min-height: 1px;
+    }
+
+    .pc-10 {
+        width: 100%;
+        float: left;
+        min-height: 1px;
+    }
+
+    .pc-15 {
+        width: 100%;
+        float: none;
+        min-height: 1px;
+    }*/
+  .pc-20 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-25 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-30 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-35 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-40 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-45 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-50 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-55 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-60 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-65 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-70 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-75 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-80 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-85 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-90 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  .pc-95 {
+    float: none;
+    clear: both;
+    width: 100%;
+  }
+  /*.pc-100 {
+        width: 100%;
+        float: left;
+    }*/
+}
 /*#endregion classes*/
 /*#region buttons*/
 button,
 input[type=submit],
 input[type=button],
 a[role=button] {
-  background: #0094ff;
-  border: 1px solid #0094ff;
+  background: #99cc33;
+  border: 1px solid #99cc33;
   color: #ffffff;
   padding: 4px 6px;
 }
@@ -149,7 +368,7 @@ input[type=submit]:hover,
 input[type=button]:hover,
 a[role=button]:hover {
   background: #ffffff;
-  color: #0094ff;
+  color: #99cc33;
   text-decoration: none;
 }
 /*#endregion buttons*/
@@ -174,7 +393,7 @@ select:focus {
 /*#region nav*/
 header {
   overflow: hidden;
-  background: #0094ff;
+  background: #99cc33;
   color: #ffffff;
   padding: 8px 1vw;
 }
@@ -185,7 +404,7 @@ header button,
 header input[type=submit],
 header input[type=button],
 header a[role=button] {
-  background: #0094ff;
+  background: #99cc33;
   border: 1px solid #ffffff;
   color: #ffffff;
 }
@@ -195,7 +414,7 @@ header input[type=button]:hover,
 header a[role=button]:hover {
   background: #ffffff;
   border: 1px solid #ffffff;
-  color: #0094ff;
+  color: #99cc33;
 }
 header input:not([type="submit"]):focus,
 header textarea:focus,
@@ -251,12 +470,12 @@ nav > ul > li[role='combobox'] > ul {
   z-index: 9999;
 }
 nav > ul > li[role='combobox'] > ul > li > a {
-  color: #0094ff;
+  color: #99cc33;
   display: block;
   padding: 8px;
 }
 nav > ul > li[role='combobox'] > ul > li > a:hover {
-  background: #0094ff;
+  background: #99cc33;
   color: #ffffff;
   text-decoration: none;
 }
@@ -301,6 +520,7 @@ nav.hidden {
     font-size: 28.8px;
     font-weight: bold;
     margin: 8px 16px 0 0;
+    margin-bottom: 12px;
   }
   header > button[role="menubar"]:hover {
     background: none;
@@ -313,7 +533,7 @@ nav.hidden {
     margin: 0 0 0 0;
     padding: 16px 8px 16px 8px;
     overflow: hidden;
-    border-top: 1px solid #149dff;
+    border-top: 1px solid #a1d043;
   }
   nav > ul {
     line-height: 1.5;
@@ -325,6 +545,7 @@ nav.hidden {
     background: none;
     border: none;
     margin-left: 16px;
+    margin-top: 0;
   }
   nav > ul > li[role='combobox'] > ul > li > a {
     color: inherit;

@@ -1,0 +1,13 @@
+﻿@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+
+* {
+    font-family: 'PT Sans', sans-serif;
+}
+
+header > h1 > a {
+    background: url('logo.png') no-repeat 0 -4px;
+    background-size: 140px auto;
+    display: block;
+    width: 140px;
+    height: 40px;
+}
