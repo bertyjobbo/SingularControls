@@ -73,7 +73,8 @@ if (window.SingularControls == undefined)
                         } else {
                             var jsElement = document.createElement("script");
                             jsElement.onload = function (e) {
-                                console.log("Finished loading " + jsFilePath + ": ", e);
+                                //console.log("Finished loading " + jsFilePath + ": ", e);
+                                alreadyLoadeds.push(jsFilePath);
                                 theCounter++;
                                 innerLoadFunc();
                             }

@@ -1,1 +1,85 @@
-﻿<h2>sgDevice example</h2>
+﻿<h2>sgDevice</h2>
+<p><code>sgDevice</code> is a module that enables you to load different content depending on the device viewing your application. It can be used in two ways:</p>
+<h3>1. Pre-app-start</h3>
+<p>This is probably it's most useful function. If you look at the <code>app.js</code> (or the source) for this site, you will see that all the JavaScript files except for <code>sgDevice.js</code> and <code>app.js</code>, are loaded dynamically using <code>sgDevice</code>:</p>
+<pre>
+    
+// get device provider
+var sgDeviceProviderPreAppStart = new SingularControls.SgDeviceProviderPreAppStart();
+
+// all scripts array
+var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
+
+// set up device loads
+sgDeviceProviderPreAppStart
+
+    // big screen
+    .when("(min-device-width: 481px)", allScripts.concat(['/bigscreen.js']), function () {
+        console.log("config for >= 481px");
+    })
+
+    // small screen
+    .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", allScripts.concat(['/smallscreen.js'], function () {
+        console.log("config for &lt;= 480px");
+    })
+
+    // no match
+    .else(allScripts, function () {
+        console.log("Else called");
+    })
+
+    // go 
+    .finalize(function () {
+
+        // set up device provider for angular
+        sgDeviceProviderPreAppStart.setUpForAngular();
+
+        // create
+        SingularControls.TestApp = angular.module("SingularControls.TestApp", ['ngRoute', 'sgTranslate', 'sgRoute', 'sgForm', 'sgElements', 'sgDevice']);
+
+        // YOUR APP SETUP CODE HERE
+    });
+
+</pre>
+<p>As you can see, the <code>.when</code> function takes 3 arguments: an @media query, an array of files to load should that query be matched, and an optional callback. The <code>.else</code> function is similar but without the @media query - this is for when no match is found. Finally, the <code>.finalize</code> method (which must be called and called last) takes a callback function which will run once all of the scripts are loaded. In this scenario this is where the Angular application setup code is run.</p>
+<p>The purpose of this is to allow you to <strong>only load the files the device needs</strong>.</p>
+<p class="alert-warning">Note: if you are matching multiple times, don't worry about telling <code>sgDevice</code> to load the same files twice. It will ignore any files that are already loaded (as long as the strings are equal in the arrays).</p>
+<h3>2. Post-app-start</h3>
+<p>When <code>sgDeviceProviderPreAppStart.setUpForAngular();</code> is called in the finalize callback, this then creates a service called <code>sgDeviceService</code> which can then be used inside <code>app.run</code> as seen below:</p>
+<pre>
+
+app.run(['sgDeviceService', function (sgDeviceService) {
+
+    // big or small?
+    var big = false;
+    var small = false;
+
+    // set up
+    sgDeviceService
+
+        // big
+        .when("(min-device-width: 481px)", ['/testbig.js'], function () {
+            console.log("config inner for >= 480px");
+            big = true;
+        })
+
+        // small
+        .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", ['/testsmall.js'], function () {
+            console.log("config inner for <= 481px");
+            small = true;
+        })
+
+        // else
+        .else(['/small.js', '/big.js'], function () {
+            console.log("Else inner called");
+        })
+
+        // go
+        .finalize(function () {
+            console.log("Big? ", big);
+            console.log("Small? ", small);
+        });
+}]);
+
+</pre>
+<p>This is probably a less useful feature, but could be used for maybe setting global variables or similar.</p>

@@ -121,14 +121,14 @@
 
 /*#endregion */
 
-/*#region top-level styles */
+/*#region elements */
 
 * {
     font-family: @font-family-main;
 }
 
 html {
-    color: @color-text;    
+    color: @color-text;
     overflow-y: scroll;
 }
 
@@ -198,6 +198,18 @@ pre {
     word-wrap: break-word;
 }
 
+blockquote {
+    padding: @padding * 2;
+    font-style: italic;
+    border: @color-line-dark;
+    background: @color-bg;
+    margin: 0 (@padding*2) (@padding*2) (@padding*2)
+}
+
+/*#endregion elements */
+
+/*#region classes*/
+
 .hidden {
     display: none;
 }
@@ -252,7 +264,7 @@ pre {
     color: @color-success;
 }
 
-/*#endregion top-level styles */
+/*#endregion classes*/
 
 /*#region buttons*/
 
@@ -314,9 +326,10 @@ header > h1, nav > form, nav > ul, nav > div {
     .containsFloatedElements;
 }
 
-nav > ul{
+nav > ul {
     padding-top: (@padding *1.6);
 }
+
 nav ul, nav li {
     list-style-type: none;
 }
@@ -326,7 +339,7 @@ nav > ul > li {
     margin-right: @padding *2;
 }
 
-nav > ul > li > ul {
+nav > ul > li[role='combobox'] > ul {
     font-size: @font-size * 0.8;
     display: none;
     padding: 0;
@@ -337,13 +350,13 @@ nav > ul > li > ul {
     z-index: 9999;
 }
 
-nav > ul > li > ul > li > a {
+nav > ul > li[role='combobox'] > ul > li > a {
     color: @color-brand;
     display: block;
     padding: (@padding);
 }
 
-nav > ul > li > ul > li > a:hover {
+nav > ul > li[role='combobox'] > ul > li > a:hover {
     background: @color-brand;
     color: @color-reverse;
     text-decoration: none;
@@ -381,9 +394,9 @@ nav.hidden {
     }
 
     nav > ul > li[role="combobox"]:hover {
-    .cursor-default;
-    padding-bottom: 0;
-}
+        .cursor-default;
+        padding-bottom: 0;
+    }
 
     header > button[role="menubar"] {
         display: block;
@@ -413,11 +426,11 @@ nav.hidden {
         border-top: 1px solid @color-brand-light;
     }
 
-    nav > ul{
+    nav > ul {
         line-height: 1.5;
     }
 
-    nav > ul > li > ul {
+    nav > ul > li[role='combobox'] > ul {
         display: block;
         padding: inherit;
         position: relative;
@@ -426,12 +439,12 @@ nav.hidden {
         margin-left: (@padding * 2);
     }
 
-    nav > ul > li > ul > li > a {
+    nav > ul > li[role='combobox'] > ul > li > a {
         color: inherit;
         padding: 0;
     }
 
-    nav > ul > li > ul > li > a:hover {
+    nav > ul > li[role='combobox'] > ul > li > a:hover {
         background: inherit;
         color: inherit;
         text-decoration: underline;

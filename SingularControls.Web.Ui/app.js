@@ -8,24 +8,24 @@ if (window.SingularControls == undefined)
 var sgDeviceProviderPreAppStart = new SingularControls.SgDeviceProviderPreAppStart();
 
 // all scripts
-var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
+var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js','/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
 
 // set up device loads
 sgDeviceProviderPreAppStart
 
     // big screen
     .when("(min-device-width: 481px)", allScripts, function () {
-        console.log("config for >= 480px");
+        //console.log("config for >= 480px");
     })
 
     // small screen
     .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", allScripts, function () {
-        console.log("config for <= 481px");
+        //console.log("config for <= 481px");
     })
 
     // no match
     .else(allScripts, function () {
-        console.log("Else called");
+        //console.log("Else called");
     })
 
     // go (callback is app setup!!)
@@ -144,7 +144,7 @@ sgDeviceProviderPreAppStart
                             $scope.translation2 = data["Common:Example 2 using controller"];
                         });
 
-                    console.log($scope.sgRoute);
+                    //console.log($scope.sgRoute);
 
                 }]);
 
@@ -159,26 +159,26 @@ sgDeviceProviderPreAppStart
                 sgDeviceService
 
                     // big
-                    .when("(min-device-width: 481px)", ['/testbig.js'], function () {
-                        console.log("config inner for >= 480px");
+                    .when("(min-device-width: 481px)", [], function () {
+                        //console.log("config inner for >= 480px");
                         big = true;
                     })
 
                     // small
-                    .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", ['/testsmall.js'], function () {
-                        console.log("config inner for <= 481px");
+                    .when("screen and (min-device-width : 320px) and (max-device-width : 480px)", [], function () {
+                        //console.log("config inner for <= 481px");
                         small = true;
                     })
 
                     // else
                     .else(['/small.js', '/big.js'], function () {
-                        console.log("Else inner called");
+                        //console.log("Else inner called");
                     })
 
                     // go
                     .finalize(function () {
-                        console.log("Big? ", big);
-                        console.log("Small? ", small);
+                        //console.log("Big? ", big);
+                        //console.log("Small? ", small);
                     });
 
             }]);

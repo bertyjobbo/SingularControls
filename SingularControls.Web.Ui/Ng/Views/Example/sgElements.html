@@ -1,1 +1,34 @@
-﻿<h2>sgElements example</h2>
+﻿<h2>sgElements</h2>
+<blockquote>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</blockquote>
+<h3>1 - Collapsable nav</h3>
+<p>Similar to Twitter Bootstrap, the <code>sgNav</code> directive is the "icing on the cake" for creating a collapsible header / navigation structure. The basic HTML is as follows (taken from this site 2014-08-07):</p>
+<pre>
+&lt;header&gt;
+    &lt;h1&gt;&lt;span class=&quot;hidden&quot;&gt;Singular Controls&lt;/span&gt;[Logo]&lt;/h1&gt;
+    &lt;button sg-nav&gt;&lt;/button&gt;
+    &lt;nav sg-nav&gt;
+        &lt;ul role=&quot;menu&quot;&gt;
+            &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/&quot;&gt;Home&lt;/a&gt;&lt;/li&gt;
+            &lt;li role=&quot;combobox&quot;&gt;
+                        Examples
+                &lt;ul role=&quot;menu&quot;&gt;
+                    &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/example/get/sgroute/&quot;&gt;sgRoute&lt;/a&gt;&lt;/li&gt;
+                    &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/example/get/sgform/&quot;&gt;sgForm&lt;/a&gt;&lt;/li&gt;
+                    &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/example/get/sgtranslate/&quot;&gt;sgTranslate&lt;/a&gt;&lt;/li&gt;
+                    &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/example/get/sgelements/&quot;&gt;sgElements&lt;/a&gt;&lt;/li&gt;
+                    &lt;li role=&quot;menuitem&quot;&gt;&lt;a href=&quot;/#/example/get/sgdevice/&quot;&gt;sgDevice&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;form&gt;&lt;input type=&quot;search&quot; role=&quot;search&quot; /&gt;&lt;button type=&quot;submit&quot;&gt;Search&lt;/button&gt;&lt;/form&gt;
+        &lt;div&gt;
+            &lt;a role=&quot;button&quot; href=&quot;http://google.co.uk&quot;&gt;Button 1&lt;/a&gt;
+            &lt;button type=&quot;button&quot;&gt;Button 2&lt;/button&gt;
+            &lt;input type=&quot;submit&quot; value=&quot;Button 3&quot; /&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;
+</pre>
+<p>As you can see there are no css classes involved at all. For this site, there is a fixed header so the only class that has any involvement in the header / nav is <code>&lt;body class=&quot;header-fixed&quot;&gt;</code>. Everything else is achieved via semantics and roles.</p>
+<p>The basic structure is <code>header</code> containing an <code>h1</code> element (for "brand"), a hidden <code>button</code> and then <code>nav</code>; which can contain <code>form</code>, <code>ul</code> or <code>div</code>. These will line-up next to each other inside the <code>nav</code> element and collapse correctly once the page width reaches the minimum (see <code>@width-mobile: 950px;</code> in the less stylesheet).</p>
+<p>Similar to Twitter Bootstrap, once the nav has collapsed, the <code>button</code> will appear to open the collapsed content. If you are using your own JavaScript functionality and don't want to use <code>sg-nav</code> then you will need to populate the button with some text or set a background-style to make it look how you want. However, if you are using <code>sg-nav</code> (which must be on the button element and the nav element), all of the show/hide logic and styling is applied.</p>
