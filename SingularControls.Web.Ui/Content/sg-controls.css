@@ -13,6 +13,9 @@ html {
   color: #555555;
   overflow-y: scroll;
 }
+img {
+  max-width: 100%;
+}
 a {
   color: #0094ff;
   text-decoration: none;
