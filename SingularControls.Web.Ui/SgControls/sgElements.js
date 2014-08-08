@@ -10,7 +10,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 (function (app, namespace) {
 
     // nav directive
-    app.directive("sgNav", ["$compile", function ($compile) {
+    namespace.SgNavDirective = ["$compile", function ($compile) {
         return {
             restrict: "A",
             link: function (scope, element) {
@@ -72,10 +72,10 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 }
 
 
-
             }
         }
-    }]);
+    }];
+    app.directive("sgNav", namespace.SgNavDirective);
 
     // loader provider
     namespace.SgLoaderConfigProvider = [function () {
@@ -98,7 +98,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             ts.doOnRouteChange = true;
             return ts;
         };
-        ts.onSgRouteChange = function() {
+        ts.onSgRouteChange = function () {
             ts.doOnSgRouteChange = true;
             return ts;
         };
@@ -170,15 +170,15 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                     }
 
                     $rootScope.sgShowLoaderSet = true;
-                    
+
 
                 } else {
                     throw "You can only use sgLoader on a single element";
                 }
             }],
             link: function (scope, element, attrs) {
-                
-                $rootScope.$watch(function() {
+
+                $rootScope.$watch(function () {
                     return $rootScope.sgShowLoaderFlag;
                 }, function (changedValue) {
 
@@ -206,11 +206,40 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                             element.removeClass(sgLoaderConfig.showClassName);
                         }
                     }
-                },true);
+                }, true);
             }
         };
     }];
     app.directive("sgLoader", namespace.SgLoaderDirective);
 
+    // title directive
+    namespace.SgTitleDirective = ["$rootScope", function ($rootScope) {
+
+        return {
+
+            restrict: "AEC",
+            link: function (scope, element, attrs) {
+
+                switch (element[0].tagName) {
+
+                    case "TITLE":
+                        {
+                            $rootScope.sgTitleElement = element;
+                            $rootScope.sgTitleElementPrefix = attrs.sgTitle.replace(/\[WHITESPACE\]/g, ' ');;
+                            console.log(attrs.sgTitle.length);
+                            element.removeAttr("sg-title");
+                            break;
+                        }
+                    case "SG-TITLE":
+                        {
+                            $rootScope.sgTitleElement.html($rootScope.sgTitleElementPrefix + element.html());
+                            element.remove();
+                            break;
+                        }
+                }
+            }
+        }
+    }];
+    app.directive("sgTitle", namespace.SgTitleDirective);
 
 })(SgControls.ElementsModule, SgControls);

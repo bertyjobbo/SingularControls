@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="SingularControls.TestApp">
 <head>
-    <title>Testing SingularControls</title>
+    <title sg-title="Singular Controls |[WHITESPACE]"></title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="Content/sg-controls.min.css?v=1.0.0" rel="stylesheet" />
-    <link href="Content/site.css?v=1.0.0" rel="stylesheet" />
+    <link href="Content/sg-controls.min.css?v=1.0.1" rel="stylesheet" />
+    <link href="Content/site.css?v=1.0.1" rel="stylesheet" />
 </head>
-<body ng-app="SingularControls.TestApp" class="header-fixed">
+<body class="header-fixed">
     <div sg-loader>
         <div class="loader-overlay"></div>
         <div class="loader-inner">Loading...</div>
+        <!--<div class="loader-inner"><img src="Content/716.GIF" /></div>-->
     </div>
     <header>
         <h1><a sg-nav href="/#/"><span class="hidden">Singular Controls</span></a></h1>
@@ -29,12 +30,6 @@
                 </li>
                 <li><a href="http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/encode.aspx" target="_blank">HTML encoder</a></li>
             </ul>
-            <!--<form><input type="search" role="search" /><button type="submit">Search</button></form>
-                <div>
-                    <a role="button" href="http://google.co.uk">Button 1</a>
-                    <button type="button">Button 2</button>
-                    <input type="submit" value="Button 3" />
-                </div>-->
         </nav>
     </header>
     <div class="pc-15"></div>

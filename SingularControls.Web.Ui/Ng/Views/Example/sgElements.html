@@ -1,4 +1,5 @@
-﻿<h2>sgElements</h2>
+﻿<sg-title>sgElements</sg-title>
+<h2>sgElements</h2>
 <blockquote>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</blockquote>
 
 <h3>1 - Loader</h3>
@@ -114,3 +115,19 @@ $rootScope.$emit("sgLoaderHide");
 <pre>
 &lt;button class=&quot;sgnav-custom-button&quot;&gt;&lt;img src=&quot;/navbutton.png&quot; /&gt;&lt;/button&gt;
 </pre>
+
+<h3>3. sgTitle</h3>
+<p>The <code>sgTitle</code> directives allows you, from a view, to set the title in the <code>head</code> element. Set up is fairly simple:</p>
+<h4>In index.html:</h4>
+<pre>
+&lt;title sg-title=&quot;Singular Controls |[WHITESPACE]&quot;&gt;&lt;/title&gt;
+</pre>
+<h4>In the view:</h4>
+<pre>
+&lt;sg-title&gt;Home&lt;/sg-title&gt;
+</pre>
+<h4>Result:</h4>
+<pre>
+&lt;title&gt;Singular Controls - Home&lt;/title&gt;
+</pre>
+<p class="alert-warning"><strong>Note:</strong> the <code>[WHITESPACE]</code> text must be used for any <em>trailing</em> whitespace in your static title text. This is because Angular strips trailing whitespace from attributes!</p>

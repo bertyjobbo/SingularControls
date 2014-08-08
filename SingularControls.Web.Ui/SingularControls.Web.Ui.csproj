@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app.js" />
+    <Content Include="Content\716.GIF" />
     <Content Include="Content\github.PNG" />
     <Content Include="Content\logo.PNG" />
     <Content Include="Content\normalize.css" />
