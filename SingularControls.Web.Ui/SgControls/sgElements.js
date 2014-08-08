@@ -83,6 +83,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 
         // props
         ts.doOnRouteChange = false;
+        ts.doOnSgRouteChange = false;
         ts.doFade = false;
         ts.doFadeTiming = 0;
         ts.onBeforeShowMethod = undefined;
@@ -93,6 +94,10 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         // methods
         ts.onRouteChange = function () {
             ts.doOnRouteChange = true;
+            return ts;
+        };
+        ts.onSgRouteChange = function() {
+            ts.doOnSgRouteChange = true;
             return ts;
         };
         ts.showClass = function (cssClass) {
@@ -156,6 +161,10 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         $rootScope.$on("$routeChangeSuccess", function () {
                             $rootScope.sgShowLoaderFlag = false;
                         });
+                    }
+
+                    if (sgLoaderConfig.doOnSgRouteChange) {
+                        $rootScope.sgLoaderOnSgRouteChange = true;
                     }
 
                     $rootScope.sgShowLoaderSet = true;

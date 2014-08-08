@@ -135,8 +135,11 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                 // add listener
                 scope.$on("$routeChangeSuccess", function (ev, routeData) {
 
-                    // fire event 
-                    scope.$emit("sgLoaderShow");
+                    if ($rootScope.sgLoaderOnSgRouteChange) {
+
+                        // fire event 
+                        scope.$emit("sgLoaderShow");
+                    }
 
                     // check route data for redirects etc
                     if (
@@ -182,8 +185,12 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                     // put in cache
                                     $templateCache.put($route.current.templateUrl, data);
 
-                                    // fire event 
-                                    scope.$emit("sgLoaderHide");
+                                    if ($rootScope.sgLoaderOnSgRouteChange) {
+
+                                        // fire event 
+                                        scope.$emit("sgLoaderHide");
+
+                                    }
 
                                     // compile
                                     compileTheView(element, scope, data);
@@ -206,10 +213,13 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                         }
                                     }
 
-                                    // fire event 
-                                    scope.$emit("sgLoaderHide");
-                                });
+                                    if ($rootScope.sgLoaderOnSgRouteChange) {
 
+                                        // fire event 
+                                        scope.$emit("sgLoaderHide");
+
+                                    }
+                                });
 
 
                         } else {
@@ -217,8 +227,11 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                             // compile cached
                             compileTheView(element, scope, cachedTemplate);
 
-                            // fire event 
-                            scope.$emit("sgLoaderHide");
+                            if ($rootScope.sgLoaderOnSgRouteChange) {
+
+                                // fire event 
+                                scope.$emit("sgLoaderHide");
+                            }
                         }
                     }
 
