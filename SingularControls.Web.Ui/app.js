@@ -8,7 +8,7 @@ if (window.SingularControls == undefined)
 var sgDeviceProviderPreAppStart = new SingularControls.SgDeviceProviderPreAppStart();
 
 // all scripts
-var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js','/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
+var allScripts = ['/Scripts/angular.js', '/Scripts/angular-route.js', '/sgcontrols/sgelements.js', '/sgcontrols/sgelements.js', '/sgcontrols/sgform.js', '/sgcontrols/sgroute.js', '/sgcontrols/sgtranslate.js'];
 
 // set up device loads
 sgDeviceProviderPreAppStart
@@ -48,11 +48,7 @@ sgDeviceProviderPreAppStart
                         return "Ng/Views/" + controller + "/" + action + ".html";
                     })
                     .onPageNotFound("/system/pagenotfound/")
-                    //.onError("/system/error/")
-                    //.onError(function(exception, cause) {
-                    //    alert(exception);
-                    //    alert(cause);
-                    //})
+                    .onError("/system/error/")
                     .finalize($routeProvider);
 
             }]);
@@ -65,7 +61,7 @@ sgDeviceProviderPreAppStart
 
                     // add translation method promise
                     .setTranslationRequestPromise(function (requests, $http) {
-                        
+
                         // TODO - how do you get languageCode?
                         var langCode = "en-GB";
                         return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
@@ -75,6 +71,23 @@ sgDeviceProviderPreAppStart
                     // set translation cache length
                     .setMaxTranslationCacheLength(1000);
 
+            }]);
+
+            // configure loader
+            app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
+
+                // callback
+                var dummyFunc = function (callback) {
+                    callback();
+                };
+
+                // configure
+                sgLoaderConfigProvider
+                    .onRouteChange()
+                    .showClass("sg-loader-show")
+                    .hideClass("sg-loader-hide")
+                    .onBeforeShow(dummyFunc)
+                    .onBeforeHide(dummyFunc);
             }]);
 
             // configure forms
@@ -132,17 +145,54 @@ sgDeviceProviderPreAppStart
                 }])
 
                 // example
-                .controller("exampleController", ["$scope", "sgTranslationService", function ($scope, sgTranslationService) {
+                .controller("exampleController", ["$window", "$scope", "$rootScope", "sgTranslationService", function ($window, $scope, $rootScope, sgTranslationService) {
 
-                    // include
-                    $scope.include = "Ng/Views/Example/" + $scope.sgRoute.param1 + ".html";
+                    // get action
+                    $scope.getAction = function (include) {
 
-                    sgTranslationService
-                        .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
-                        .then(function (data) {
-                            $scope.translation = data["Common:Example using controller"];
-                            $scope.translation2 = data["Common:Example 2 using controller"];
-                        });
+                        // set include
+                        $scope.include = "Ng/Views/Example/" + include + ".html";
+
+                        // switch include
+                        switch (include.toLowerCase()) {
+
+                            case "sgtranslate":
+                                {
+                                    console.log("FROM CONTROLLER CALLED", new Date().toISOString());
+                                    $scope.$emit("sgLoaderShow");
+                                    sgTranslationService
+                                        .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
+                                        .then(function (data) {
+                                            $scope.translation = data["Common:Example using controller"];
+                                            $scope.translation2 = data["Common:Example 2 using controller"];
+                                            $scope.$emit("sgLoaderHide");
+                                        });
+                                    break;
+                                }
+                            case "sgelements":
+                                {
+                                    break;
+                                }
+                            case "sgroute":
+                                {
+                                    break;
+                                }
+                            case "sgform":
+                                {
+                                    break;
+                                }
+                            case "sgdevice":
+                                {
+                                    break;
+                                }
+                            default:
+                                {
+                                    throw "Page not found";
+                                }
+                        }
+                    }
+
+
 
                     //console.log($scope.sgRoute);
 

@@ -11,3 +11,34 @@ header > h1 > a {
     width: 140px;
     height: 40px;
 }
+
+.loader-inner {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: #99CC33;
+    color: #fff;
+    padding: 16px;
+}
+
+.loader-overlay {
+    background: #000;
+    opacity: 0.8;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.sg-loader-show {
+    visibility: visible;
+    opacity: 1;
+    transition-delay: 0s;
+}
+
+.sg-loader-hide {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s linear 0.5s,opacity 0.5s linear;
+}

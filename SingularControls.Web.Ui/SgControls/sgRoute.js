@@ -111,10 +111,10 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
             // html
             var theFinalHtml = "<div ng-controller='" + $rootScope.sgRoute.controller + "Controller" +
-                "' ng-init='" + $rootScope.sgRoute.action + "Action(sgroute.param1,sgroute.param2,sgroute.param3,sgroute.param4,sgroute.param5,sgroute.param6,sgroute.param7,sgroute.param8,sgroute.param9,sgroute.param10)" + "'>" +
+                "' ng-init='" + $rootScope.sgRoute.action + "Action(sgRoute.param1,sgRoute.param2,sgRoute.param3,sgRoute.param4,sgRoute.param5,sgRoute.param6,sgRoute.param7,sgRoute.param8,sgRoute.param9,sgRoute.param10)" + "'>" +
                 htmlToAdd +
                 "</div>";
-
+            
             // compiled
             var compiled = $compile(theFinalHtml)(scope);
 
@@ -130,12 +130,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
             link: function (scope, element, attrs) {
 
                 // add props to root scope
-                $rootScope.sgRoute = {
-                    controller: undefined,
-                    action: undefined,
-                    id: undefined,
-                    view: undefined
-                }
+                $rootScope.sgRoute = {};
 
                 // add listener
                 scope.$on("$routeChangeSuccess", function (ev, routeData) {
@@ -143,9 +138,10 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                     // check route data for redirects etc
                     if (
                         $route.current !== undefined &&
-                        (routeData.redirectTo === undefined || routeData.redirectTo === null || routeData.redirectTo === "")
+                        //(routeData.redirectTo === undefined || routeData.redirectTo === null || routeData.redirectTo === "")
+                        true
                         ) {
-
+                        
                         // get route data
                         $rootScope.sgRoute.controller = routeData.pathParams.sgRoute_controller === undefined ? "home" : routeData.pathParams.sgRoute_controller;
 

@@ -43,7 +43,8 @@ sgDeviceProviderPreAppStart
 </pre>
 <p>As you can see, the <code>.when</code> function takes 3 arguments: an @media query, an array of files to load should that query be matched, and an optional callback. The <code>.else</code> function is similar but without the @media query - this is for when no match is found. Finally, the <code>.finalize</code> method (which must be called and called last) takes a callback function which will run once all of the scripts are loaded. In this scenario this is where the Angular application setup code is run.</p>
 <p>The purpose of this is to allow you to <strong>only load the files the device needs</strong>.</p>
-<p class="alert-warning">Note: if you are matching multiple times, don't worry about telling <code>sgDevice</code> to load the same files twice. It will ignore any files that are already loaded (as long as the strings are equal in the arrays).</p>
+<p class="alert-warning"><strong>Note:</strong> if you are matching multiple times, don't worry about telling <code>sgDevice</code> to load the same files twice. It will ignore any files that are already loaded (as long as the strings are equal in the arrays).</p>
+<p class="alert-warning"><strong>Note:</strong> to use this feature, your scripts must be placed after all the html content within your body tag. Ie, just before the closing body tag.</p>
 <h3>2. Post-app-start</h3>
 <p>When <code>sgDeviceProviderPreAppStart.setUpForAngular();</code> is called in the finalize callback, this then creates a service called <code>sgDeviceService</code> which can then be used inside <code>app.run</code> as seen below:</p>
 <pre>

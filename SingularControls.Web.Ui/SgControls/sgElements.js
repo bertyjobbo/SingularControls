@@ -57,12 +57,12 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                             break;
                         }
                     case "A":
-                    {
-                        element.attr("ng-click", "sgnavopen=false;" + element.attr("ng-click"));
-                        element.removeAttr("sg-nav");
-                        $compile(element)(scope);
-                        break;
-                    }
+                        {
+                            element.attr("ng-click", "sgnavopen=false;" + element.attr("ng-click"));
+                            element.removeAttr("sg-nav");
+                            $compile(element)(scope);
+                            break;
+                        }
                     default:
                         {
                             break;
@@ -74,5 +74,144 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             }
         }
     }]);
+
+    // loader provider
+    namespace.SgLoaderConfigProvider = [function () {
+
+        // this
+        var ts = this;
+
+        // props
+        ts.doOnRouteChange = false;
+        ts.doFade = false;
+        ts.doFadeTiming = 0;
+        ts.onBeforeShowMethod = undefined;
+        ts.onBeforeHideMethod = undefined;
+        ts.showClassName = undefined;
+        ts.hideClassName = undefined;
+
+        // methods
+        ts.onRouteChange = function () {
+            ts.doOnRouteChange = true;
+            return ts;
+        };
+        ts.showClass = function (cssClass) {
+            ts.showClassName = cssClass;
+            return ts;
+        }
+        ts.hideClass = function (cssClass) {
+            ts.hideClassName = cssClass;
+            return ts;
+        }
+        ts.onBeforeShow = function (callback) {
+            ts.onBeforeShowMethod = callback;
+            return ts;
+        }
+        ts.onBeforeHide = function (callback) {
+            ts.onBeforeHideMethod = callback;
+            return ts;
+        }
+
+        // get
+        ts.$get = [function () {
+            return ts;
+        }];
+
+    }];
+    app.provider("sgLoaderConfig", namespace.SgLoaderConfigProvider);
+
+    // loader directive
+    namespace.SgLoaderDirective = ['sgLoaderConfig', '$rootScope', function (sgLoaderConfig, $rootScope) {
+
+
+        return {
+            restrict: "AC",
+            controller: ['$scope', function ($scope) {
+
+                // check not already set
+                if (!$rootScope.sgShowLoaderSet) {
+
+                    // set flag initial
+                    $rootScope.sgShowLoaderFlag = false;
+
+                    // setup rootscope sgLoaderShow function
+                    $rootScope.$on("sgLoaderShow", function () {
+                        console.log("Show loader $on root scope called");
+                        $rootScope.sgShowLoaderFlag = true;
+                    });
+
+                    // setup rootscope sgLoaderHide function
+                    $rootScope.$on("sgLoaderHide", function () {
+                        console.log("Hide loader $on root scope called");
+                        $rootScope.sgShowLoaderFlag = false;
+                    });
+
+                    // check if show/hide on route change
+                    if (sgLoaderConfig.doOnRouteChange) {
+
+                        // setup route change start event
+                        $rootScope.$on("$routeChangeStart", function () {
+                            $rootScope.sgShowLoaderFlag = true;
+                            console.log("$routeChangeStart");
+                            //$scope.$emit("sgLoaderShow");
+                            //$rootScope.$broadcast("sgLoaderShow");
+                        });
+
+                        // setup route change start success event
+                        $rootScope.$on("$routeChangeSuccess", function () {
+                            console.log("$routeChangeSuccess");
+                            $rootScope.sgShowLoaderFlag = false;
+                            //$scope.$emit("sgLoaderHide");
+                            //$rootScope.$broadcast("sgLoaderHide");
+                        });
+                    }
+
+                    $rootScope.sgShowLoaderSet = true;
+                    
+
+                } else {
+                    throw "You can only use sgLoader on a single element";
+                }
+            }],
+            link: function (scope, element, attrs) {
+                
+                $rootScope.$watch(function() {
+                    return $rootScope.sgShowLoaderFlag;
+                }, function (changedValue) {
+
+                    if (changedValue) {
+
+                        console.log("$WATCH SHOW CALLED", new Date().toISOString());
+
+                        if (sgLoaderConfig.onBeforeShowMethod !== undefined) {
+                            sgLoaderConfig.onBeforeShowMethod(function () {
+                                element.addClass(sgLoaderConfig.showClassName);
+                                element.removeClass(sgLoaderConfig.hideClassName);
+                            });
+                        } else {
+                            element.addClass(sgLoaderConfig.showClassName);
+                            element.removeClass(sgLoaderConfig.hideClassName);
+                        }
+
+                    } else {
+
+                        console.log("$WATCH HIDE CALLED", new Date().toISOString());
+
+                        if (sgLoaderConfig.onBeforeHideMethod !== undefined) {
+                            sgLoaderConfig.onBeforeHideMethod(function () {
+                                element.addClass(sgLoaderConfig.hideClassName);
+                                element.removeClass(sgLoaderConfig.showClassName);
+                            });
+                        } else {
+                            element.addClass(sgLoaderConfig.hideClassName);
+                            element.removeClass(sgLoaderConfig.showClassName);
+                        }
+                    }
+                },true);
+            }
+        };
+    }];
+    app.directive("sgLoader", namespace.SgLoaderDirective);
+
 
 })(SgControls.ElementsModule, SgControls);
