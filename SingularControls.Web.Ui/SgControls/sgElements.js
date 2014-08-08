@@ -49,7 +49,9 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         {
                             element.attr("type", "button");
                             element.attr("role", "menubar");
-                            element.html("-<br />-<br />-");
+                            if (element.html() == "") {
+                                element.html("-<br />-<br />-");
+                            }
                             element.attr("ng-click", "sgnavopen = !sgnavopen;");
                             element.attr("ng-init", "sgnavopen=false;");
                             element.removeAttr("sg-nav");

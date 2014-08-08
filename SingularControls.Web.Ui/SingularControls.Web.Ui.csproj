@@ -116,9 +116,7 @@
     <Content Include="ExampleBootstrapNavbar.html" />
     <Content Include="Global.asax" />
     <Content Include="Ng\Views\Example\Capture.PNG" />
-    <Content Include="Ng\Views\Example\get.html" />
     <Content Include="Ng\Views\Example\sgForm.html" />
-    <Content Include="Ng\Views\Example\sgBootstrap.html" />
     <Content Include="Ng\Views\Example\sgElements.html" />
     <Content Include="Ng\Views\Example\sgDevice.html" />
     <Content Include="Ng\Views\Example\sgTranslate.html" />
@@ -497,10 +495,7 @@
     <Compile Include="Translations\TranslationCache.cs" />
     <Compile Include="Translations\TranslationFactory.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Ng\Views\NgView\" />
-    <Folder Include="Ng\Views\Shared\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

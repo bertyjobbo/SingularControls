@@ -149,53 +149,25 @@ sgDeviceProviderPreAppStart
                 // example
                 .controller("exampleController", ["$window", "$scope", "$rootScope", "sgTranslationService", function ($window, $scope, $rootScope, sgTranslationService) {
 
-                    // get action
-                    $scope.getAction = function (include) {
+                    // translate
+                    $scope.sgtranslateAction = function () {
 
-                        // set include
-                        $scope.include = "Ng/Views/Example/" + include + ".html";
+                        $scope.$emit("sgLoaderShow");
+                        sgTranslationService
+                            .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
+                            .then(function (data) {
+                                $scope.translation = data["Common:Example using controller"];
+                                $scope.translation2 = data["Common:Example 2 using controller"];
+                                $scope.$emit("sgLoaderHide");
+                            });
+                    };
 
-                        // switch include
-                        switch (include.toLowerCase()) {
+                    // route
+                    $scope.sgrouteAction = function () {
 
-                            case "sgtranslate":
-                                {
-                                    $scope.$emit("sgLoaderShow");
-                                    sgTranslationService
-                                        .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
-                                        .then(function (data) {
-                                            $scope.translation = data["Common:Example using controller"];
-                                            $scope.translation2 = data["Common:Example 2 using controller"];
-                                            $scope.$emit("sgLoaderHide");
-                                        });
-                                    break;
-                                }
-                            case "sgelements":
-                                {
-                                    break;
-                                }
-                            case "sgroute":
-                                {
-                                    break;
-                                }
-                            case "sgform":
-                                {
-                                    break;
-                                }
-                            case "sgdevice":
-                                {
-                                    break;
-                                }
-                            default:
-                                {
-                                    throw "Page not found";
-                                }
-                        }
-                    }
+                        console.log($scope.sgRoute);
 
-
-
-                    //console.log($scope.sgRoute);
+                    };
 
                 }]);
 

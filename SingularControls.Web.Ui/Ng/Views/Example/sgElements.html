@@ -1,6 +1,84 @@
 ﻿<h2>sgElements</h2>
 <blockquote>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</blockquote>
-<h3>1 - Collapsable nav</h3>
+
+<h3>1 - Loader</h3>
+<p>The directive <code>sg-loader</code> enables you to place a simple loading element onto the page which can be shown / hidden when convenient. The following markup shows this at the top of the index.html page on this site:</p>
+<pre>
+&lt;body ng-app=&quot;SingularControls.TestApp&quot; class=&quot;header-fixed&quot;&gt;
+    &lt;div sg-loader&gt;
+        &lt;div class=&quot;loader-overlay&quot;&gt;&lt;/div&gt;
+        &lt;div class=&quot;loader-inner&quot;&gt;Loading...&lt;/div&gt;
+    &lt;/div&gt;
+    .....
+&lt;/body&gt;
+</pre>
+<p>There is also some configuration to enable the loader to work:</p>
+<pre>
+// configure loader
+app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
+
+    // callback - this will fire before the loader is shown
+    var dummyBeforeShow = function (callback) {
+    
+        // your code here...then...
+        // must be called
+        callback();
+    };
+
+    // callback - this will fire after the loader is shown
+    var dummyBeforeHide = function (callback) {
+
+        // your code here...then...
+        // must be called
+        callback();
+    };
+
+    // configure
+    sgLoaderConfigProvider
+        
+        // [OPTIONAL] if called, shows loader on route change
+        // (probably emit this if using onSgRouteChange! Prevents any conflicts.)
+        .onRouteChange() 
+        
+        // [OPTIONAL] if called, shows loader on sg-route change (if used)
+        // (probably emit this if using onRouteChange! Prevents any conflicts.)
+        .onSgRouteChange()
+        
+        // [MANDATORY] the class that will be applied to the element
+        // when show loader is called
+        .showClass("sg-loader-show")
+       
+        // [MANDATORY] the class that will be applied to the element
+        // when hide loader is called
+        .hideClass("sg-loader-hide")
+        
+        // [OPTIONAL] method to be called before show loader
+        .onBeforeShow(dummyBeforeShow)
+        
+        // [OPTIONAL] method to be called before hide loader
+        .onBeforeHide(dummyBeforeHide);
+
+}]);
+</pre>
+
+<p>There are also two "global" events that can be called, from anywhere which has $scope or $rootScope access, to show or hide the loader:</p>
+<pre>
+
+// show loader
+$scope.$emit("sgShowLoader");
+
+// hide loader
+$scope.$emit("sgHideLoader");
+
+// show loader
+$rootScope.$emit("sgShowLoader");
+
+// hide loader
+$rootScope.$emit("sgHideLoader");
+
+</pre>
+
+<h3>2 - Collapsable nav</h3>
 <p>Similar to Twitter Bootstrap, the <code>sgNav</code> directive is the "icing on the cake" for creating a collapsible header / navigation structure. The basic HTML is as follows (taken from this site 2014-08-07):</p>
 <pre>
 &lt;header&gt;
@@ -32,3 +110,7 @@
 <p>As you can see there are no css classes involved at all. For this site, there is a fixed header so the only class that has any involvement in the header / nav is <code>&lt;body class=&quot;header-fixed&quot;&gt;</code>. Everything else is achieved via semantics and roles.</p>
 <p>The basic structure is <code>header</code> containing an <code>h1</code> element (for "brand"), a hidden <code>button</code> and then <code>nav</code>; which can contain <code>form</code>, <code>ul</code> or <code>div</code>. These will line-up next to each other inside the <code>nav</code> element and collapse correctly once the page width reaches the minimum (see <code>@width-mobile: 950px;</code> in the less stylesheet).</p>
 <p>Similar to Twitter Bootstrap, once the nav has collapsed, the <code>button</code> will appear to open the collapsed content. If you are using your own JavaScript functionality and don't want to use <code>sg-nav</code> then you will need to populate the button with some text or set a background-style to make it look how you want. However, if you are using <code>sg-nav</code> (which must be on the button element, any hyperlink outside of the nav element (eg a hyperlink to your homepage in the h1 element), and the nav element), all of the show/hide logic and styling is applied.</p>
+<p class="alert-warning"><strong>Note: </strong>If you are using sgNav and you want a custom button to display, just add the class <code>sgnav-custom-button</code> to the button, and place your own markup between the tags. Example below:</p>
+<pre>
+&lt;button class=&quot;sgnav-custom-button&quot;&gt;&lt;img src=&quot;/navbutton.png&quot; /&gt;&lt;/button&gt;
+</pre>

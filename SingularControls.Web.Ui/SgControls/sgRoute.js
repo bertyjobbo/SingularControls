@@ -104,7 +104,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
     app.provider("sgRouteConfig", namespace.SgRouteConfigProvider);
 
     // add sg-view directive
-    namespace.SgViewDirective = ["sgRouteConfig", "$rootScope", "$compile", "$location", "$route", "$templateCache", "$http", "$timeout", function (sgRouteConfig, $rootScope, $compile, $location, $route, $templateCache, $http, $timeout) {
+    namespace.SgViewDirective = ["sgRouteConfig", "$rootScope", "$compile", "$location", "$route", "$templateCache", "$http", "$window", function (sgRouteConfig, $rootScope, $compile, $location, $route, $templateCache, $http, $window) {
 
         // compile function
         var compileTheView = function (element, scope, htmlToAdd) {
@@ -122,6 +122,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
             element.html("");
             element.append(compiled);
 
+
         }
 
         return {
@@ -134,6 +135,11 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                 // add listener
                 scope.$on("$routeChangeSuccess", function (ev, routeData) {
+
+                    // auto scroll
+                    if (attrs.autoscroll != "false") {
+                        $window.scrollTo(0, 0);
+                    }
 
                     if ($rootScope.sgLoaderOnSgRouteChange) {
 
@@ -149,9 +155,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                         ) {
 
                         // get route data
-                        $rootScope.sgRoute.controller = routeData.pathParams.sgRoute_controller === undefined ? "home" : routeData.pathParams.sgRoute_controller;
+                        $rootScope.sgRoute.controller = routeData.pathParams.sgRoute_controller === undefined ? "home" : routeData.pathParams.sgRoute_controller.toLowerCase();
 
-                        $rootScope.sgRoute.action = routeData.pathParams.sgRoute_action === undefined ? "index" : routeData.pathParams.sgRoute_action;
+                        $rootScope.sgRoute.action = routeData.pathParams.sgRoute_action === undefined ? "index" : routeData.pathParams.sgRoute_action.toLowerCase();
 
                         $rootScope.sgRoute.param1 = routeData.pathParams.sgRoute_param1;
                         $rootScope.sgRoute.param2 = routeData.pathParams.sgRoute_param2;
@@ -175,9 +181,6 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                         // check 
                         if (cachedTemplate === undefined) {
 
-                            // hide element
-                            element.addClass("hidden");
-
                             // get
                             $http({ method: 'get', url: $route.current.templateUrl })
                                 .success(function (data) {
@@ -195,8 +198,6 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                     // compile
                                     compileTheView(element, scope, data);
 
-                                    // show
-                                    element.removeClass("hidden");
                                 })
                                 .error(function (data, status, headers, config) {
 
