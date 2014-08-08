@@ -135,6 +135,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                 // add listener
                 scope.$on("$routeChangeSuccess", function (ev, routeData) {
 
+                    // fire event 
+                    scope.$emit("sgLoaderShow");
+
                     // check route data for redirects etc
                     if (
                         $route.current !== undefined &&
@@ -171,9 +174,6 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                             // hide element
                             element.addClass("hidden");
-
-                            // fire event 
-                            scope.$emit("sgLoaderShow");
 
                             // get
                             $http({ method: 'get', url: $route.current.templateUrl })
@@ -216,6 +216,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                             // compile cached
                             compileTheView(element, scope, cachedTemplate);
+
+                            // fire event 
+                            scope.$emit("sgLoaderHide");
                         }
                     }
 

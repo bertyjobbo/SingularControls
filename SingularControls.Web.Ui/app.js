@@ -84,7 +84,7 @@ sgDeviceProviderPreAppStart
 
                 // configure
                 sgLoaderConfigProvider
-                    .onRouteChange()
+                    //.onRouteChange() // probably emit this if using sgRoute! Prevents any conflicts.
                     .showClass("sg-loader-show")
                     .hideClass("sg-loader-hide")
                     .onBeforeShow(dummyFunc)
