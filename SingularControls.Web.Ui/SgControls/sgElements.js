@@ -226,7 +226,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         {
                             $rootScope.sgTitleElement = element;
                             $rootScope.sgTitleElementPrefix = attrs.sgTitle.replace(/\[WHITESPACE\]/g, ' ');;
-                            console.log(attrs.sgTitle.length);
                             element.removeAttr("sg-title");
                             break;
                         }
@@ -241,5 +240,33 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         }
     }];
     app.directive("sgTitle", namespace.SgTitleDirective);
+
+    // description directive
+    namespace.SgDescriptionDirective = ["$rootScope", function ($rootScope) {
+
+        return {
+            restrict: "AEC",
+            link: function (scope, element, attrs) {
+                
+                switch (element[0].tagName) {
+
+                    case "META":
+                        {
+                            element.attr("name", "description");
+                            $rootScope.sgDescriptionElement = element;
+                            element.removeAttr("sg-description");
+                            break;
+                        }
+                    default:
+                        {
+                            $rootScope.sgDescriptionElement.attr("content", element.html());
+                            element.remove();
+                            break;
+                        }
+                }
+            }
+        }
+    }];
+    app.directive("sgDescription", namespace.SgDescriptionDirective);
 
 })(SgControls.ElementsModule, SgControls);

@@ -1,6 +1,7 @@
 ﻿<sg-title>sgElements</sg-title>
+<sg-description>Directives and response Twitter Bootstrap-style stylesheet for AngularJS</sg-description>
 <h2>sgElements</h2>
-<blockquote>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</blockquote>
+<p>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</p>
 
 <h3>1 - Loader</h3>
 <p>The directive <code>sg-loader</code> enables you to place a simple loading element onto the page which can be shown / hidden when convenient. The following markup shows this at the top of the index.html page on this site:</p>
@@ -17,7 +18,6 @@
 <pre>
 // configure loader
 app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
-
     // callback - this will fire before the loader is shown
     var dummyBeforeShow = function (callback) {
     
@@ -25,15 +25,12 @@ app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
         // must be called
         callback();
     };
-
     // callback - this will fire after the loader is shown
     var dummyBeforeHide = function (callback) {
-
         // your code here...then...
         // must be called
         callback();
     };
-
     // configure
     sgLoaderConfigProvider
         
@@ -58,25 +55,19 @@ app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
         
         // [OPTIONAL] method to be called before hide loader
         .onBeforeHide(dummyBeforeHide);
-
 }]);
 </pre>
 
 <p>There are also two "global" events that can be called, from anywhere which has $scope or $rootScope access, to show or hide the loader:</p>
 <pre>
-
 // show loader
 $scope.$emit("sgLoaderShow");
-
 // hide loader
 $scope.$emit("sgLoaderHide");
-
 // show loader
 $rootScope.$emit("sgLoaderShow");
-
 // hide loader
 $rootScope.$emit("sgLoaderHide");
-
 </pre>
 
 <h3>2 - Collapsable nav</h3>
@@ -131,3 +122,20 @@ $rootScope.$emit("sgLoaderHide");
 &lt;title&gt;Singular Controls - Home&lt;/title&gt;
 </pre>
 <p class="alert-warning"><strong>Note:</strong> the <code>[WHITESPACE]</code> text must be used for any <em>trailing</em> whitespace in your static title text. This is because Angular strips trailing whitespace from attributes!</p>
+
+<h3>4. sgDescription</h3>
+<p>The <code>sgDescription</code> directives allows you, from a view, to set the description meta tag in the <code>head</code> element. Set up is fairly simple:</p>
+<h4>In index.html:</h4>
+<pre>
+&lt;meta sg-description /&gt;
+</pre>
+<h4>In the view:</h4>
+<pre>
+&lt;sg-description&gt;Singular Controls for AngularJs. Helpers, directives and more...&lt;/sg-description&gt;
+</pre>
+<h4>Result:</h4>
+<pre>
+&lt;meta 
+    name=&quot;description&quot; 
+    content=&quot;Singular Controls for AngularJs. Helpers, directives and more...&quot; /&gt;
+</pre>
