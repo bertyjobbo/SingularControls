@@ -7,6 +7,10 @@
     <link href="Content/site.css?v=1.0.0" rel="stylesheet" />
 </head>
 <body ng-app="SingularControls.TestApp" class="header-fixed">
+    <div sg-loader>
+        <div class="loader-overlay"></div>
+        <div class="loader-inner">Loading...</div>
+    </div>
     <header>
         <h1><a sg-nav href="/#/"><span class="hidden">Singular Controls</span></a></h1>
         <button sg-nav></button>
@@ -26,11 +30,11 @@
                 <li><a href="http://www.opinionatedgeek.com/DotNet/Tools/HTMLEncode/encode.aspx" target="_blank">HTML encoder</a></li>
             </ul>
             <!--<form><input type="search" role="search" /><button type="submit">Search</button></form>
-            <div>
-                <a role="button" href="http://google.co.uk">Button 1</a>
-                <button type="button">Button 2</button>
-                <input type="submit" value="Button 3" />
-            </div>-->
+                <div>
+                    <a role="button" href="http://google.co.uk">Button 1</a>
+                    <button type="button">Button 2</button>
+                    <input type="submit" value="Button 3" />
+                </div>-->
         </nav>
     </header>
     <div class="pc-15"></div>
@@ -39,11 +43,6 @@
     </section>
     <div class="pc-15"></div>
     <footer></footer>
-    <div sg-loader>
-        <div class="loader-overlay"></div>
-        <div class="loader-inner">Loading...</div>
-    </div>
-
     <!-- SCRIPTS - must go here to use sgDevice outside of angular! -->
     <script src="SgControls/sgDevice.js"></script>
     <script src="app.js"></script>

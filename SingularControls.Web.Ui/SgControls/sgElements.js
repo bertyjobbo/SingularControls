@@ -136,13 +136,11 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 
                     // setup rootscope sgLoaderShow function
                     $rootScope.$on("sgLoaderShow", function () {
-                        console.log("Show loader $on root scope called");
                         $rootScope.sgShowLoaderFlag = true;
                     });
 
                     // setup rootscope sgLoaderHide function
                     $rootScope.$on("sgLoaderHide", function () {
-                        console.log("Hide loader $on root scope called");
                         $rootScope.sgShowLoaderFlag = false;
                     });
 
@@ -152,17 +150,11 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         // setup route change start event
                         $rootScope.$on("$routeChangeStart", function () {
                             $rootScope.sgShowLoaderFlag = true;
-                            console.log("$routeChangeStart");
-                            //$scope.$emit("sgLoaderShow");
-                            //$rootScope.$broadcast("sgLoaderShow");
                         });
 
                         // setup route change start success event
                         $rootScope.$on("$routeChangeSuccess", function () {
-                            console.log("$routeChangeSuccess");
                             $rootScope.sgShowLoaderFlag = false;
-                            //$scope.$emit("sgLoaderHide");
-                            //$rootScope.$broadcast("sgLoaderHide");
                         });
                     }
 
@@ -181,8 +173,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 
                     if (changedValue) {
 
-                        console.log("$WATCH SHOW CALLED", new Date().toISOString());
-
                         if (sgLoaderConfig.onBeforeShowMethod !== undefined) {
                             sgLoaderConfig.onBeforeShowMethod(function () {
                                 element.addClass(sgLoaderConfig.showClassName);
@@ -194,8 +184,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         }
 
                     } else {
-
-                        console.log("$WATCH HIDE CALLED", new Date().toISOString());
 
                         if (sgLoaderConfig.onBeforeHideMethod !== undefined) {
                             sgLoaderConfig.onBeforeHideMethod(function () {

@@ -169,6 +169,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                         // check 
                         if (cachedTemplate === undefined) {
                             
+                            // sgLoader show (if it's there!!)
+                            scope.$emit("sgLoaderShow");
+
                             // get
                             $http({ method: 'get', url: $route.current.templateUrl })
                                 .success(function (data) {
@@ -178,6 +181,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                                     // compile
                                     compileTheView(element, scope, data);
+
+                                    // sgLoader hide (if it's there!!)
+                                    scope.$emit("sgLoaderHide");
                                 })
                                 .error(function (data, status, headers, config) {
 
@@ -193,6 +199,9 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                             sgRouteConfig.pageNotFoundRouteOrFunction();
                                         }
                                     }
+
+                                    // sgLoader hide (if it's there!!)
+                                    scope.$emit("sgLoaderHide");
 
                                 });
                         } else {

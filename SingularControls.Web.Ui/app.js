@@ -158,7 +158,6 @@ sgDeviceProviderPreAppStart
 
                             case "sgtranslate":
                                 {
-                                    console.log("FROM CONTROLLER CALLED", new Date().toISOString());
                                     $scope.$emit("sgLoaderShow");
                                     sgTranslationService
                                         .getTranslations(["Common:Example using controller", "Common:Example 2 using controller"])
