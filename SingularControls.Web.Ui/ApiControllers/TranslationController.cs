@@ -25,7 +25,7 @@ namespace SingularControls.Web.Ui.ApiControllers
         [AcceptVerbs("POST")]
         public IList<KeyValuePair<string, string>> GetTranslationResponses(string[] requests, string languageCode)
         {
-            Thread.Sleep(2000);
+            //Thread.Sleep(4000);
             return _translationFactory.GetTranslations(requests, languageCode);
         }
     }

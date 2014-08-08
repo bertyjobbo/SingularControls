@@ -132,7 +132,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 if (!$rootScope.sgShowLoaderSet) {
 
                     // set flag initial
-                    $rootScope.sgShowLoaderFlag = false;
+                    $rootScope.sgShowLoaderFlag = true;
 
                     // setup rootscope sgLoaderShow function
                     $rootScope.$on("sgLoaderShow", function () {

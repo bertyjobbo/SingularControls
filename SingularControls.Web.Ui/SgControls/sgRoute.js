@@ -104,7 +104,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
     app.provider("sgRouteConfig", namespace.SgRouteConfigProvider);
 
     // add sg-view directive
-    namespace.SgViewDirective = ["sgRouteConfig", "$rootScope", "$compile", "$location", "$route", "$templateCache", "$http", function (sgRouteConfig, $rootScope, $compile, $location, $route, $templateCache, $http) {
+    namespace.SgViewDirective = ["sgRouteConfig", "$rootScope", "$compile", "$location", "$route", "$templateCache", "$http", "$timeout", function (sgRouteConfig, $rootScope, $compile, $location, $route, $templateCache, $http, $timeout) {
 
         // compile function
         var compileTheView = function (element, scope, htmlToAdd) {
@@ -114,7 +114,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                 "' ng-init='" + $rootScope.sgRoute.action + "Action(sgRoute.param1,sgRoute.param2,sgRoute.param3,sgRoute.param4,sgRoute.param5,sgRoute.param6,sgRoute.param7,sgRoute.param8,sgRoute.param9,sgRoute.param10)" + "'>" +
                 htmlToAdd +
                 "</div>";
-            
+
             // compiled
             var compiled = $compile(theFinalHtml)(scope);
 
@@ -141,7 +141,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                         //(routeData.redirectTo === undefined || routeData.redirectTo === null || routeData.redirectTo === "")
                         true
                         ) {
-                        
+
                         // get route data
                         $rootScope.sgRoute.controller = routeData.pathParams.sgRoute_controller === undefined ? "home" : routeData.pathParams.sgRoute_controller;
 
@@ -168,22 +168,28 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                         // check 
                         if (cachedTemplate === undefined) {
-                            
-                            // sgLoader show (if it's there!!)
+
+                            // hide element
+                            element.addClass("hidden");
+
+                            // fire event 
                             scope.$emit("sgLoaderShow");
 
                             // get
                             $http({ method: 'get', url: $route.current.templateUrl })
                                 .success(function (data) {
-                                    
+
                                     // put in cache
                                     $templateCache.put($route.current.templateUrl, data);
+
+                                    // fire event 
+                                    scope.$emit("sgLoaderHide");
 
                                     // compile
                                     compileTheView(element, scope, data);
 
-                                    // sgLoader hide (if it's there!!)
-                                    scope.$emit("sgLoaderHide");
+                                    // show
+                                    element.removeClass("hidden");
                                 })
                                 .error(function (data, status, headers, config) {
 
@@ -200,10 +206,12 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                                         }
                                     }
 
-                                    // sgLoader hide (if it's there!!)
+                                    // fire event 
                                     scope.$emit("sgLoaderHide");
-
                                 });
+
+
+
                         } else {
 
                             // compile cached

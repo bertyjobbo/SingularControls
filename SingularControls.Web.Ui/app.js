@@ -45,7 +45,8 @@ sgDeviceProviderPreAppStart
 
                 sgRouteConfigProvider
                     .configureViewRequestMethod(function (controller, action) {
-                        return "Ng/Views/" + controller + "/" + action + ".html";
+                        //return "Ng/Views/" + controller + "/" + action + ".html";
+                        return "/NgView/GetView/" + controller + "/" + action;
                     })
                     .onPageNotFound("/system/pagenotfound/")
                     .onError("/system/error/")
