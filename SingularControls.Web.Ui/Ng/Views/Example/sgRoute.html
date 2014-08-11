@@ -18,14 +18,34 @@ $routeProvider.when("/user/get/:id", {
 <pre>
 // configure sg routes
 app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
-    
+
     sgRouteConfigProvider
-    .configureViewRequestMethod(function (controller, action) {
-            return "Ng/Views/" + controller + "/" + action + ".html";
-    })
-    .onPageNotFound("/system/pagenotfound/")                    
-    .onError("/system/error/")
-    .finalize($routeProvider);
+
+        // add "areas" ie ({area}/{controller}/{action}/{param1}/...)
+        .addAreas(['area1', 'area2'])
+
+        // set maximum parameters after {action}
+        .maxParams(3)
+
+        // configure request for view (when no area)
+        .configureViewRequestMethod(function (controller, action) {
+            return "/NgView/GetView/" + controller + "/" + action;
+        })
+
+        // configure request for view (when has area)
+        .configureAreaViewRequestMethod(function (area, controller, action) {
+            return "/NgView/GetAreaView/" + area + "/" + controller + "/" + action;
+        })
+
+        // page not found (could be method, rather than redirect string)
+        .onPageNotFound("/system/pagenotfound/")
+
+        // on error (could be method rather than redirect string)
+        .onError("/system/error/")
+
+        // finalize (must be called)
+        .finalize($routeProvider);
+
 }]);
 </pre>
 
@@ -40,7 +60,7 @@ app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigPr
     <strong>Note:</strong> There is also an optional attribute when using <code>sg-view</code> called <code>autoscroll</code>. This is set to true by default and, unless it is explicitly set to <code>autoscroll="false"</code> then each time navigation occurs, the following code is called: <code>$window.scrollTo(0, 0);</code>. Therefore the viewport will scroll to y = 0, x = 0. This is set to "on" by default because this is usually what you want!
 </p>
 
-<p>As a result of this configuration, the routing (unless you add further routes) will be set up to instantiate controllers / views by "convention", like so: <code>/{controller}/{view/action}/{param1}/{param2}/{param3}/etc...</code>. There are a maximum of 10 params after the view/action parameter, and the view/action parameter both loads the view and also tries to call a method on your controller. It's probably easier to explain like so:</p>
+<p>As a result of this configuration, the routing (unless you add further routes) will be set up to instantiate controllers / views by "convention", like so: <code>/{controller}/{view/action}/{param1}/{param2}/{param3}/etc...</code>. You set the maximum number of params after the view/action parameter, and the view/action parameter both loads the view and also tries to call a method on your controller. It's probably easier to explain like so:</p>
 
 <p>
     <strong>Given this url: </strong> <code>http://mysite.com/user/get/123/</code>...<br />
@@ -78,6 +98,8 @@ app.controller("homeController",function($scope){
 <h4>$scope.sgRoute</h4>
 <p>The object <code>$scope.sgRoute</code> is always available. It has all the routing information in it. It looks like this for this page:</p>
 <p class="inset"><img alt="$scope.sgRoute" src="/ng/views/example/capture.PNG" /></p>
+<h4>A note on 'areas'</h4>
+<p>Try calling the url <code>/#/area1/controllername/actionname/param1/</code> on this site. You will see the 'area' get view method coming into play because <code>area1</code> has been matched by <code>$routeProvider</code> and <code>sgRoute</code> knows this is an 'area route'.</p>
 <h4>Finally...</h4>
 <p>It really should be plainly obvious by now... but <code>sgRoute</code> <strong>depends on</strong> <code>ngRoute</code>. You must include it if you are using <code>sgRoute</code></p>
 

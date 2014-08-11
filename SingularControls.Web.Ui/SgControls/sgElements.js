@@ -10,10 +10,15 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 (function (app, namespace) {
 
     // nav directive
-    namespace.SgNavDirective = ["$compile", function ($compile) {
+    namespace.SgNavDirective = ["$compile", "$rootScope", function ($compile, $rootScope) {
         return {
             restrict: "A",
             link: function (scope, element) {
+
+                // on success
+                $rootScope.$on("$routeChangeSuccess", function() {
+                    scope.sgnavopen = false;
+                });
 
                 // switch tagname
                 var rawElement = element[0];

@@ -18,6 +18,22 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
         // this
         var ts = this;
 
+        // add areas
+        ts.addAreas = function (arrayOfAreas) {
+            ts.areas = ts.areas.concat(arrayOfAreas);
+            return ts;
+        }
+
+        // areas
+        ts.areas = [];
+
+        // max params
+        ts.paramsLimit = 10;
+        ts.maxParams = function (max) {
+            ts.paramsLimit = max;
+            return ts;
+        }
+
         // default request methods
         ts.viewRequestMethod = function (controller, action) {
             return "/Views/" + controller + "/" + action + ".html";
@@ -26,6 +42,17 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
         // add method to get view
         ts.configureViewRequestMethod = function (callback) {
             ts.viewRequestMethod = callback;
+            return ts;
+        };
+
+        // default request methods
+        ts.areaViewRequestMethod = function (area, controller, action) {
+            return "/Views/" + area + "/" + controller + "/" + action + ".html";
+        };
+
+        // add method to get view
+        ts.configureAreaViewRequestMethod = function (callback) {
+            ts.areaViewRequestMethod = callback;
             return ts;
         };
 
@@ -66,30 +93,55 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
         ts.finalize = function ($routeProvider) {
 
             // CONSTANT ROUTE
-            var constRoute = {
-                //templateUrl: $a.getRootedUrl("Singular/NgView/partials/_router/")
+            var constRoute = {};
 
-            };
+            // do areas first
+            for (var area in ts.areas) {
+                
+                // name
+                var areaName = ts.areas[area];
 
-            // ROUTE CONFIG
+                // basics
+                $routeProvider
+                    .when('/' + areaName + "/", constRoute)
+                    .when('/' + areaName + '/:sgRoute_controller/', constRoute)
+                    .when('/' + areaName + '/:sgRoute_controller/:sgRoute_action/', constRoute);
+
+                // params
+                var routeWithParam = '/:sgRoute_controller/:sgRoute_action/';
+                for (var i = 0; i < ts.paramsLimit; i++) {
+                    routeWithParam += ":sgRoute_param" + (i + 1) + "/";
+                    $routeProvider
+                    .when('/' + areaName + routeWithParam, constRoute);
+                }
+            }
+
+            // ROUTE CONFIG basics (post- areas)
             $routeProvider
                 .when('/', constRoute)
                 .when('/:sgRoute_controller/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/:sgRoute_param6/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/:sgRoute_param6/:sgRoute_param7/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/:sgRoute_param6/:sgRoute_param7/:sgRoute_param8/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/:sgRoute_param6/:sgRoute_param7/:sgRoute_param8/:sgRoute_param9/', constRoute)
-                .when('/:sgRoute_controller/:sgRoute_action/:sgRoute_param1/:sgRoute_param2/:sgRoute_param3/:sgRoute_param4/:sgRoute_param5/:sgRoute_param6/:sgRoute_param7/:sgRoute_param8/:sgRoute_param9/:sgRoute_param10/', constRoute)
-                .otherwise({
-                    redirectTo: '/system/pagenotfound/'
-                });
+                .when('/:sgRoute_controller/:sgRoute_action/', constRoute);
 
+            // ROUTE CONFIG with params (post - areas)
+            // params
+            var routeWithParam2 = '/:sgRoute_controller/:sgRoute_action/';
+            for (var i2 = 0; i2 < ts.paramsLimit; i2++) {
+                routeWithParam2 += ":sgRoute_param" + (i2 + 1) + "/";
+                $routeProvider
+                .when(routeWithParam2, constRoute);
+            }
+
+            // finally
+            if (ts.pageNotFoundRouteOrFunction) {
+                if (typeof ts.pageNotFoundRouteOrFunction == "string") {
+                    $routeProvider.otherwise({
+                        redirectTo: ts.pageNotFoundRouteOrFunction
+                    });
+                }
+                if (typeof ts.pageNotFoundRouteOrFunction == "function") {
+                    ts.pageNotFoundRouteOrFunction();
+                }
+            }
 
         };
 
@@ -159,18 +211,21 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                         $rootScope.sgRoute.action = routeData.pathParams.sgRoute_action === undefined ? "index" : routeData.pathParams.sgRoute_action.toLowerCase();
 
-                        $rootScope.sgRoute.param1 = routeData.pathParams.sgRoute_param1;
-                        $rootScope.sgRoute.param2 = routeData.pathParams.sgRoute_param2;
-                        $rootScope.sgRoute.param3 = routeData.pathParams.sgRoute_param3;
-                        $rootScope.sgRoute.param4 = routeData.pathParams.sgRoute_param4;
-                        $rootScope.sgRoute.param5 = routeData.pathParams.sgRoute_param5;
-                        $rootScope.sgRoute.param6 = routeData.pathParams.sgRoute_param6;
-                        $rootScope.sgRoute.param7 = routeData.pathParams.sgRoute_param7;
-                        $rootScope.sgRoute.param8 = routeData.pathParams.sgRoute_param8;
-                        $rootScope.sgRoute.param9 = routeData.pathParams.sgRoute_param9;
-                        $rootScope.sgRoute.param10 = routeData.pathParams.sgRoute_param10;
+                        for (var i = 0; i < sgRouteConfig.paramsLimit; i++) {
+                            $rootScope.sgRoute["param" + (i + 1)] = routeData.pathParams["sgRoute_param" + (i + 1)];
+                        }
 
-                        $rootScope.sgRoute.view = sgRouteConfig.viewRequestMethod($rootScope.sgRoute.controller, $rootScope.sgRoute.action);
+                        // area stuff
+                        var potentialArea = routeData.originalPath.split('/')[1];
+                        var isArea = potentialArea !== ":sgRoute_controller" && potentialArea !== "";
+                        $rootScope.sgRoute.area = isArea ? potentialArea : "";
+
+                        // route view
+                        $rootScope.sgRoute.view =
+                            isArea ?
+                            sgRouteConfig.areaViewRequestMethod($rootScope.sgRoute.area, $rootScope.sgRoute.controller, $rootScope.sgRoute.action)
+                            :
+                            sgRouteConfig.viewRequestMethod($rootScope.sgRoute.controller, $rootScope.sgRoute.action);
 
                         // set view
                         $route.current.templateUrl = $rootScope.sgRoute.view;

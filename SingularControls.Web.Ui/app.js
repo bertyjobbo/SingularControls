@@ -44,9 +44,13 @@ sgDeviceProviderPreAppStart
             app.config(['sgRouteConfigProvider', '$routeProvider', function (sgRouteConfigProvider, $routeProvider) {
 
                 sgRouteConfigProvider
+                    .addAreas(['area1', 'area2'])
+                    .maxParams(3)
                     .configureViewRequestMethod(function (controller, action) {
-                        //return "Ng/Views/" + controller + "/" + action + ".html";
                         return "/NgView/GetView/" + controller + "/" + action;
+                    })
+                    .configureAreaViewRequestMethod(function (area, controller, action) {
+                        return "/NgView/GetAreaView/" + area + "/" + controller + "/" + action;
                     })
                     .onPageNotFound("/system/pagenotfound/")
                     .onError("/system/error/")
@@ -117,7 +121,7 @@ sgDeviceProviderPreAppStart
 
                     $scope.indexAction = function (a, b, c, d, e, f, g, h, i, j) {
 
-                        
+
                     }
                 }])
 
