@@ -122,7 +122,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                     requestsToSend.push(req);
                 }
 
-                return sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend, factory.$http);
+                return sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend);
 
                 
             },
@@ -165,7 +165,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                     }
 
                     // run promise
-                    sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend, factory.$http).success(function (data) {
+                    sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend).success(function (data) {
 
                         data.forEach(function (tranlsation) {
                             output[tranlsation.Key] = tranlsation.Value;
@@ -192,9 +192,8 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
         }
 
-        this.$get = ["$q", "$http", function ($q, $http) {
+        this.$get = ["$q", function ($q) {
             factory.$q = $q;
-            factory.$http = $http;
             return factory;
         }];
 

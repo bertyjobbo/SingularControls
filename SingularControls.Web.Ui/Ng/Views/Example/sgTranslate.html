@@ -41,22 +41,22 @@ sgTranslationService
 <p class="alert-warning"><strong>Note:</strong> the <code>requests</code> object which is presented in the <code>.setTranslationRequestPromise</code> method is an <strong>array of strings</strong>. If you are posting this to a RESTFul service, it will need to accept this as POST data.</p>
 <pre>
 // configure translate stuff
-app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
-    
+app.run(['sgTranslateConfig', '$http', function (sgTranslateConfigProvider, $http) {
+
     // config
     sgTranslateConfigProvider
-        
+
         // add translation method promise
-        .setTranslationRequestPromise(function (requests, $http) {
-            
-            // TODO - get this from current user??
+        .setTranslationRequestPromise(function (requests) {
+
+            // TODO - how do you get languageCode?
             var langCode = "en-GB";
             return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
-            
         })
-            
+
         // set translation cache length
         .setMaxTranslationCacheLength(1000);
+
 }]);
 </pre>
 

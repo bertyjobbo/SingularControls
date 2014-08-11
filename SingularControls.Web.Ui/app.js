@@ -54,26 +54,6 @@ sgDeviceProviderPreAppStart
 
             }]);
 
-            // configure translate stuff
-            app.config(['sgTranslateConfigProvider', function (sgTranslateConfigProvider) {
-
-                // config
-                sgTranslateConfigProvider
-
-                    // add translation method promise
-                    .setTranslationRequestPromise(function (requests, $http) {
-
-                        // TODO - how do you get languageCode?
-                        var langCode = "en-GB";
-                        return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
-
-                    })
-
-                    // set translation cache length
-                    .setMaxTranslationCacheLength(1000);
-
-            }]);
-
             // configure loader
             app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
 
@@ -203,6 +183,26 @@ sgDeviceProviderPreAppStart
                         //console.log("Big? ", big);
                         //console.log("Small? ", small);
                     });
+
+            }]);
+
+            // configure translate stuff
+            app.run(['sgTranslateConfig', '$http', function (sgTranslateConfigProvider, $http) {
+
+                // config
+                sgTranslateConfigProvider
+
+                    // add translation method promise
+                    .setTranslationRequestPromise(function (requests) {
+
+                        // TODO - how do you get languageCode?
+                        var langCode = "en-GB";
+                        return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
+
+                    })
+
+                    // set translation cache length
+                    .setMaxTranslationCacheLength(1000);
 
             }]);
 
