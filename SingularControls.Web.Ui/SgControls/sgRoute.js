@@ -217,7 +217,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                         // area stuff
                         var potentialArea = routeData.originalPath.split('/')[1];
-                        var isArea = potentialArea !== ":sgRoute_controller" && potentialArea !== "";
+                        var isArea = potentialArea !== undefined && potentialArea !== "" && potentialArea !== ":sgRoute_controller";
                         $rootScope.sgRoute.area = isArea ? potentialArea : "";
 
                         // route view
