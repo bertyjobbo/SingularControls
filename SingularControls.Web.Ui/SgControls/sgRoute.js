@@ -280,14 +280,17 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
                         } else {
 
-                            // compile cached
-                            compileTheView(element, scope, cachedTemplate);
-
+                            // hide loader
                             if ($rootScope.sgLoaderOnSgRouteChange) {
 
                                 // fire event 
                                 scope.$emit("sgLoaderHide");
                             }
+
+                            // compile cached
+                            compileTheView(element, scope, cachedTemplate);
+
+                            
                         }
                     }
 
