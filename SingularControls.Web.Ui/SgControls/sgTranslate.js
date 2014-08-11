@@ -55,6 +55,14 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             },
 
+            emptyCache: function() {
+                this.currentTranslationRequests = {};
+                this.currentTranslationResponses = {};
+                this.currentTranslationRequestsLength = 0;
+                this.translationCacheLength = 0;
+                this.translationCache = {};
+            },
+
             // requests / responses
             currentTranslationRequests: {},
             currentTranslationResponses: {},
@@ -215,7 +223,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             // empty cache
             emptyCache: function () {
-                service.sgTranslationFactory.translationCache = {};
+                service.sgTranslationFactory.emptyCache();
             },
 
             sgTranslationFactory: undefined
