@@ -239,24 +239,24 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 var fromCache = service.listItemsCache[key];
 
                 // promise
-                var thePromise = service.$q.defer();
+                var deferred = service.$q.defer();
 
                 // check
                 if (!fromCache) {
                     service.$http.post(url, data)
                         .success(function(returnData) {
                             service.listItemsCache[key] = returnData;
-                            thePromise.resolve(returnData);
+                            deferred.resolve(returnData);
                         })
                         .error(function(returnData) {
-                            thePromise.resolve({});
+                            deferred.resolve({});
                         });
                 } else {
-                    thePromise.resolve(fromCache);
+                    deferred.resolve(fromCache);
                 }
 
                 //
-                return thePromise;
+                return deferred.promise;
             },
 
             // factory
