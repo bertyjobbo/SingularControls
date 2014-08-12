@@ -191,7 +191,10 @@ sgDeviceProviderPreAppStart
             }]);
 
             // configure translate stuff
-            app.run(['sgTranslateConfig', '$http', function (sgTranslateConfigProvider, $http) {
+            app.run(['sgTranslateConfig', '$http', '$rootScope', function (sgTranslateConfigProvider, $http, $rootScope) {
+
+                // set language code at startup
+                $rootScope.languageCode = 'en-GB';
 
                 // config
                 sgTranslateConfigProvider
@@ -199,14 +202,19 @@ sgDeviceProviderPreAppStart
                     // add translation method promise
                     .setTranslationRequestPromise(function (requests) {
 
-                        // TODO - how do you get languageCode?
-                        var langCode = "en-GB";
-                        return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
+                        return $http.post("/api/translation/translations/" + $rootScope.languageCode.toLowerCase(), requests);
 
                     })
 
                     // set translation cache length
-                    .setMaxTranslationCacheLength(1000);
+                    .setMaxTranslationCacheLength(1000)
+
+                    // tell the provider how to create a cache key
+                    .setCacheKeyMethod(function (key) {
+
+                        return $rootScope.languageCode + "$$$" + key;
+
+                    });
 
             }]);
 

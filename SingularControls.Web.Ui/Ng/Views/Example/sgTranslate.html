@@ -41,25 +41,53 @@ sgTranslationService
 <p class="alert-warning"><strong>Note:</strong> the <code>requests</code> object which is presented in the <code>.setTranslationRequestPromise</code> method is an <strong>array of strings</strong>. If you are posting this to a RESTFul service, it will need to accept this as POST data.</p>
 <pre>
 // configure translate stuff
-app.run(['sgTranslateConfig', '$http', function (sgTranslateConfigProvider, $http) {
+app.run(['sgTranslateConfig', '$http', '$rootScope', function (sgTranslateConfigProvider, $http, $rootScope) {
+    
+    // set language code at startup
+    $rootScope.languageCode = 'en-GB';
 
     // config
     sgTranslateConfigProvider
 
         // add translation method promise
         .setTranslationRequestPromise(function (requests) {
-
-            // TODO - how do you get languageCode?
-            var langCode = "en-GB";
-            return $http.post("/api/translation/translations/" + langCode.toLowerCase(), requests);
+            return $http.post("/api/translation/translations/" + $rootScope.languageCode.toLowerCase(), requests);
         })
 
         // set translation cache length
-        .setMaxTranslationCacheLength(1000);
+        .setMaxTranslationCacheLength(1000)
+
+        // tell the provider how to create a cache key
+        // useful if switching languages after app has started
+        .setCacheKeyMethod(function (key) {
+            return $rootScope.languageCode + "$$$" + key;
+        });
 
 }]);
 </pre>
 
+<h3><code>.getListItems</code></h3>
+<p>
+    Finally, the service has a method <code>.getListItems(url, data[optional])</code>. This is for storing and retrieving lists of data (ie translated drop down lists). So the first time you request a list it will give you it back but also cache it. The next time you request it it will be from the cache (as long as the limit hasn't been reached). Example code below:
+</p>
+<pre>
+// service
+sgTranslationService
 
+    // get listitems
+    .getListItems("http://myapi.com/cars/" + $rootScope.languageCode, {
+        filter: "BMW",
+        age: 2001
+    })
+
+    // promise resolver
+    .then(function (data) {
+
+        // use the data!
+        $scope.cars = data;
+
+    });
+</pre>
+<p class="alert-warning"><strong>Note:</strong> The key for the cache is <code>url + "$$$" + (data == undefined || data == null || data == "" ? "" : JSON.stringify(data));</code>. Therefore if the data is different the next time it's requested, it won't come from the cache.</p>
 <sg-translate-processor></sg-translate-processor>
 

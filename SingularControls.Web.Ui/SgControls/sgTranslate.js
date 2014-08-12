@@ -35,6 +35,17 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         // trans length
         ts.maxTranslationCacheLength = 500;
 
+        // set cache key method
+        ts.setCacheKeyMethod = function(theMethod) {
+            ts.cacheKeyMethod = theMethod;
+            return ts;
+        }
+
+        // default
+        ts.cacheKeyMethod = function (key) {
+            return "$$$" + key + "$$$";
+        }
+
         // provide
         ts.$get = [function () {
             return ts;
@@ -53,6 +64,11 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
             // cache
             translationCache: {
 
+            },
+
+            // get cache length
+            getMaxCacheLength: function() {
+                return sgTranslateConfigProvider.maxTranslationCacheLength;
             },
 
             emptyCache: function () {
@@ -101,7 +117,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
 
                     // get from cache
-                    var fromCache = factory.translationCache[key];
+                    var fromCache = factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(key)];
 
                     // check
                     if (fromCache) {
@@ -154,7 +170,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 // loop
                 arrayOfKeys.forEach(function (key) {
 
-                    var found = factory.translationCache[key];
+                    var found = factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(key)];
                     if (found) {
                         output[key] = found;
                     } else {
@@ -178,7 +194,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                         data.forEach(function (tranlsation) {
                             output[tranlsation.Key] = tranlsation.Value;
                             if (factory.translationCacheLength < sgTranslateConfigProvider.maxTranslationCacheLength) {
-                                factory.translationCache[tranlsation.Key] = tranlsation.Value;
+                                factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(tranlsation.Key)] = tranlsation.Value;
                                 factory.translationCacheLength++;
                             }
 
@@ -229,6 +245,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             // list items cache
             listItemsCache: {},
+            listItemsCacheCount:0,
 
             // get list items
             getListItems: function (url, data) {
@@ -241,12 +258,16 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 // promise
                 var deferred = service.$q.defer();
-                console.log("FromCache= ", fromCache);
+               
                 // check
                 if (!fromCache) {
                     service.$http.post(url, data)
-                        .success(function(returnData) {
-                            service.listItemsCache[key] = returnData;
+                        .success(function (returnData) {
+                            if (service.listItemsCacheCount < (service.sgTranslationFactory.getMaxCacheLength() - returnData.length)) {
+                                service.listItemsCache[key] = returnData;
+                                service.listItemsCacheCount++;
+                            }
+
                             deferred.resolve(returnData);
                         })
                         .error(function(returnData) {
@@ -390,7 +411,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                                 };
 
                                 if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
-                                    sgTranslationFactory.translationCache[dataItem.Key] = dataItem.Value;
+                                    sgTranslationFactory.translationCache[sgTranslateConfig.cacheKeyMethod(dataItem.Key)] = dataItem.Value;
                                     sgTranslationFactory.translationCacheLength++;
                                 }
                             }
