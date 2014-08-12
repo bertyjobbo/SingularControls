@@ -211,7 +211,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
     app.provider("sgTranslationFactory", namespace.SgTranslationFactory);
 
     // translations provider
-    namespace.SgTranslationService = ['$http', '$q', function ($http) {
+    namespace.SgTranslationService = [function () {
 
         // service
         var service = {
@@ -235,20 +235,17 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 // key
                 var key = url + "$$$" + (data == undefined || data == null || data == "" ? "" : JSON.stringify(data));
 
-                // cache
-                var cache = this.listItemsCache;
-
                 // get from cache
-                var fromCache = cache[key];
+                var fromCache = service.listItemsCache[key];
 
                 // promise
-                var thePromise = $q.defer();
+                var thePromise = service.$q.defer();
 
                 // check
                 if (!fromCache) {
-                    $http.post(url, data)
+                    service.$http.post(url, data)
                         .success(function(returnData) {
-                            cache[key] = returnData;
+                            service.listItemsCache[key] = returnData;
                             thePromise.resolve(returnData);
                         })
                         .error(function(returnData) {
@@ -267,8 +264,10 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         }
 
         // get
-        this.$get = ["sgTranslationFactory", function (sgTranslationFactory) {
+        this.$get = ["sgTranslationFactory","$q","$http", function (sgTranslationFactory,$q,$http) {
             service.sgTranslationFactory = sgTranslationFactory;
+            service.$q = $q;
+            service.$http = $http;
             return service;
         }];
 
