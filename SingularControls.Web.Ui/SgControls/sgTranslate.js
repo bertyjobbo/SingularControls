@@ -224,6 +224,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
             // empty cache
             emptyCache: function () {
                 service.sgTranslationFactory.emptyCache();
+                service.listItemsCache = {};
             },
 
             // list items cache
@@ -240,7 +241,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 // promise
                 var deferred = service.$q.defer();
-
+                console.log("FromCache= ", fromCache);
                 // check
                 if (!fromCache) {
                     service.$http.post(url, data)
