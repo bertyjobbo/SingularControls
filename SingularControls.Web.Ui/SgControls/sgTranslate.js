@@ -55,7 +55,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             },
 
-            emptyCache: function() {
+            emptyCache: function () {
                 this.currentTranslationRequests = {};
                 this.currentTranslationResponses = {};
                 this.currentTranslationRequestsLength = 0;
@@ -109,7 +109,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                             element: element,
                             value: fromCache,
                             attrs: attrs,
-                            hasSgTranslateTitle:fromTitle
+                            hasSgTranslateTitle: fromTitle
                         };
                     } else {
 
@@ -132,7 +132,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 return sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend);
 
-                
+
             },
 
             // cache length
@@ -211,7 +211,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
     app.provider("sgTranslationFactory", namespace.SgTranslationFactory);
 
     // translations provider
-    namespace.SgTranslationService = [function () {
+    namespace.SgTranslationService = ['$http', '$q', function ($http) {
 
         // service
         var service = {
@@ -226,6 +226,43 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 service.sgTranslationFactory.emptyCache();
             },
 
+            // list items cache
+            listItemsCache: {},
+
+            // get list items
+            getListItems: function (url, data) {
+
+                // key
+                var key = url + "$$$" + (data == undefined || data == null || data == "" ? "" : JSON.stringify(data));
+
+                // cache
+                var cache = this.listItemsCache;
+
+                // get from cache
+                var fromCache = cache[key];
+
+                // promise
+                var thePromise = $q.defer();
+
+                // check
+                if (!fromCache) {
+                    $http.post(url, data)
+                        .success(function(returnData) {
+                            cache[key] = returnData;
+                            thePromise.resolve(returnData);
+                        })
+                        .error(function(returnData) {
+                            thePromise.resolve({});
+                        });
+                } else {
+                    thePromise.resolve(fromCache);
+                }
+
+                //
+                return thePromise;
+            },
+
+            // factory
             sgTranslationFactory: undefined
         }
 
