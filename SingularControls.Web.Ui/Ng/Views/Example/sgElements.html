@@ -3,7 +3,12 @@
 <h2>sgElements</h2>
 <p>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</p>
 
-<h3>1 - Loader</h3>
+<h3>1. File upload</h3>
+<pre>&lt;input sg-file-upload=&quot;multiple&quot; sg-model=&quot;files&quot; /&gt;</pre>
+<p><input sg-file-upload="multiple" sg-model="files" /></p>
+<p ng-repeat="file in files"><code>$scope.file[{{$index}}] = {{ stringify(file) }}</code></p>
+<p ng-show="files != undefined && files.length > 0"><button type="button" ng-click="files = undefined">Clear</button></p>
+<h3>2. Loader</h3>
 <p>The directive <code>sg-loader</code> enables you to place a simple loading element onto the page which can be shown / hidden when convenient. The following markup shows this at the top of the index.html page on this site:</p>
 <pre>
 &lt;body ng-app=&quot;SingularControls.TestApp&quot; class=&quot;header-fixed&quot;&gt;
@@ -70,7 +75,7 @@ $rootScope.$emit("sgLoaderShow");
 $rootScope.$emit("sgLoaderHide");
 </pre>
 
-<h3>2 - Collapsable nav</h3>
+<h3>3. Collapsable nav</h3>
 <p>Similar to Twitter Bootstrap, the <code>sgNav</code> directive is the "icing on the cake" for creating a collapsible header / navigation structure. The basic HTML is as follows (taken from this site 2014-08-07):</p>
 <pre>
 &lt;header&gt;
@@ -107,7 +112,7 @@ $rootScope.$emit("sgLoaderHide");
 &lt;button class=&quot;sgnav-custom-button&quot;&gt;&lt;img src=&quot;/navbutton.png&quot; /&gt;&lt;/button&gt;
 </pre>
 
-<h3>3. sgTitle</h3>
+<h3>4. sgTitle</h3>
 <p>The <code>sgTitle</code> directives allows you, from a view, to set the title in the <code>head</code> element. Set up is fairly simple:</p>
 <h4>In index.html:</h4>
 <pre>
@@ -123,7 +128,7 @@ $rootScope.$emit("sgLoaderHide");
 </pre>
 <p class="alert-warning"><strong>Note:</strong> the <code>[WHITESPACE]</code> text must be used for any <em>trailing</em> whitespace in your static title text. This is because Angular strips trailing whitespace from attributes!</p>
 
-<h3>4. sgDescription</h3>
+<h3>5. sgDescription</h3>
 <p>The <code>sgDescription</code> directives allows you, from a view, to set the description meta tag in the <code>head</code> element. Set up is fairly simple:</p>
 <h4>In index.html:</h4>
 <pre>

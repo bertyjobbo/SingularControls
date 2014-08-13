@@ -16,7 +16,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             link: function (scope, element) {
 
                 // on success
-                $rootScope.$on("$routeChangeSuccess", function() {
+                $rootScope.$on("$routeChangeSuccess", function () {
                     scope.sgnavopen = false;
                 });
 
@@ -252,7 +252,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         return {
             restrict: "AEC",
             link: function (scope, element, attrs) {
-                
+
                 switch (element[0].tagName) {
 
                     case "META":
@@ -273,5 +273,38 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         }
     }];
     app.directive("sgDescription", namespace.SgDescriptionDirective);
+
+    // file upload
+    namespace.SgFileUploadDirective = [function () {
+
+
+        return {
+            restrict: "A",
+            scope: {
+                sgModel: "="
+            },
+            link: function (scope, element, attrs) {
+
+                // change element
+                var isMulti = false;
+                element.attr("type", "file");
+                if (attrs.sgFileUpload == "multiple") {
+                    element.attr("multiple", "multiple");
+                    isMulti = true;
+                }
+
+                // bind change event
+                element.bind("change", function (changeEvent) {
+                    scope.$apply(function () {
+                        scope.sgModel = isMulti ? changeEvent.target.files : changeEvent.target.files[0];
+                        console.log(scope.sgModel);
+                    });
+                });
+
+            }
+        };
+
+    }];
+    app.directive("sgFileUpload", namespace.SgFileUploadDirective);
 
 })(SgControls.ElementsModule, SgControls);

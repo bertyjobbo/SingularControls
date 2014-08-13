@@ -153,6 +153,11 @@ sgDeviceProviderPreAppStart
 
                     };
 
+                    // element
+                    $scope.sgelementAction = function () {
+                        $scope.files = undefined; //new FileList();
+                    };
+
                 }]);
 
             // device specific stuff inner! Works either way.
@@ -216,6 +221,13 @@ sgDeviceProviderPreAppStart
 
                     });
 
+            }]);
+
+            // other methods
+            app.run(["$rootScope", function($rootScope) {
+                $rootScope.stringify=function(obj) {
+                    return JSON.stringify(obj);
+                }
             }]);
 
         })(SingularControls.TestApp);
