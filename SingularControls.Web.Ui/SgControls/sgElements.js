@@ -297,7 +297,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 element.bind("change", function (changeEvent) {
                     scope.$apply(function () {
                         scope.sgModel = isMulti ? changeEvent.target.files : changeEvent.target.files[0];
-                        console.log(scope.sgModel);
                     });
                 });
 
