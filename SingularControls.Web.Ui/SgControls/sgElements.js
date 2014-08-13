@@ -296,7 +296,41 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 // bind change event
                 element.bind("change", function (changeEvent) {
                     scope.$apply(function () {
-                        scope.sgModel = isMulti ? changeEvent.target.files : changeEvent.target.files[0];
+                        //scope.sgModel = isMulti ? changeEvent.target.files : changeEvent.target.files[0];
+
+                        // get vars
+                        var output;
+                        var elementRaw = element[0];
+                        var elementRawFiles = elementRaw.files;
+
+
+                        // check
+                        if (isMulti) {
+
+                            // set output to array
+                            output = [];
+
+                            // loop files
+                            for (var i = 0; i< elementRawFiles.length;i++) {
+
+                                // file obj
+                                var f = elementRawFiles[i];
+                                
+                                // output
+                                output.push(f);
+                            }
+
+                        } else {
+
+                            // get file
+                            var f2 = elementRawFiles[0];
+
+                            // output
+                            output = f2;
+                        }
+
+                        // Finally, set scope object
+                        scope.sgModel = output;
                     });
                 });
 
