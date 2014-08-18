@@ -154,8 +154,11 @@ sgDeviceProviderPreAppStart
                     };
 
                     // element
-                    $scope.sgelementAction = function () {
-                        $scope.files = undefined; //new FileList();
+                    $scope.sgelementsAction = function () {
+                        
+                        $scope.showAlert = function () {
+                            $scope.$emit("sgAlert-main", "I am an alert");
+                        };
                     };
 
                 }]);

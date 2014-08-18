@@ -274,8 +274,53 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
     }];
     app.directive("sgDescription", namespace.SgDescriptionDirective);
 
-    // file upload
-    namespace.SgFileUploadDirective = [function () {
+    /* FOCUS WHEN */
+    app.directive("sgFocusWhen", function () {
+
+        return {
+            restrict: "A",
+            link: function (scope, element, attrs) {
+                scope.$watch(function () {
+                    return scope.$eval(attrs.sgFocusWhen);
+                }, function (newVal) {
+                    console.log(newVal);
+                    if (newVal) {
+                        element[0].focus();
+                    }
+                }, true);
+            }
+        }
+
+    });
+
+    /* ALERT */
+    app.directive("sgAlert", ["$rootScope", "$timeout", function ($rootScope, $timeout) {
+        return {
+
+            restrict: "A",
+            link: function (scope, element, attrs) {
+                
+
+                if (attrs.sgAlert) {
+
+                    var splitter = attrs.sgAlert.split("|");
+
+                    $rootScope.$on("sgAlert-" +splitter[0], function (event, data) {
+                        element.html(data);
+                        element.removeClass(splitter[2]);
+                        element.addClass(splitter[1]);
+                        $timeout(function () {
+                            element.removeClass(splitter[1]);
+                            element.addClass(splitter[2]);
+                        }, splitter[3]);
+                    });
+                }
+            }
+        };
+    }]);
+
+    /* FILE UPLOAD ELEMENT */
+    app.directive("sgFileUpload", [function () {
 
 
         return {
@@ -296,7 +341,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 // bind change event
                 element.bind("change", function (changeEvent) {
                     scope.$apply(function () {
-                        //scope.sgModel = isMulti ? changeEvent.target.files : changeEvent.target.files[0];
 
                         // get vars
                         var output;
@@ -311,11 +355,11 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                             output = [];
 
                             // loop files
-                            for (var i = 0; i< elementRawFiles.length;i++) {
+                            for (var i = 0; i < elementRawFiles.length; i++) {
 
                                 // file obj
                                 var f = elementRawFiles[i];
-                                
+
                                 // output
                                 output.push(f);
                             }
@@ -337,7 +381,309 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             }
         };
 
-    }];
-    app.directive("sgFileUpload", namespace.SgFileUploadDirective);
+    }]);
+
+    /* FILE UPLOADER DIRECTIVE */
+    app.directive("sgFileUploader", ["$compile", "$http", "$timeout", function ($compile, $http, $timeout) {
+
+        // setup
+        return {
+
+            restrict: "E",
+            requires: 'sgFileUpload',
+            controller: ["$scope", function ($scope) {
+
+                // POST DATA CONTAINER
+                $scope.sgFileUploaderPostData = [];
+
+                // BEFORE SUBMIT
+                $scope.sgFileUploaderBeforeSubmitCallback = function () {
+                    console.log("sgFileUploaderBeforeSubmitCallback");
+                };
+
+                // ON SUBMIT
+                $scope.sgFileUploaderOnSubmit = function () {
+
+                    // before func
+                    $scope.sgFileUploaderBeforeSubmitCallback($scope.sgFileUploaderPostData);
+
+                    // split out files
+                    var theFiles = $scope.sgFileUploaderPostData.map(function (obj) {
+                        return obj == null ? undefined : obj.file;
+                    });
+
+                    // get the test
+                    var theRest = $scope.sgFileUploaderPostData.map(function (obj) {
+                        return {
+                            Name: obj.name,
+                            Description: obj.description,
+                            IsEdit: obj.isEdit,
+                            FileId: obj.fileId
+                        };
+                    });
+
+                    // the sizes
+                    var theSizes = theFiles.map(function (obj) {
+                        return obj == null ? 0 : obj.size;
+                    });
+
+                    // custom
+                    var customDataMethod = $scope.$parent.$eval($scope.attrs_otherPostData);
+                    var customData = customDataMethod ? customDataMethod() : {};
+
+                    /* POST THE DATA */
+                    $http({
+                        method: 'POST',
+                        url: $scope.sgFileUploaderConfig.postUrl,
+                        //IMPORTANT!!! You might think this should be set to 'multipart/form-data' 
+                        // but this is not true because when we are sending up files the request 
+                        // needs to include a 'boundary' parameter which identifies the boundary 
+                        // name between parts in this multi-part request and setting the Content-type 
+                        // manually will not set this boundary parameter. For whatever reason, 
+                        // setting the Content-type to 'false' will force the request to automatically
+                        // populate the headers properly including the boundary parameter.
+                        headers: { 'Content-Type': undefined },
+                        //This method will allow us to change how the data is sent up to the server
+                        // for which we'll need to encapsulate the model data in 'FormData'
+                        transformRequest: function (data) {
+                            var formData = new FormData();
+                            //need to convert our json object to a string version of json otherwise
+                            // the browser will do a 'toString()' on the object which will result 
+                            // in the value '[Object object]' on the server.
+                            formData.append("Data", JSON.stringify(data.Data));// angular.toJson(data.Data));
+                            formData.append("CustomData", JSON.stringify(data.CustomData));// angular.toJson(data.CustomData));
+                            formData.append("Sizes", JSON.stringify(data.Sizes));
+                            //now add all of the assigned files
+                            for (var i = 0; i < data.Files.length; i++) {
+
+                                // get file
+                                var theFile = data.Files[i];
+
+                                // check multi
+                                if ($scope.sgFileUploaderConfig.isMulti) {
+                                    for (var i2 = 0; i2 < theFile.length; i2++) {
+                                        formData.append("file" + i, theFile[i2]);
+                                    }
+                                } else {
+                                    formData.append("file" + i, theFile);
+                                }
+
+                            }
+                            return formData;
+                        },
+                        //Create an object that contains the model and files which will be transformed
+                        // in the above transformRequest method
+                        data: { Data: theRest, Files: theFiles, CustomData: customData, Sizes: theSizes }
+                    }).
+                    success(function (data, status, headers, config) {
+                        $scope.sgFileUploaderIsEdit = false;
+                        $scope.sgFileUploaderOnSubmitCallback(true, data);
+                        $scope.sgFileUploaderPostData = [];
+                    }).
+                    error(function (data, status, headers, config) {
+                        $scope.sgFileUploaderOnSubmitCallback(false, data);
+                    });
+
+                };
+
+                // AFTER SUBMIT
+                $scope.sgFileUploaderOnSubmitCallback = function (success, data) {
+                    console.log(success);
+                    console.log(data);
+                };
+
+                // SET CONFIG
+                $scope.sgFileUploaderSetConfig = function () {
+
+                    // CONFIG
+                    $scope.sgFileUploaderConfig = {
+                        maxRows: $scope.attrs_maxRows == "" || $scope.attrs_maxRows == undefined ? 999999 : parseInt($scope.attrs_maxRows),
+                        hasName: $scope.attrs_hasName == "true",
+                        hasDescription: $scope.attrs_hasDescription == "true",
+                        isMulti: $scope.attrs_isMulti == "true",
+                        postUrl: $scope.attrs_postUrl,
+                        addText: $scope.attrs_addText == undefined || $scope.attrs_addText == "" ? "Add row" : $scope.attrs_addText,
+                        submitText: $scope.attrs_submitText == undefined || $scope.attrs_submitText == "" ? "Upload" : $scope.attrs_submitText,
+                        noFilesText: $scope.attrs_noFilesText == undefined || $scope.attrs_noFilesText == "" ? "No files added yet" : $scope.attrs_noFilesText,
+                        nameLabelText: $scope.attrs_nameLabelText == undefined || $scope.attrs_nameLabelText == "" ? "Name" : $scope.attrs_nameLabelText,
+                        descriptionLabelText: $scope.attrs_descriptionLabelText == undefined || $scope.attrs_descriptionLabelText == "" ? "Description" : $scope.attrs_descriptionLabelText,
+                        fileLabelText: $scope.attrs_fileLabelText == undefined || $scope.attrs_fileLabelText == "" ? "File" : $scope.attrs_fileLabelText,
+                        useBootstrap: $scope.attrs_useBootstrap == "true",
+                        removeText: $scope.attrs_removeText == undefined || $scope.attrs_removeText == "" ? "Remove this file" : $scope.attrs_removeText,
+                        copyText: $scope.attrs_copyText == undefined || $scope.attrs_copyText == "" ? "Copy file name" : $scope.attrs_copyText,
+                        sgSpellcheck: $scope.attrs_sgSpellcheck == "true"
+                    };
+
+                    // set $scope stuff
+                    if ($scope.attrs_sgSubmit != undefined && $scope.attrs_sgSubmit != "")
+                        $scope.sgFileUploaderOnSubmit = $scope.$parent.$eval($scope.attrs_sgSubmit);
+                    if ($scope.attrs_sgSubmitCallback != undefined && $scope.attrs_sgSubmitCallback != "")
+                        $scope.sgFileUploaderOnSubmitCallback = $scope.$parent.$eval($scope.attrs_sgSubmitCallback);
+                    if ($scope.attrs_beforeSubmit != undefined && $scope.attrs_beforeSubmit != "")
+                        $scope.sgFileUploaderBeforeSubmitCallback = $scope.$parent.$eval($scope.attrs_beforeSubmit);
+
+                    // set events
+                    $scope.$parent.$on("sgFileUploaderPush", function (event, data) {
+                        $scope.sgFileUploaderPostData.push(data);
+                    });
+                    $scope.$parent.$on("sgFileUploaderClear", function () {
+                        $scope.sgFileUploaderPostData = [];
+                    });
+                    $scope.$parent.$on("sgFileUploaderGet", function (event, callback) {
+                        callback($scope.sgFileUploaderPostData);
+                    });
+                    $scope.$parent.$on("sgFileUploaderEdit", function (event, data) {
+                        $scope.sgFileUploaderIsEdit = true;
+                        $scope.sgFileUploaderPostData = [data];
+                    });
+                    $scope.$parent.$on("sgFileUploaderGoToTop", function (event, data) {
+                        $scope.sgFileUploaderIsEdit = true;
+                        $timeout(function () {
+                            $scope.sgFileUploaderIsEdit = false;
+                        }, 100);
+                    });
+
+                    // do checks
+                    if (($scope.attrs_sgSubmit == "" || $scope.attrs_sgSubmit == undefined) && $scope.sgFileUploaderConfig.postUrl == undefined || $scope.sgFileUploaderConfig.postUrl == "") throw "sg-file-uploader post-url attribute must be a valid URI when not calling a custom submit method";
+                    if (($scope.sgFileUploaderConfig.hasName || $scope.sgFileUploaderConfig.hasDescription) && $scope.sgFileUploaderConfig.isMulti) throw "sg-file-uploader is-multi attribute can only be true if has-name and has-description are both unused, undefined, 'false', or an empty string";
+
+                };
+
+                // ADD ROW
+                $scope.sgFileUploaderAddRow = function () {
+                    if (!$scope.sgFileUploaderIsEdit) {
+                        if ($scope.sgFileUploaderPostData.length < $scope.sgFileUploaderConfig.maxRows) {
+                            $scope.sgFileUploaderPostData.push({});
+                        }
+                    }
+                };
+
+                // DELETE ROW
+                $scope.sgFileUploaderRemoveRow = function ($index) {
+                    $scope.sgFileUploaderIsEdit = false;
+                    $scope.sgFileUploaderPostData.splice($index, 1);
+                }
+
+                // COPY TEXT FROM FILENAME TO NAME
+                $scope.copyText = function ($index) {
+                    var found = $scope.sgFileUploaderPostData[$index];
+                    if (found && found.file)
+                        found.name = found.file.name;
+                }
+
+                // DISPLAY HELPER
+                $scope.getRequiredText = function (isEdit) {
+                    return !isEdit ? "required" : "";
+                }
+
+            }],
+            scope: {
+
+                attrs_maxRows: '@maxRows',
+                attrs_hasName: '@hasName',
+                attrs_hasDescription: '@hasDescription',
+                attrs_isMulti: '@isMulti',
+                attrs_postUrl: '@postUrl',
+                attrs_sgSubmit: '@sgSubmit',
+                attrs_addText: '@addText',
+                attrs_submitText: '@submitText',
+                attrs_noFilesText: '@noFilesText',
+                attrs_useBootstrap: '@useBootstrap',
+                attrs_nameLabelText: '@nameLabelText',
+                attrs_descriptionLabelText: '@descriptionLabelText',
+                attrs_fileLabelText: '@fileLabelText',
+                attrs_removeText: '@removeText',
+                attrs_sgSubmitCallback: '@sgSubmitCallback',
+                attrs_otherPostData: '@otherPostData',
+                attrs_beforeSubmit: '@beforeSubmit',
+                attrs_copyText: '@copyText',
+                attrs_sgSpellcheck: '@sgSpellcheck'
+            },
+            link: function (scope, element) {
+
+                // set config
+                scope.sgFileUploaderSetConfig();
+                var config = scope.sgFileUploaderConfig;
+
+
+                /* START */
+                var html = "<input style='height: 0sg; padding: 0;margin:0;border:none;' sg-focus-when='sgFileUploaderIsEdit' /><form class='sg-file-uploader sg-border-radius" + (config.useBootstrap ? " bootstrap" : " no-bootstrap") + "' ng-submit='sgFileUploaderOnSubmit()'>";
+
+
+                /* REPEATER */
+                html += "<div class='sg-file-uploader-rows'>";
+                // add repeater for rows
+                html += "<div ng-repeat='row in sgFileUploaderPostData' class='sg-file-uploader-row'>";
+
+                // add file upload
+                if (config.useBootstrap) html += "<div ng-show='!row.isEdit' class='form-group'>";
+                if (config.hasName || config.hasDescription) html += "<label for='sgFile{{$index}}'>" + config.fileLabelText + "</label>";
+                html += "<input ng-required=\"row.isEdit ? '':'required'\" id='sgFile{{$index}}' sg-model='row.file' sg-file-upload" + (config.isMulti ? "='multiple'" : "") + " class='sg-file-upload sg-file-upload-hasname-" + (config.hasName ? "true" : "false") + (config.useBootstrap ? " form-control" : "") + "' />";
+                if (config.useBootstrap) html += "</div>";
+
+                // name?
+                if (config.hasName) {
+                    if (config.useBootstrap) html += "<div class='form-group'>";
+                    html += "<label for='sgName{{$index}}'>" + config.nameLabelText + "</label><a href='' class='sg-file-uploader-copyfilename' ng-click='copyText($index)'>(" + config.copyText + ")</a>";
+                    html += "<span class='sg-file-upload-name'><input " + (config.sgSpellcheck ? 'spellcheck="true"' : '') + " required id='sgName{{$index}}' ng-model='row.name' type='text'" + (config.useBootstrap ? " class='form-control'" : "") + " /></span>";
+                    if (config.useBootstrap) html += "</div>";
+                }
+
+                // description?
+                if (config.hasDescription) {
+                    if (config.useBootstrap) html += "<div class='form-group'>";
+                    html += "<label for='sgDescription{{$index}}'>" + config.descriptionLabelText + "</label>";
+                    html += "<span class='sg-file-upload-description'><textarea " + (config.sgSpellcheck ? 'spellcheck="true"' : '') + " required rows='4' id='sgDescription{{$index}}' ng-model='row.description'" + (config.useBootstrap ? " class='form-control'" : "") + "></textarea></span>";
+                    if (config.useBootstrap) html += "</div>";
+                }
+
+                // add remove button
+                html += "<div class='sg-file-uploader-row-removecontainer'>";
+                html += "<a href='' class='sg-file-uploader-row-remove" + (config.useBootstrap ? "" : "") + "' ng-click='sgFileUploaderRemoveRow($index)'>" + config.removeText + "</a>";
+                html += "</div>";
+
+                // end repeater
+                html += "</div></div>";
+
+
+
+
+                /* NO FILES */
+
+                // add "no files added"
+                html += "<div class='sg-file-uploader-nofile sg-border-radius' ng-show='sgFileUploaderPostData.length < 1'>" + config.noFilesText + "</div>";
+
+
+
+
+                /* BUTTONS */
+
+                // add buttons
+                html += "<div class='sg-file-uploader-buttons'>";
+                html += "<button ng-disabled='sgFileUploaderPostData.length < 1' type='submit' class='sg-file-uploader-submit" + (config.useBootstrap ? " btn btn-info" : "") + "'>" + config.submitText + "</button>";
+                html += "<button ng-hide='sgFileUploaderIsEdit || sgFileUploaderPostData.length >= sgFileUploaderConfig.maxRows' ng-click='sgFileUploaderAddRow()' type='button' class='sg-file-uploader-add" + (config.useBootstrap ? " btn" : "") + "'>" + config.addText + "</button>";
+                html += "</div>";
+
+
+
+
+                /* FINALLY - COMPILE AND ADD */
+
+                // end html
+                html += "<p class='sg-signature'>sgFile: sg-file-uploader &copy; 2014</p></form>";
+
+                // compile
+                var output = $compile(html)(scope);
+
+                // add
+                element.after(output);
+
+                // remove
+                element.remove();
+
+            }
+        };
+    }]);
+    
 
 })(SgControls.ElementsModule, SgControls);

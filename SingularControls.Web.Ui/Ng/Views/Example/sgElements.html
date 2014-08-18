@@ -4,11 +4,41 @@
 <p>The <code>sgElements</code> module is an ongoing project to create both a semantic stylesheet and matching AngularJs directives</p>
 
 <h3>1. File upload</h3>
+<p>The <code>sg-file-upload</code> directive helps bind the file object to a <code>$scope</code> variable using <code>sg-model</code>.</p>
 <pre>&lt;input sg-file-upload=&quot;multiple&quot; sg-model=&quot;files&quot; /&gt;</pre>
 <p><input sg-file-upload="multiple" sg-model="files" /></p>
 <p ng-repeat="file in files"><code>$scope.file[{{$index}}] = {{ stringify(file) }}</code></p>
 <p ng-show="files != undefined && files.length > 0"><button type="button" ng-click="files = undefined">Clear</button></p>
-<h3>2. Loader</h3>
+
+
+
+<h3>2. File uploader</h3>
+<p>The <code>sg-file-uploader</code> directive is a self-contained file upload solution for Angular. Here is some example code:</p>
+<pre><xmp><sg-file-uploader max-rows="3"
+                            use-bootstrap="true"
+                            is-multi="false"
+                            has-name="true"
+                            has-description="true"
+                            post-url="{{ filePostUrl }}"
+                            add-text="Add more"
+                            submit-text="Save all"
+                            no-files-text="No files added yet..."
+                            name-label-text="Name of file"
+                            description-label-text="Description of file"
+                            file-label-text="File from your pc"
+                            remove-text="Cancel"
+                            px-submit-callback="submitCallback"
+                            other-post-data="getOtherPostParams"
+                            before-submit="beforeSubmit"
+                            copy-text="Copy"
+                            px-spellcheck="true"></sg-file-uploader></xmp></pre>
+
+
+
+<p class="alert-warning"><strong>Note:</strong> A full documentation page will be coming soon for this directive. In the meantime, if you'd like to use it, please email rob{DOT}johnson1978{AT}gmail.com</p>
+
+
+<h3>3. Loader</h3>
 <p>The directive <code>sg-loader</code> enables you to place a simple loading element onto the page which can be shown / hidden when convenient. The following markup shows this at the top of the index.html page on this site:</p>
 <pre>
 &lt;body ng-app=&quot;SingularControls.TestApp&quot; class=&quot;header-fixed&quot;&gt;
@@ -75,7 +105,7 @@ $rootScope.$emit("sgLoaderShow");
 $rootScope.$emit("sgLoaderHide");
 </pre>
 
-<h3>3. Collapsable nav</h3>
+<h3>4. Collapsable nav</h3>
 <p>Similar to Twitter Bootstrap, the <code>sgNav</code> directive is the "icing on the cake" for creating a collapsible header / navigation structure. The basic HTML is as follows (taken from this site 2014-08-07):</p>
 <pre>
 &lt;header&gt;
@@ -112,7 +142,7 @@ $rootScope.$emit("sgLoaderHide");
 &lt;button class=&quot;sgnav-custom-button&quot;&gt;&lt;img src=&quot;/navbutton.png&quot; /&gt;&lt;/button&gt;
 </pre>
 
-<h3>4. sgTitle</h3>
+<h3>5. sgTitle</h3>
 <p>The <code>sgTitle</code> directives allows you, from a view, to set the title in the <code>head</code> element. Set up is fairly simple:</p>
 <h4>In index.html:</h4>
 <pre>
@@ -144,3 +174,23 @@ $rootScope.$emit("sgLoaderHide");
     name=&quot;description&quot; 
     content=&quot;Singular Controls for AngularJs. Helpers, directives and more...&quot; /&gt;
 </pre>
+
+<h3>6. Alert</h3>
+<p>The <code>sg-alert</code> directive allows you to show an "alert" message, which will fade after n seconds. </p>
+<p><button type="button" ng-click="showAlert()">Show alert</button>&nbsp;&nbsp;<span class="hidden alert-danger" sg-alert="main|showing|hidden|3000"></span></p>
+<pre><xmp><button type="button" ng-click="showAlert()">Show alert</button>
+<span class="hidden alert-danger" sg-alert="main|showing|hidden|3000"></span></xmp>
+// JS
+$scope.showAlert = function() {
+
+    $scope.$emit("sgAlert-main", "I AM AN ALERT");
+    // OR
+    $rootScope.$emit("sgAlert-main", "I AM AN ALERT");
+
+};
+</pre>
+<p>In terms of the attribute split by the <code>|</code> symbol, the paramters are (in order): <em>uniqueName,onClass,offClass,offDelay</em>. And the the <code>$emit</code> code should be <em>sgAlert-{uniqueName}</em>/</p>
+<h3>7. Focus when</h3>
+<p>The <code>sg-focus-when</code> directive places a watch onto the variable that you put in the paramater and will focus the element when it is "true".</p>
+<p><input sg-focus-when="focusInput" ng-blur="focusInput=false;" /><button type="button" ng-click="focusInput=true;">Focus</button></p>
+<pre><xmp><input sg-focus-when="focusInput" ng-blur="focusInput=false;" /><button type="button" ng-click="focusInput=true;">Focus</button></xmp></pre>
