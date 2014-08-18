@@ -107,6 +107,7 @@
     <Content Include="Content\logo.PNG" />
     <Content Include="Content\normalize.css" />
     <Content Include="Content\nuget.PNG" />
+    <Content Include="Content\Reload.png" />
     <Content Include="Content\sg-controls.css">
       <DependentUpon>sg-controls.less</DependentUpon>
     </Content>

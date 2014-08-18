@@ -12,7 +12,7 @@ header > h1 > a {
     height: 40px;
 }
 
-.loader-inner {
+/*.loader-inner {
     position: fixed;
     bottom: 0;
     right: 0;
@@ -29,7 +29,7 @@ header > h1 > a {
     width: 100%;
     top: 0;
     left: 0;
-}
+}*/
 
 .sg-loader-show {
     visibility: visible;
@@ -40,4 +40,52 @@ header > h1 > a {
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s linear 0.2s,opacity 0.2s linear;
+}
+
+.loader-overlay {
+    position: fixed;
+    background: #fff;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 9998;
+}
+
+.loader-inner {
+    position: fixed;
+    /*background-color: #56aa1c;*/
+    background-image: url('reload.png');
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 10%;
+    width: 4%;
+    top: 45%;
+    border-radius: 20%;
+    left: 47%;
+    border-radius: 3px;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    z-index: 9999;
+}
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
 }
