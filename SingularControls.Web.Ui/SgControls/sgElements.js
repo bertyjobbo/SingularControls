@@ -515,10 +515,8 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                     };
 
                     // set $scope stuff
-                    if ($scope.attrs_sgSubmit != undefined && $scope.attrs_sgSubmit != "")
-                        $scope.sgFileUploaderOnSubmit = $scope.$parent.$eval($scope.attrs_sgSubmit);
-                    if ($scope.attrs_sgSubmitCallback != undefined && $scope.attrs_sgSubmitCallback != "")
-                        $scope.sgFileUploaderOnSubmitCallback = $scope.$parent.$eval($scope.attrs_sgSubmitCallback);
+                    if ($scope.attrs_submitCallback != undefined && $scope.attrs_submitCallback != "")
+                        $scope.sgFileUploaderOnSubmitCallback = $scope.$parent.$eval($scope.attrs_submitCallback);
                     if ($scope.attrs_beforeSubmit != undefined && $scope.attrs_beforeSubmit != "")
                         $scope.sgFileUploaderBeforeSubmitCallback = $scope.$parent.$eval($scope.attrs_beforeSubmit);
 
@@ -543,8 +541,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                         }, 100);
                     });
 
-                    // do checks
-                    if (($scope.attrs_sgSubmit == "" || $scope.attrs_sgSubmit == undefined) && $scope.sgFileUploaderConfig.postUrl == undefined || $scope.sgFileUploaderConfig.postUrl == "") throw "sg-file-uploader post-url attribute must be a valid URI when not calling a custom submit method";
                     if (($scope.sgFileUploaderConfig.hasName || $scope.sgFileUploaderConfig.hasDescription) && $scope.sgFileUploaderConfig.isMulti) throw "sg-file-uploader is-multi attribute can only be true if has-name and has-description are both unused, undefined, 'false', or an empty string";
 
                 };
@@ -593,7 +589,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 attrs_descriptionLabelText: '@descriptionLabelText',
                 attrs_fileLabelText: '@fileLabelText',
                 attrs_removeText: '@removeText',
-                attrs_sgSubmitCallback: '@sgSubmitCallback',
+                attrs_submitCallback: '@submitCallback',
                 attrs_otherPostData: '@otherPostData',
                 attrs_beforeSubmit: '@beforeSubmit',
                 attrs_copyText: '@copyText',
