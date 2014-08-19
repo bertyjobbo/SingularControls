@@ -532,7 +532,9 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                     });
                     $scope.$parent.$on("sgFileUploaderEdit", function (event, data) {
                         $scope.sgFileUploaderIsEdit = true;
+                        data.isEdit = true;
                         $scope.sgFileUploaderPostData = [data];
+                        if (!data.fileId) throw "When calling $scope.$on('sgFileUploaderEdit',fileObj) the fileObj must have the property fileId set";
                     });
                     $scope.$parent.$on("sgFileUploaderGoToTop", function (event, data) {
                         $scope.sgFileUploaderIsEdit = true;
@@ -620,7 +622,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 // name?
                 if (config.hasName) {
                     if (config.useBootstrap) html += "<div class='form-group'>";
-                    html += "<label for='sgName{{$index}}'>" + config.nameLabelText + "</label><a href='' class='sg-file-uploader-copyfilename' ng-click='copyText($index)'>(" + config.copyText + ")</a>";
+                    html += "<label for='sgName{{$index}}'>" + config.nameLabelText + "</label><a href='' ng-show='row.file != undefined' class='sg-file-uploader-copyfilename' ng-click='copyText($index)'>(" + config.copyText + ")</a>";
                     html += "<span class='sg-file-upload-name'><input " + (config.sgSpellcheck ? 'spellcheck="true"' : '') + " required id='sgName{{$index}}' ng-model='row.name' type='text'" + (config.useBootstrap ? " class='form-control'" : "") + " /></span>";
                     if (config.useBootstrap) html += "</div>";
                 }
