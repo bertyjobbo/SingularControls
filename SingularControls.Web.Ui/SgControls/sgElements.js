@@ -682,6 +682,29 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             }
         };
     }]);
+
+    /* TIMEOUT CLASS */
+    app.directive("sgTimeoutClass", ["$timeout", function ($timeout) {
+        return {
+            restrict: "AC",
+            link: function (scope, element, attrs) {
+
+                // get vars
+                var splitter = attrs.sgTimeoutClass.split('|');
+                var onClass = splitter[0];
+                var offClass = splitter[1];
+                var delay = splitter[2];
+
+                // add on 
+                element.addClass(onClass);
+
+                // wait
+                $timeout(function () {
+                    element.addClass(offClass);
+                }, delay);
+            }
+        }
+    }]);
     
 
 })(SgControls.ElementsModule, SgControls);
