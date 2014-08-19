@@ -158,7 +158,7 @@ $rootScope.$emit("sgLoaderHide");
 </pre>
 <p class="alert-warning"><strong>Note:</strong> the <code>[WHITESPACE]</code> text must be used for any <em>trailing</em> whitespace in your static title text. This is because Angular strips trailing whitespace from attributes!</p>
 
-<h3>5. sgDescription</h3>
+<h3>6. sgDescription</h3>
 <p>The <code>sgDescription</code> directives allows you, from a view, to set the description meta tag in the <code>head</code> element. Set up is fairly simple:</p>
 <h4>In index.html:</h4>
 <pre>
@@ -175,7 +175,7 @@ $rootScope.$emit("sgLoaderHide");
     content=&quot;Singular Controls for AngularJs. Helpers, directives and more...&quot; /&gt;
 </pre>
 
-<h3>6. Alert</h3>
+<h3>7. Alert</h3>
 <p>The <code>sg-alert</code> directive allows you to show an "alert" message, which will fade after n seconds. </p>
 <p><button type="button" ng-click="showAlert()">Show alert</button>&nbsp;&nbsp;<span class="hidden alert-danger" sg-alert="main|showing|hidden|3000"></span></p>
 <pre><xmp><button type="button" ng-click="showAlert()">Show alert</button>
@@ -190,7 +190,12 @@ $scope.showAlert = function() {
 };
 </pre>
 <p>In terms of the attribute split by the <code>|</code> symbol, the paramters are (in order): <em>uniqueName,onClass,offClass,offDelay</em>. And the the <code>$emit</code> code should be <em>sgAlert-{uniqueName}</em>/</p>
-<h3>7. Focus when</h3>
+<h3>8. Focus when</h3>
 <p>The <code>sg-focus-when</code> directive places a watch onto the variable that you put in the paramater and will focus the element when it is "true".</p>
 <p><input sg-focus-when="focusInput" ng-blur="focusInput=false;" /><button type="button" ng-click="focusInput=true;">Focus</button></p>
 <pre><xmp><input sg-focus-when="focusInput" ng-blur="focusInput=false;" /><button type="button" ng-click="focusInput=true;">Focus</button></xmp></pre>
+
+<h3>9. Class timeout</h3>
+<p>The <code>sg-timeout-class</code> directive allows you to add a class, then wait, then add another class:</p>
+<pre><xmp><p sg-timeout-class="fade-in-200|fade-out-200|2000">Fade in / out</p></xmp></pre>
+<p>So when the element compiles, it will add the first css class, wait for the specified milliseconds, then add the second class.</p>
