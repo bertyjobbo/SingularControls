@@ -373,7 +373,6 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                     if (resp.element.hasClass("sg-translate") || resp.element.attr("sg-translate") !== undefined) {
                         resp.element.html(resp.value);
                     } else
-
                         // element
                         if (resp.element[0].tagName == "SG-TRANSLATE") {
                             resp.element.after(resp.value);
@@ -407,9 +406,10 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                         // loop data
                         data.forEach(function (dataItem) {
-                            
+
                             // find element
                             var foundInRequests = [];
+
                             for (var req in sgTranslationFactory.currentTranslationRequests) {
                                 var item = sgTranslationFactory.currentTranslationRequests[req];
                                 if (item.key == dataItem.Key) {
@@ -417,12 +417,13 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                                 }
                             }
 
+
                             // check
                             if (foundInRequests.length > 0) {
 
-                                for (var foundReq in foundInRequests) {
+                                for (var i = 0; i < foundInRequests.length; i++) {
 
-                                    var foundItem = foundInRequests[foundReq];
+                                    var foundItem = foundInRequests[i];
 
                                     // add to responses and cache
                                     sgTranslationFactory.currentTranslationResponses[dataItem.Key + "$$" + foundItem.guid] = {
@@ -441,7 +442,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                                 }
 
-                                
+
                             }
                         });
 
