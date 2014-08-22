@@ -4,7 +4,8 @@
 <p>The <code>sgTranslate</code> directive allows the developer to localize text strings. So instead of using <code>Hello this is text</code> (and hoping they read/speak English) they would use <code>&lt;sg-translate&gt;Hello this is text&lt;/sg-translate&gt;</code> (or via class or attribute).</p>
 <p class="alert alert-warning">Note: <code>&lt;sg-translate-processor&gt;&lt;/sg-translate-processor&gt;</code> <strong>MUST</strong> be included at the <strong>END</strong> of each page which uses the directives.</p>
 <p class="alert alert-warning">Note: To use example 5, you must inject <code>sgTranslationService</code> into your controller.</p>
-<h2>Example 1 - using element</h2>
+
+<h3>Example 1 - using element</h3>
 <p><sg-translate>Common:Example using element</sg-translate></p>
 <pre>&lt;sg-translate&gt;Common:Example using element&lt;/sg-translate&gt;</pre>
 
@@ -21,7 +22,13 @@
 <p sg-translate-title="Common:I AM A TOOLTIP!!" sg-translate="Common:Hover over me to see title element in action.."></p>
 <pre>&lt;p sg-translate-title="Common:I AM A TOOLTIP!!" sg-translate="Common:Hover over me to see title element in action.."&gt;&lt;/p&gt;</pre>
 
-<h3>Example 5 - from JavaScript</h3>
+<h3>Example 5 - using element and attribute with same key</h3>
+<p><sg-translate>Common:Example using element ABCDEFG</sg-translate></p>
+<p sg-translate="Common:Example using element ABCDEFG"></p>
+<pre>&lt;p&gt;&lt;sg-translate&gt;Common:Example using element ABCDEFG&lt;/sg-translate&gt;&lt;/p&gt;
+&lt;p sg-translate=&quot;Common:Example using element ABCDEFG&quot;&gt;&lt;/p&gt;</pre>
+
+<h3>Example 6 - from JavaScript</h3>
 <p>{{ translation }}</p>
 <p>{{ translation2 }}</p>
 <pre>

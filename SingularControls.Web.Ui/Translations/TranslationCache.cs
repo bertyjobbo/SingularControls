@@ -48,7 +48,10 @@ namespace SingularControls.Web.Ui.Translations
                 output.AddRange(translations);
                 foreach (var trans in translations)
                 {
-                    _cache.Add(trans);
+                    try{
+                        _cache.Add(trans);
+                    }
+                    catch{}
                 }
                 
             }

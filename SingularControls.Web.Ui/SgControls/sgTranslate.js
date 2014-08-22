@@ -1,6 +1,14 @@
 ﻿
 'use strict';
 
+function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+}
+
+function guid() {
+    return (S4() + S4() + "-" + S4() + "-4" + S4().substr(0, 3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
+}
+
 // namespace
 if (window.SingularControls == undefined)
     window.SingularControls = {};
@@ -36,7 +44,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         ts.maxTranslationCacheLength = 500;
 
         // set cache key method
-        ts.setCacheKeyMethod = function(theMethod) {
+        ts.setCacheKeyMethod = function (theMethod) {
             ts.cacheKeyMethod = theMethod;
             return ts;
         }
@@ -67,7 +75,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
             },
 
             // get cache length
-            getMaxCacheLength: function() {
+            getMaxCacheLength: function () {
                 return sgTranslateConfigProvider.maxTranslationCacheLength;
             },
 
@@ -115,22 +123,26 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 // check if key present (if not, don't proceed)
                 if (key) {
 
-
                     // get from cache
                     var fromCache = factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(key)];
 
+                    // get unique
+                    var unique = guid();
+
                     // check
                     if (fromCache) {
-                        factory.currentTranslationResponses[key] = {
+                        factory.currentTranslationResponses[key + "$$" + unique] = {
                             element: element,
                             value: fromCache,
                             attrs: attrs,
-                            hasSgTranslateTitle: fromTitle
+                            hasSgTranslateTitle: fromTitle,
+                            guid: unique,
+                            key: key
                         };
                     } else {
 
                         // add to current requests
-                        factory.currentTranslationRequests[key] = { element: element, attrs: attrs, hasSgTranslateTitle: fromTitle }
+                        factory.currentTranslationRequests[key + "$$" + unique] = { element: element, attrs: attrs, hasSgTranslateTitle: fromTitle, guid: unique, key: key }
                         factory.currentTranslationRequestsLength++;
                     }
                 }
@@ -143,7 +155,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                 var requestsToSend = [];
 
                 for (var req in factory.currentTranslationRequests) {
-                    requestsToSend.push(req);
+                    requestsToSend.push(req.split("$$")[0]);
                 }
 
                 return sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend);
@@ -245,7 +257,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             // list items cache
             listItemsCache: {},
-            listItemsCacheCount:0,
+            listItemsCacheCount: 0,
 
             // get list items
             getListItems: function (url, data) {
@@ -258,7 +270,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 // promise
                 var deferred = service.$q.defer();
-               
+
                 // check
                 if (!fromCache) {
                     service.$http.post(url, data)
@@ -270,7 +282,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                             deferred.resolve(returnData);
                         })
-                        .error(function(returnData) {
+                        .error(function (returnData) {
                             deferred.resolve({});
                         });
                 } else {
@@ -286,7 +298,7 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         }
 
         // get
-        this.$get = ["sgTranslationFactory","$q","$http", function (sgTranslationFactory,$q,$http) {
+        this.$get = ["sgTranslationFactory", "$q", "$http", function (sgTranslationFactory, $q, $http) {
             service.sgTranslationFactory = sgTranslationFactory;
             service.$q = $q;
             service.$http = $http;
@@ -395,25 +407,41 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                         // loop data
                         data.forEach(function (dataItem) {
-
+                            
                             // find element
-                            var foundInRequests = sgTranslationFactory.currentTranslationRequests[dataItem.Key];
+                            var foundInRequests = [];
+                            for (var req in sgTranslationFactory.currentTranslationRequests) {
+                                var item = sgTranslationFactory.currentTranslationRequests[req];
+                                if (item.key == dataItem.Key) {
+                                    foundInRequests.push(item);
+                                }
+                            }
 
                             // check
-                            if (foundInRequests) {
+                            if (foundInRequests.length > 0) {
 
-                                // add to responses and cache
-                                sgTranslationFactory.currentTranslationResponses[dataItem.Key] = {
-                                    element: foundInRequests.element,
-                                    value: dataItem.Value,
-                                    attrs: foundInRequests.attrs,
-                                    hasSgTranslateTitle: foundInRequests.hasSgTranslateTitle
-                                };
+                                for (var foundReq in foundInRequests) {
 
-                                if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
-                                    sgTranslationFactory.translationCache[sgTranslateConfig.cacheKeyMethod(dataItem.Key)] = dataItem.Value;
-                                    sgTranslationFactory.translationCacheLength++;
+                                    var foundItem = foundInRequests[foundReq];
+
+                                    // add to responses and cache
+                                    sgTranslationFactory.currentTranslationResponses[dataItem.Key + "$$" + foundItem.guid] = {
+                                        element: foundItem.element,
+                                        value: dataItem.Value,
+                                        attrs: foundItem.attrs,
+                                        hasSgTranslateTitle: foundItem.hasSgTranslateTitle,
+                                        key: dataItem.Key,
+                                        guid: foundItem.guid
+                                    };
+
+                                    if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
+                                        sgTranslationFactory.translationCache[sgTranslateConfig.cacheKeyMethod(dataItem.Key)] = dataItem.Value;
+                                        sgTranslationFactory.translationCacheLength++;
+                                    }
+
                                 }
+
+                                
                             }
                         });
 
