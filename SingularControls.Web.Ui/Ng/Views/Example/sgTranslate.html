@@ -49,7 +49,7 @@ sgTranslationService
 <pre>
 // configure translate stuff
 app.run(['sgTranslateConfig', '$http', '$rootScope', function (sgTranslateConfigProvider, $http, $rootScope) {
-    
+
     // set language code at startup
     $rootScope.languageCode = 'en-GB';
 
@@ -57,19 +57,27 @@ app.run(['sgTranslateConfig', '$http', '$rootScope', function (sgTranslateConfig
     sgTranslateConfigProvider
 
         // add translation method promise
-        .setTranslationRequestPromise(function (requests) {
+        .setTranslationRequestPromise(function(requests) {
             return $http.post("/api/translation/translations/" + $rootScope.languageCode.toLowerCase(), requests);
         })
 
         // set translation cache length
         .setMaxTranslationCacheLength(1000)
 
+        // NEW - use for showing hiding a loader???
+        .onBeforeRequestSent(function(callback) {
+            console.log("sending");
+            callback();
+        })
+        .onAfterResponseReceived(function(callback) {
+            console.log("received");
+            callback();
+        })
+
         // tell the provider how to create a cache key
-        // useful if switching languages after app has started
         .setCacheKeyMethod(function (key) {
             return $rootScope.languageCode + "$$$" + key;
         });
-
 }]);
 </pre>
 

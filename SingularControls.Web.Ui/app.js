@@ -208,7 +208,7 @@ sgDeviceProviderPreAppStart
                 sgTranslateConfigProvider
 
                     // add translation method promise
-                    .setTranslationRequestPromise(function (requests) {
+                    .setTranslationRequestPromise(function(requests) {
 
                         return $http.post("/api/translation/translations/" + $rootScope.languageCode.toLowerCase(), requests);
 
@@ -216,6 +216,16 @@ sgDeviceProviderPreAppStart
 
                     // set translation cache length
                     .setMaxTranslationCacheLength(1000)
+
+                    // NEW
+                    .onBeforeRequestSent(function(callback) {
+                        console.log("sending");
+                        callback();
+                    })
+                    .onAfterResponseReceived(function(callback) {
+                        console.log("received");
+                        callback();
+                    })
 
                     // tell the provider how to create a cache key
                     .setCacheKeyMethod(function (key) {

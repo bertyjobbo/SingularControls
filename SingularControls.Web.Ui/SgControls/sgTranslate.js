@@ -26,6 +26,20 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         var ts = this;
 
         // PUBLIC!!
+        ts.onBeforeRequestSent = function (method) {
+            ts.onBeforeRequestSentMethod = method;
+            return ts;
+        };
+        ts.onBeforeRequestSentMethod = function (callback) { callback(); };
+
+        // PUBLIC!!
+        ts.onAfterResponseReceived = function (method) {
+            ts.onAfterResponseReceivedMethod = method;
+            return ts;
+        };
+        ts.onAfterResponseReceivedMethod = function (callback) { callback(); };
+
+        // PUBLIC!!
         ts.setTranslationRequestPromise = function (promise) {
             ts.getTranslationRequestPromise = promise;
             return ts;
@@ -200,21 +214,35 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                         requestsToSend.push(req);
                     }
 
-                    // run promise
-                    sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend).success(function (data) {
+                    
+                    // before
+                    sgTranslateConfigProvider.onBeforeRequestSentMethod(function () {
+                        
+                        // run promise
+                        sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend)
+                            .success(function (data) {
 
-                        data.forEach(function (tranlsation) {
-                            output[tranlsation.Key] = tranlsation.Value;
-                            if (factory.translationCacheLength < sgTranslateConfigProvider.maxTranslationCacheLength) {
-                                factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(tranlsation.Key)] = tranlsation.Value;
-                                factory.translationCacheLength++;
-                            }
+                                data.forEach(function (tranlsation) {
+                                    output[tranlsation.Key] = tranlsation.Value;
+                                    if (factory.translationCacheLength < sgTranslateConfigProvider.maxTranslationCacheLength) {
+                                        factory.translationCache[sgTranslateConfigProvider.cacheKeyMethod(tranlsation.Key)] = tranlsation.Value;
+                                        factory.translationCacheLength++;
+                                    }
 
-                        });
+                                });
+                                sgTranslateConfigProvider.onAfterResponseReceivedMethod(function () {
+                                    deferred.resolve(output);
+                                });
 
-                        deferred.resolve(output);
-
+                            })
+                            .error(function () {
+                                sgTranslateConfigProvider.onAfterResponseReceivedMethod(function () {
+                                    deferred.resolve(output);
+                                });
+                            });
                     });
+
+
                 } else {
                     deferred.resolve(output);
                 }
@@ -401,57 +429,66 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
                 if (sgTranslateConfig.getTranslationRequestPromise && sgTranslationFactory.currentTranslationRequestsLength > 0) {
 
-                    // get 
-                    sgTranslationFactory.getTranslationsForCurrentRequest().success(function (data) {
+                    // before
+                    sgTranslateConfig.onBeforeRequestSentMethod(function () {
 
-                        // loop data
-                        data.forEach(function (dataItem) {
+                        // get 
+                        sgTranslationFactory.getTranslationsForCurrentRequest().success(function (data) {
 
-                            // find element
-                            var foundInRequests = [];
+                            // loop data
+                            data.forEach(function (dataItem) {
 
-                            for (var req in sgTranslationFactory.currentTranslationRequests) {
-                                var item = sgTranslationFactory.currentTranslationRequests[req];
-                                if (item.key == dataItem.Key) {
-                                    foundInRequests.push(item);
+                                // find element
+                                var foundInRequests = [];
+
+                                for (var req in sgTranslationFactory.currentTranslationRequests) {
+                                    var item = sgTranslationFactory.currentTranslationRequests[req];
+                                    if (item.key == dataItem.Key) {
+                                        foundInRequests.push(item);
+                                    }
                                 }
-                            }
 
 
-                            // check
-                            if (foundInRequests.length > 0) {
+                                // check
+                                if (foundInRequests.length > 0) {
 
-                                for (var i = 0; i < foundInRequests.length; i++) {
+                                    for (var i = 0; i < foundInRequests.length; i++) {
 
-                                    var foundItem = foundInRequests[i];
+                                        var foundItem = foundInRequests[i];
 
-                                    // add to responses and cache
-                                    sgTranslationFactory.currentTranslationResponses[dataItem.Key + "$$" + foundItem.guid] = {
-                                        element: foundItem.element,
-                                        value: dataItem.Value,
-                                        attrs: foundItem.attrs,
-                                        hasSgTranslateTitle: foundItem.hasSgTranslateTitle,
-                                        key: dataItem.Key,
-                                        guid: foundItem.guid
-                                    };
+                                        // add to responses and cache
+                                        sgTranslationFactory.currentTranslationResponses[dataItem.Key + "$$" + foundItem.guid] = {
+                                            element: foundItem.element,
+                                            value: dataItem.Value,
+                                            attrs: foundItem.attrs,
+                                            hasSgTranslateTitle: foundItem.hasSgTranslateTitle,
+                                            key: dataItem.Key,
+                                            guid: foundItem.guid
+                                        };
 
-                                    if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
-                                        sgTranslationFactory.translationCache[sgTranslateConfig.cacheKeyMethod(dataItem.Key)] = dataItem.Value;
-                                        sgTranslationFactory.translationCacheLength++;
+                                        if (sgTranslationFactory.translationCacheLength < sgTranslateConfig.maxTranslationCacheLength) {
+                                            sgTranslationFactory.translationCache[sgTranslateConfig.cacheKeyMethod(dataItem.Key)] = dataItem.Value;
+                                            sgTranslationFactory.translationCacheLength++;
+                                        }
+
                                     }
 
+
                                 }
+                            });
 
+                            setTranslationsInAggregator(aggregator);
 
-                            }
+                            sgTranslateConfig.onAfterResponseReceivedMethod(function () { });
+
+                        }).error(function (data) {
+                            console.log("Error getting translation data: " +
+                            (data.Message || "Unknown error"));
+                            sgTranslateConfig.onAfterResponseReceivedMethod(function () { });
                         });
 
-                        setTranslationsInAggregator(aggregator);
-
-                    }).error(function (data) {
-                        console.log("Error getting translation data: " +
-                        (data.Message || "Unknown error"));
                     });
+
                 } else {
                     setTranslationsInAggregator(aggregator);
                 }
