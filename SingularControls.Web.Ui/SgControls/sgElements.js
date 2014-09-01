@@ -97,6 +97,10 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         ts.onBeforeHideMethod = undefined;
         ts.showClassName = undefined;
         ts.hideClassName = undefined;
+        ts.loaders = {};
+        ts.namedLoaderElements = {};
+        ts.setLoaders = undefined;
+        ts.namedLoaderEvents = [];
 
         // methods
         ts.onRouteChange = function () {
@@ -123,9 +127,146 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             ts.onBeforeHideMethod = callback;
             return ts;
         }
+        ts.addLoaders = function (theLoaders) {
+
+            ts.setLoaders = function (rootScope) {
+
+
+                ts.theBody = angular.element(document.body);
+                var loaderHtml, key;
+
+
+                // loop and create event shells
+                for (var l in theLoaders) {
+
+                    // set
+                    key = l;
+                    loaderHtml = theLoaders[key].html;
+
+                    // add
+                    ts.loaders[key] = loaderHtml;
+                    ts.namedLoaderElements[key] = [];
+                    ts.namedLoaderEvents.push({
+                        key: key,
+                        html: loaderHtml,
+                        on: theLoaders[key].on,
+                        off: theLoaders[key].off,
+                        beforeShow: theLoaders[key].beforeShow,
+                        beforeHide: theLoaders[key].beforeHide
+                    });
+                }
+
+                // create events
+                ts.namedLoaderEvents.forEach(function (evnt) {
+
+                    // set pre stuff
+                    var showEventName = "sgLoaderShow-" + evnt.key;
+                    if (!evnt.beforeShow) evnt.beforeShow = function (callback) { callback(); }
+                    if (!evnt.beforeHide) evnt.beforeHide = function (callback) { callback(); }
+                    
+                    rootScope.$on(showEventName, function () {
+
+                        evnt.beforeShow(function () {
+
+                            if (!evnt.set) {
+                                
+                                // set
+                                evnt.set = true;
+                                
+                                // find elements
+                                evnt.elementObjects = ts.namedLoaderElements[evnt.key];
+
+                                // find html
+                                evnt.loader = angular.element(ts.loaders[evnt.key]);
+                            }
+
+                            // check
+                            if (evnt.elementObjects && evnt.elementObjects.length > 0) {
+
+                                // loop
+                                evnt.elementObjects.forEach(function (elObj) {
+
+                                    // check fade
+                                    if (evnt.on && evnt.off) {
+                                        elObj.element.addClass(evnt.off);
+                                    } else {
+                                        // check and replace
+                                        if (elObj.replace) {
+                                            elObj.element.__display = elObj.element.css("display");
+                                            elObj.element.css("display", "none");
+                                        }
+                                    }
+
+                                    if (evnt.on && evnt.off && !elObj.added) {
+                                        elObj.added = true;
+                                        elObj.element.after(evnt.loader);
+                                    } else {
+                                        elObj.element.after(evnt.loader);
+                                    }
+                                    
+
+                                });
+                            } else {
+                                // check on / off
+                                if (evnt.on && evnt.off) {
+                                    if (!evnt.added) {
+                                        evnt.added = true;
+                                        ts.theBody.append(evnt.loader);
+                                    }
+                                    evnt.loader.removeClass(evnt.off);
+                                    evnt.loader.addClass(evnt.on);
+                                } else {
+                                    ts.theBody.append(evnt.loader);
+                                }
+
+                            }
+                        });
+
+                    });
+
+                    // hide event
+                    var hideEventName = "sgLoaderHide-" + evnt.key;
+                    rootScope.$on(hideEventName, function () {
+
+                        evnt.beforeHide(function () {
+
+                            // check
+                            if (evnt.elementObjects && evnt.elementObjects.length > 0) {
+
+                                // loop
+                                evnt.elementObjects.forEach(function (elObj) {
+
+                                    // check fade
+                                    if (evnt.on && evnt.off) {
+                                        elObj.element.removeClass(evnt.off);
+                                        elObj.element.addClass(evnt.on);
+                                    }
+
+                                    // check and replace
+                                    if (elObj.replace) {
+                                        elObj.element.css("display", elObj.element.__display);
+                                    }
+                                });
+                            }
+
+                            if (evnt.on && evnt.off) {
+                                evnt.loader.removeClass(evnt.on);
+                                evnt.loader.addClass(evnt.off);
+                            } else {
+                                evnt.loader.remove();
+                            }
+
+
+                        });
+                    });
+
+                });
+            }
+        }
 
         // get
-        ts.$get = [function () {
+        ts.$get = ['$rootScope', function ($rootScope) {
+            ts.setLoaders($rootScope);
             return ts;
         }];
 
@@ -138,80 +279,99 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 
         return {
             restrict: "AC",
-            controller: ['$scope', function ($scope) {
+            link: function (scope, element, attrs) {
 
-                // check not already set
-                if (!$rootScope.sgShowLoaderSet) {
+                // check attrs
+                var namedAttr = attrs.sgLoader;
 
-                    // set flag initial
-                    $rootScope.sgShowLoaderFlag = true;
+                // named
+                if (namedAttr) {
 
-                    // setup rootscope sgLoaderShow function
-                    $rootScope.$on("sgLoaderShow", function () {
+                    // split
+                    var splt = namedAttr.split('|');
+
+                    if (sgLoaderConfig.namedLoaderElements[splt[0]]) {
+
+                        // this is a single element which may need to be shown / hidden
+                        sgLoaderConfig.namedLoaderElements[splt[0]].push({
+                            element: element,
+                            sibling: splt.indexOf('sibling') > -1,
+                            replace: splt.indexOf('replace') > -1
+                        });
+
+                    }
+
+                }
+                else {
+                    $rootScope.$watch(function () {
+                        return $rootScope.sgShowLoaderFlag;
+                    }, function (changedValue) {
+
+                        if (changedValue) {
+
+                            if (sgLoaderConfig.onBeforeShowMethod !== undefined) {
+                                sgLoaderConfig.onBeforeShowMethod(function () {
+                                    element.addClass(sgLoaderConfig.showClassName);
+                                    element.removeClass(sgLoaderConfig.hideClassName);
+                                });
+                            } else {
+                                element.addClass(sgLoaderConfig.showClassName);
+                                element.removeClass(sgLoaderConfig.hideClassName);
+                            }
+
+                        } else {
+
+                            if (sgLoaderConfig.onBeforeHideMethod !== undefined) {
+                                sgLoaderConfig.onBeforeHideMethod(function () {
+                                    element.addClass(sgLoaderConfig.hideClassName);
+                                    element.removeClass(sgLoaderConfig.showClassName);
+                                });
+                            } else {
+                                element.addClass(sgLoaderConfig.hideClassName);
+                                element.removeClass(sgLoaderConfig.showClassName);
+                            }
+                        }
+                    }, true);
+
+
+                    // check not already set
+                    if (!$rootScope.sgShowLoaderSet) {
+
+                        // set flag initial
                         $rootScope.sgShowLoaderFlag = true;
-                    });
 
-                    // setup rootscope sgLoaderHide function
-                    $rootScope.$on("sgLoaderHide", function () {
-                        $rootScope.sgShowLoaderFlag = false;
-                    });
-
-                    // check if show/hide on route change
-                    if (sgLoaderConfig.doOnRouteChange) {
-
-                        // setup route change start event
-                        $rootScope.$on("$routeChangeStart", function () {
+                        // setup rootscope sgLoaderShow function
+                        $rootScope.$on("sgLoaderShow", function () {
                             $rootScope.sgShowLoaderFlag = true;
                         });
 
-                        // setup route change start success event
-                        $rootScope.$on("$routeChangeSuccess", function () {
+                        // setup rootscope sgLoaderHide function
+                        $rootScope.$on("sgLoaderHide", function () {
                             $rootScope.sgShowLoaderFlag = false;
                         });
+
+                        // check if show/hide on route change
+                        if (sgLoaderConfig.doOnRouteChange) {
+
+                            // setup route change start event
+                            $rootScope.$on("$routeChangeStart", function () {
+                                $rootScope.sgShowLoaderFlag = true;
+                            });
+
+                            // setup route change start success event
+                            $rootScope.$on("$routeChangeSuccess", function () {
+                                $rootScope.sgShowLoaderFlag = false;
+                            });
+                        }
+
+                        if (sgLoaderConfig.doOnSgRouteChange) {
+                            $rootScope.sgLoaderOnSgRouteChange = true;
+                        }
+
+                        $rootScope.sgShowLoaderSet = true;
+
                     }
-
-                    if (sgLoaderConfig.doOnSgRouteChange) {
-                        $rootScope.sgLoaderOnSgRouteChange = true;
-                    }
-
-                    $rootScope.sgShowLoaderSet = true;
-
-
-                } else {
-                    throw "You can only use sgLoader on a single element";
                 }
-            }],
-            link: function (scope, element, attrs) {
-
-                $rootScope.$watch(function () {
-                    return $rootScope.sgShowLoaderFlag;
-                }, function (changedValue) {
-
-                    if (changedValue) {
-
-                        if (sgLoaderConfig.onBeforeShowMethod !== undefined) {
-                            sgLoaderConfig.onBeforeShowMethod(function () {
-                                element.addClass(sgLoaderConfig.showClassName);
-                                element.removeClass(sgLoaderConfig.hideClassName);
-                            });
-                        } else {
-                            element.addClass(sgLoaderConfig.showClassName);
-                            element.removeClass(sgLoaderConfig.hideClassName);
-                        }
-
-                    } else {
-
-                        if (sgLoaderConfig.onBeforeHideMethod !== undefined) {
-                            sgLoaderConfig.onBeforeHideMethod(function () {
-                                element.addClass(sgLoaderConfig.hideClassName);
-                                element.removeClass(sgLoaderConfig.showClassName);
-                            });
-                        } else {
-                            element.addClass(sgLoaderConfig.hideClassName);
-                            element.removeClass(sgLoaderConfig.showClassName);
-                        }
-                    }
-                }, true);
             }
         };
     }];
@@ -283,7 +443,6 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 scope.$watch(function () {
                     return scope.$eval(attrs.sgFocusWhen);
                 }, function (newVal) {
-                    console.log(newVal);
                     if (newVal) {
                         element[0].focus();
                     }
@@ -299,13 +458,13 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
 
             restrict: "A",
             link: function (scope, element, attrs) {
-                
+
 
                 if (attrs.sgAlert) {
 
                     var splitter = attrs.sgAlert.split("|");
 
-                    $rootScope.$on("sgAlert-" +splitter[0], function (event, data) {
+                    $rootScope.$on("sgAlert-" + splitter[0], function (event, data) {
                         element.html(data);
                         element.removeClass(splitter[2]);
                         element.addClass(splitter[1]);
@@ -705,6 +864,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
             }
         }
     }]);
-    
+
+
 
 })(SgControls.ElementsModule, SgControls);

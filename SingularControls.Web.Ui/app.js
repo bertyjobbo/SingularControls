@@ -73,7 +73,40 @@ sgDeviceProviderPreAppStart
                     .showClass("sg-loader-show")
                     .hideClass("sg-loader-hide")
                     .onBeforeShow(dummyFunc)
-                    .onBeforeHide(dummyFunc);
+                    .onBeforeHide(dummyFunc)
+                    .addLoaders({
+                        loader1: { html: "<span class='small-loader-1'>Loader 1 - replaces element</span>" },
+                        loader2: { html: "<span class='small-loader-2'>Loader 2 - 'after' element</span>" },
+                        loader3: {
+                            html: "<span class='small-loader-3'>Loader 3 - element with fade</span>",
+                            on: 'sg-loader-show',
+                            off: 'sg-loader-hide',
+                            beforeShow: function (callback) {
+                                console.log("beforeShow inline");
+                                callback();
+                            },
+                            beforeHide:function(callback) {
+                                console.log("beforeHide inline");
+                                callback();
+                            }
+                        },
+                        main: {
+                            html: "<div><div class=\"loader-overlay\"></div><div class=\"loader-inner\"></div></div>",
+                            on: 'sg-loader-show',
+                            off: 'sg-loader-hide',
+                            beforeShow: function (callback) {
+                                console.log("beforeShow");
+                                callback();
+                            },
+                            beforeHide:function(callback) {
+                                console.log("beforeHide");
+                                callback();
+                            }
+                        },
+                        main2: {
+                            html: "<div><div class=\"loader-overlay\"></div><div class=\"loader-inner\"></div></div>"
+                        },
+                    });
             }]);
 
             // configure forms
@@ -131,7 +164,7 @@ sgDeviceProviderPreAppStart
                 }])
 
                 // example
-                .controller("exampleController", ["$window", "$scope", "$rootScope", "sgTranslationService", function ($window, $scope, $rootScope, sgTranslationService) {
+                .controller("exampleController", ["$window", "$scope", "$rootScope", "sgTranslationService", "$timeout", function ($window, $scope, $rootScope, sgTranslationService, $timeout) {
 
                     // translate
                     $scope.sgtranslateAction = function () {
@@ -155,10 +188,41 @@ sgDeviceProviderPreAppStart
 
                     // element
                     $scope.sgelementsAction = function () {
-                        
+
                         $scope.showAlert = function () {
                             $scope.$emit("sgAlert-main", "I am an alert");
                         };
+
+                        $scope.load1 = function() {
+                            $scope.$emit("sgLoaderShow-loader1");
+                            $timeout(function() {
+                                $scope.$emit("sgLoaderHide-loader1");
+                            }, 2000);
+                        },
+                        $scope.load2 = function () {
+                            $scope.$emit("sgLoaderShow-loader2");
+                            $timeout(function () {
+                                $scope.$emit("sgLoaderHide-loader2");
+                            }, 2000);
+                        }
+                        $scope.load3 = function () {
+                            $scope.$emit("sgLoaderShow-loader3");
+                            $timeout(function () {
+                                $scope.$emit("sgLoaderHide-loader3");
+                            }, 2000);
+                        }
+                        $scope.loadMain = function () {
+                            $scope.$emit("sgLoaderShow-main");
+                            $timeout(function () {
+                                $scope.$emit("sgLoaderHide-main");
+                            }, 2000);
+                        }
+                        $scope.loadMain2 = function () {
+                            $scope.$emit("sgLoaderShow-main2");
+                            $timeout(function () {
+                                $scope.$emit("sgLoaderHide-main2");
+                            }, 2000);
+                        }
                     };
 
                 }]);
@@ -208,7 +272,7 @@ sgDeviceProviderPreAppStart
                 sgTranslateConfigProvider
 
                     // add translation method promise
-                    .setTranslationRequestPromise(function(requests) {
+                    .setTranslationRequestPromise(function (requests) {
 
                         return $http.post("/api/translation/translations/" + $rootScope.languageCode.toLowerCase(), requests);
 
@@ -218,11 +282,11 @@ sgDeviceProviderPreAppStart
                     .setMaxTranslationCacheLength(1000)
 
                     // NEW
-                    .onBeforeRequestSent(function(callback) {
+                    .onBeforeRequestSent(function (callback) {
                         console.log("sending");
                         callback();
                     })
-                    .onAfterResponseReceived(function(callback) {
+                    .onAfterResponseReceived(function (callback) {
                         console.log("received");
                         callback();
                     })
@@ -237,8 +301,8 @@ sgDeviceProviderPreAppStart
             }]);
 
             // other methods
-            app.run(["$rootScope", function($rootScope) {
-                $rootScope.stringify=function(obj) {
+            app.run(["$rootScope", function ($rootScope) {
+                $rootScope.stringify = function (obj) {
                     return JSON.stringify(obj);
                 }
             }]);

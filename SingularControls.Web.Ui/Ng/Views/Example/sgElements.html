@@ -90,6 +90,9 @@ app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
         
         // [OPTIONAL] method to be called before hide loader
         .onBeforeHide(dummyBeforeHide);
+
+        // [OPTIONAL] for 'named' loaders
+        .addLoaders(see below for more detail);
 }]);
 </pre>
 
@@ -104,6 +107,132 @@ $rootScope.$emit("sgLoaderShow");
 // hide loader
 $rootScope.$emit("sgLoaderHide");
 </pre>
+<h4>Named loaders</h4>
+<p>There is also an option to have multiple "named" loaders. These will either show / hide or replace / sit next to any element with the tag <code>sg-loader="[name]"</code> with the contents specific in <code>.addLoaders(loaders)</code> in the config above, when a the event <code>"sgLoaderShow-[name]"</code> is called. Then be hidden again when <code>sgLoaderHide-[name]</code> is called.</p>
+<p><input sg-loader="loader1|replace" type="text" /><button type="button" ng-click="load1()" sg-loader="loader1|replace">Show / hide with replace</button></p>
+<p><input type="text" /><button type="button" ng-click="load2()">Show / hide with no replace</button><span sg-loader="loader2"></span></p>
+<p><input type="text" sg-loader="loader3" /><button type="button" ng-click="load3()" sg-loader="loader3">Show / hide with fade classes </button></p>
+<p>
+    <button type="button" ng-click="loadMain()">Show 'global' with fade</button>
+    <button type="button" ng-click="loadMain2()">Show 'global' without fade</button>
+</p>
+<p>The source for this is below:</p>
+<pre>// CONTINUATION OF app.js CONFIG FROM ABOVE
+.addLoaders({
+    loader1: { html: &quot;&lt;span class=&#39;small-loader-1&#39;&gt;Loader 1 - replaces element&lt;/span&gt;&quot; },
+    loader2: { html: &quot;&lt;span class=&#39;small-loader-2&#39;&gt;Loader 2 - &#39;after&#39; element&lt;/span&gt;&quot; },
+    loader3: {
+        html: &quot;&lt;span class=&#39;small-loader-3&#39;&gt;Loader 3 - element with fade&lt;/span&gt;&quot;,
+        on: &#39;sg-loader-show&#39;,
+        off: &#39;sg-loader-hide&#39;,
+        beforeShow: function (callback) {
+            console.log(&quot;beforeShow inline&quot;);
+            callback();
+        },
+        beforeHide:function(callback) {
+            console.log(&quot;beforeHide inline&quot;);
+            callback();
+        }
+    },
+    main: {
+        html: &quot;&lt;div&gt;&lt;div class=\&quot;loader-overlay\&quot;&gt;&lt;/div&gt;&lt;div class=\&quot;loader-inner\&quot;&gt;&lt;/div&gt;&lt;/div&gt;&quot;,
+        on: &#39;sg-loader-show&#39;,
+        off: &#39;sg-loader-hide&#39;,
+        beforeShow: function (callback) {
+            console.log(&quot;beforeShow&quot;);
+            callback();
+        },
+        beforeHide:function(callback) {
+            console.log(&quot;beforeHide&quot;);
+            callback();
+        }
+    },
+    main2: {
+        html: &quot;&lt;div&gt;&lt;div class=\&quot;loader-overlay\&quot;&gt;&lt;/div&gt;&lt;div class=\&quot;loader-inner\&quot;&gt;&lt;/div&gt;&lt;/div&gt;&quot;
+    },
+});
+
+// HTML
+&lt;p&gt;&lt;input sg-loader=&quot;loader1|replace&quot; type=&quot;text&quot; /&gt;&lt;button type=&quot;button&quot; ng-click=&quot;load1()&quot; sg-loader=&quot;loader1|replace&quot;&gt;Show / hide with replace&lt;/button&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type=&quot;text&quot; /&gt;&lt;button type=&quot;button&quot; ng-click=&quot;load2()&quot;&gt;Show / hide with no replace&lt;/button&gt;&lt;span sg-loader=&quot;loader2&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;input type=&quot;text&quot; sg-loader=&quot;loader3&quot; /&gt;&lt;button type=&quot;button&quot; ng-click=&quot;load3()&quot; sg-loader=&quot;loader3&quot;&gt;Show / hide with fade classes &lt;/button&gt;&lt;/p&gt;
+&lt;p&gt;
+    &lt;button type=&quot;button&quot; ng-click=&quot;loadMain()&quot;&gt;Show &#39;global&#39; with fade&lt;/button&gt;
+    &lt;button type=&quot;button&quot; ng-click=&quot;loadMain2()&quot;&gt;Show &#39;global&#39; without fade&lt;/button&gt;
+&lt;/p&gt;
+
+// BUTTON CALLS IN CONTROLLER
+$scope.load1 = function() {
+    $scope.$emit(&quot;sgLoaderShow-loader1&quot;);
+    $timeout(function() {
+        $scope.$emit(&quot;sgLoaderHide-loader1&quot;);
+    }, 2000);
+},
+$scope.load2 = function () {
+    $scope.$emit(&quot;sgLoaderShow-loader2&quot;);
+    $timeout(function () {
+        $scope.$emit(&quot;sgLoaderHide-loader2&quot;);
+    }, 2000);
+}
+$scope.load3 = function () {
+    $scope.$emit(&quot;sgLoaderShow-loader3&quot;);
+    $timeout(function () {
+        $scope.$emit(&quot;sgLoaderHide-loader3&quot;);
+    }, 2000);
+}
+$scope.loadMain = function () {
+    $scope.$emit(&quot;sgLoaderShow-main&quot;);
+    $timeout(function () {
+        $scope.$emit(&quot;sgLoaderHide-main&quot;);
+    }, 2000);
+}
+$scope.loadMain2 = function () {
+    $scope.$emit(&quot;sgLoaderShow-main2&quot;);
+    $timeout(function () {
+        $scope.$emit(&quot;sgLoaderHide-main2&quot;);
+    }, 2000);
+}
+</pre>
+
+<p>Finally, the following table shows what this functionality can / can't do:</p>
+<table>
+    <thead>
+        <tr>
+            <th>App config</th>
+            <th>HTML</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Just html</td>
+            <td><code>sg-loader="name"</code></td>
+            <td>Will display after element/s</td>
+        </tr>
+        <tr>
+            <td>Just html</td>
+            <td><code>sg-loader="name|replace"</code></td>
+            <td>Will display after element/s but will hide / show those elements too</td>
+        </tr>
+        <tr>
+            <td>Html + <code>.on</code> AND <code>.off</code> css classes</td>
+            <td><code>sg-loader="name"</code></td>
+            <td>Will display after element/s (using on/off classes) but will also apply reverse on/off classes to elements</td>
+        </tr>
+        <tr>
+            <td>Html + <code>.on</code> AND <code>.off</code> css classes</td>
+            <td>None</td>
+            <td>Will display after body tag (using on/off classes)</td>
+        </tr>
+        <tr>
+            <td>Html</td>
+            <td>None</td>
+            <td>Will display after body tag and show/hide</td>
+        </tr>
+    </tbody>
+</table>
+
+<p class="alert-warning"><strong>Note:</strong> other configurations are unlikely to work!</p>
 
 <h3>4. Collapsable nav</h3>
 <p>Similar to Twitter Bootstrap, the <code>sgNav</code> directive is the "icing on the cake" for creating a collapsible header / navigation structure. The basic HTML is as follows (taken from this site 2014-08-07):</p>
@@ -182,11 +311,9 @@ $rootScope.$emit("sgLoaderHide");
 <span class="hidden alert-danger" sg-alert="main|showing|hidden|3000"></span></xmp>
 // JS
 $scope.showAlert = function() {
-
     $scope.$emit("sgAlert-main", "I AM AN ALERT");
     // OR
     $rootScope.$emit("sgAlert-main", "I AM AN ALERT");
-
 };
 </pre>
 <p>In terms of the attribute split by the <code>|</code> symbol, the paramters are (in order): <em>uniqueName,onClass,offClass,offDelay</em>. And the the <code>$emit</code> code should be <em>sgAlert-{uniqueName}</em>/</p>
