@@ -89,3 +89,11 @@ header > h1 > a {
         transform: rotate(360deg);
     }
 }
+
+.replace-loader {
+    background-image: url('reload.png');
+    background-repeat: no-repeat;
+    width: 5em;
+    height: 2em;
+    background-size: 100%;
+}

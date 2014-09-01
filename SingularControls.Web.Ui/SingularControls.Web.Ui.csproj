@@ -137,7 +137,7 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="packages.config" />
-    <Content Include="SgControls\pxFile.css" />
+    <Content Include="SgControls\sgFile.css" />
     <Content Include="SgControls\sgDevice.js" />
     <Content Include="SgControls\sgDevice.min.js">
       <DependentUpon>sgDevice.js</DependentUpon>
