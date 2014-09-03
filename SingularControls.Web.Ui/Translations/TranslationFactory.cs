@@ -15,7 +15,16 @@ namespace SingularControls.Web.Ui.Translations
         /// <returns></returns>
         public IList<KeyValuePair<string, string>> GetTranslations(IList<string> requestedKeys, string languageCode)
         {
-            return requestedKeys.Select(x => new KeyValuePair<string, string>(x, "--" + x + "--")).ToList();
+            return requestedKeys.Select(x =>
+            {
+                if (x.Contains(":"))
+                {
+                    var splt = x.Split(':');
+                    return new KeyValuePair<string, string>(x, "[T]" + splt[1] + "[/T]");
+                }
+                return new KeyValuePair<string, string>(x, "[T]" + x + "[/T]");
+
+            }).ToList();
         }
     }
 }

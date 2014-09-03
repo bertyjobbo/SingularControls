@@ -41,6 +41,20 @@ sgTranslationService
     });
 </pre>
 
+<h3>Example 7 - from JavaScript (ish)</h3>
+<p>There are also <code>$rootScope</code> methods which can be called either from controller or view. They are <code>$scope.getSgTranslation(key)</code>, <code>$scope.getSgTranslationPromise(key)</code> and <code>$scope.clearSgTranslationCache()</code>.</p>
+<p>{{ getSgTranslation('This should have a translation') }}</p>
+<p>{{ TranslatedValueFromRootScope }}</p>
+<pre ng-non-bindable>// controller
+$scope.getSgTranslationPromise(&quot;This is from GetTranslationPromise in the controller&quot;).then(function(d) {
+    $scope.TranslatedValueFromRootScope = d;
+});
+
+// html
+&lt;p&gt;{{ getSgTranslation(&#39;This should have a translation&#39;) }}&lt;/p&gt;
+&lt;p&gt;{{ TranslatedValueFromRootScope }}&lt;/p&gt;
+</pre>
+
 
 <h3>Configuration</h3>
 <p>In these examples, the translation calls a web service which simply looks at the requested value and returns it with some decoration. But obviously this would be replaced by whatever data call you needed to make. The configuration example below shows this. Also not the max cache length - all translations are cached until this max length has been reached.</p>
@@ -77,7 +91,10 @@ app.run(['sgTranslateConfig', '$http', '$rootScope', function (sgTranslateConfig
         // tell the provider how to create a cache key
         .setCacheKeyMethod(function (key) {
             return $rootScope.languageCode + "$$$" + key;
-        });
+        })
+
+        // tell the provider whether or not to create $rootScope methods
+        .addRootScopeMethods(true);
 }]);
 </pre>
 

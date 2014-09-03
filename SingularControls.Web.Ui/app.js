@@ -85,7 +85,7 @@ sgDeviceProviderPreAppStart
                                 console.log("beforeShow inline");
                                 callback();
                             },
-                            beforeHide:function(callback) {
+                            beforeHide: function (callback) {
                                 console.log("beforeHide inline");
                                 callback();
                             }
@@ -98,7 +98,7 @@ sgDeviceProviderPreAppStart
                                 console.log("beforeShow");
                                 callback();
                             },
-                            beforeHide:function(callback) {
+                            beforeHide: function (callback) {
                                 console.log("beforeHide");
                                 callback();
                             }
@@ -177,6 +177,10 @@ sgDeviceProviderPreAppStart
                                 $scope.translation2 = data["Common:Example 2 using controller"];
                                 $scope.$emit("sgLoaderHide");
                             });
+
+                        $scope.getSgTranslationPromise("This is from GetTranslationPromise in the controller").then(function (d) {
+                            $scope.TranslatedValueFromRootScope = d;
+                        });
                     };
 
                     // route
@@ -193,9 +197,9 @@ sgDeviceProviderPreAppStart
                             $scope.$emit("sgAlert-main", "I am an alert");
                         };
 
-                        $scope.load1 = function() {
+                        $scope.load1 = function () {
                             $scope.$emit("sgLoaderShow-loader1");
-                            $timeout(function() {
+                            $timeout(function () {
                                 $scope.$emit("sgLoaderHide-loader1");
                             }, 2000);
                         },
@@ -296,7 +300,10 @@ sgDeviceProviderPreAppStart
 
                         return $rootScope.languageCode + "$$$" + key;
 
-                    });
+                    })
+
+                    // tell the provider whether or not to create $rootScope methods
+                    .addRootScopeMethods(true);
 
             }]);
 

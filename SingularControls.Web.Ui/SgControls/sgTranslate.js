@@ -40,6 +40,13 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
         ts.onAfterResponseReceivedMethod = function (callback) { callback(); };
 
         // PUBLIC!!
+        ts.addRootScopeMethodsObject = true;
+        ts.addRootScopeMethods = function (add) {
+            ts.addRootScopeMethodsObject = add;
+            return ts;
+        }
+
+        // PUBLIC!!
         ts.setTranslationRequestPromise = function (promise) {
             ts.getTranslationRequestPromise = promise;
             return ts;
@@ -214,10 +221,10 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
                         requestsToSend.push(req);
                     }
 
-                    
+
                     // before
                     sgTranslateConfigProvider.onBeforeRequestSentMethod(function () {
-                        
+
                         // run promise
                         sgTranslateConfigProvider.getTranslationRequestPromise(requestsToSend)
                             .success(function (data) {
@@ -495,6 +502,51 @@ SingularControls.TranslateModule = angular.module("sgTranslate", ['ng']);
 
             }
         };
+
+    }]);
+
+    // setup root scope
+    app.run(['$rootScope', 'sgTranslateConfig', 'sgTranslationService', 'sgTranslationFactory', '$q', function ($rootScope, sgTranslateConfig, sgTranslationService, sgTranslationFactory, $q) {
+
+        // check
+        if (sgTranslateConfig.addRootScopeMethodsObject) {
+
+            // already requested
+            $rootScope.translationsRequested = [];
+
+            // get a translation
+            $rootScope.getSgTranslation = function (translation) {
+
+                var key = sgTranslateConfig.cacheKeyMethod(translation);
+                var alreadyRequested = $rootScope.translationsRequested.indexOf(key) > -1;
+
+                if (!sgTranslationFactory.translationCache[key] && !alreadyRequested) {
+
+                    $rootScope.translationsRequested.push(key);
+                    sgTranslationService.getTranslations([translation]).then(function(t) {});
+                }
+
+                return sgTranslationFactory.translationCache[key];
+
+            };
+
+            // get a translation promise
+            $rootScope.getSgTranslationPromise = function (translation) {
+                var deferred = $q.defer();
+                sgTranslationService.getTranslations([translation]).then(function(data) {
+                    deferred.resolve(data[translation]);
+                });
+                return deferred.promise;
+            };
+
+            // clear cache
+            $rootScope.clearSgTranslationCache = function () {
+
+                $rootScope.translationsRequested = [];
+                sgTranslationService.emptyCache();
+
+            }
+        }
 
     }]);
 
