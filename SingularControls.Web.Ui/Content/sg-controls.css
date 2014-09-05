@@ -58,15 +58,6 @@ p {
   margin: 0 0 16px 0;
   font-size: 14.4px;
 }
-.padding {
-  padding: 8px;
-}
-.padding-double {
-  padding: 16px;
-}
-.padding-half {
-  padding: 4px;
-}
 section {
   overflow: hidden;
 }
@@ -95,6 +86,24 @@ blockquote {
 }
 /*#endregion elements */
 /*#region classes*/
+.padding {
+  padding: 8px;
+}
+.padding-double {
+  padding: 16px;
+}
+.padding-half {
+  padding: 4px;
+}
+.has-floats {
+  overflow: hidden;
+}
+.float-left {
+  float: left;
+}
+.float-right {
+  float: right !important;
+}
 .hidden {
   display: none;
 }

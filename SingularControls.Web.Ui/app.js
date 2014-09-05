@@ -227,6 +227,11 @@ sgDeviceProviderPreAppStart
                                 $scope.$emit("sgLoaderHide-main2");
                             }, 2000);
                         }
+
+                        $scope.PlaceSelected=function(place) {
+                            console.log(place);
+                            $scope.Place = place;
+                        }
                     };
 
                 }]);

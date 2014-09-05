@@ -90,7 +90,6 @@ app.config(['sgLoaderConfigProvider', function (sgLoaderConfigProvider) {
         
         // [OPTIONAL] method to be called before hide loader
         .onBeforeHide(dummyBeforeHide);
-
         // [OPTIONAL] for 'named' loaders
         .addLoaders(see below for more detail);
 }]);
@@ -151,7 +150,6 @@ $rootScope.$emit("sgLoaderHide");
         html: &quot;&lt;div&gt;&lt;div class=\&quot;loader-overlay\&quot;&gt;&lt;/div&gt;&lt;div class=\&quot;loader-inner\&quot;&gt;&lt;/div&gt;&lt;/div&gt;&quot;
     },
 });
-
 // HTML
 &lt;p&gt;&lt;input sg-loader=&quot;loader1|replace&quot; type=&quot;text&quot; /&gt;&lt;button type=&quot;button&quot; ng-click=&quot;load1()&quot; sg-loader=&quot;loader1|replace&quot;&gt;Show / hide with replace&lt;/button&gt;&lt;/p&gt;
 &lt;p&gt;&lt;input type=&quot;text&quot; /&gt;&lt;button type=&quot;button&quot; ng-click=&quot;load2()&quot;&gt;Show / hide with no replace&lt;/button&gt;&lt;span sg-loader=&quot;loader2&quot;&gt;&lt;/span&gt;&lt;/p&gt;
@@ -160,7 +158,6 @@ $rootScope.$emit("sgLoaderHide");
     &lt;button type=&quot;button&quot; ng-click=&quot;loadMain()&quot;&gt;Show &#39;global&#39; with fade&lt;/button&gt;
     &lt;button type=&quot;button&quot; ng-click=&quot;loadMain2()&quot;&gt;Show &#39;global&#39; without fade&lt;/button&gt;
 &lt;/p&gt;
-
 // BUTTON CALLS IN CONTROLLER
 $scope.load1 = function() {
     $scope.$emit(&quot;sgLoaderShow-loader1&quot;);
@@ -326,3 +323,43 @@ $scope.showAlert = function() {
 <p>The <code>sg-timeout-class</code> directive allows you to add a class, then wait, then add another class:</p>
 <pre><xmp><p sg-timeout-class="fade-in-200|fade-out-200|2000">Fade in / out</p></xmp></pre>
 <p>So when the element compiles, it will add the first css class, wait for the specified milliseconds, then add the second class.</p>
+
+<h3>10. Google place search</h3>
+<p>The <code>sg-google-place-search</code> puts an input box on the page which searches for places via Google and returns the data via a callback function. When you select a place below, have a look at the console for the data that is returned in the <code>on-place-selected($googlePlace)</code> function.</p>
+<div class="has-floats pc-100">
+    <div class="pc-35">
+        <p>
+            <sg-google-place-search 
+                sg-id="google_place_search" 
+                sg-style="width: 96%;" 
+                sg-class='form-control' 
+                on-place-selected="PlaceSelected($googlePlace)">
+            </sg-google-place-search>
+        </p>
+        <iframe id="iframe" style="border:none; padding:0; overflow: hidden; height: 300px;" class="pc-100" ng-src="{{ Place.IFrameTrustedSrc }}"></iframe>
+    </div>
+    <div class="pc-60 float-right">
+<pre>
+// HTML
+&lt;p&gt;
+    &lt;sg-google-place-search 
+        sg-id=&quot;google_place_search&quot; 
+        sg-style=&quot;width: 100%;&quot; 
+        sg-class=&#39;form-control&#39; 
+        on-place-selected=&quot;PlaceSelected($googlePlace)&quot;&gt;
+    &lt;/sg-google-place-search&gt;
+&lt;/p&gt;
+&lt;iframe id=&quot;iframe&quot; style=&quot;border:none; padding:0; overflow: hidden; height: 300px;&quot; class=&quot;pc-100&quot; ng-src=&quot;{{ Place.IFrameTrustedSrc }}&quot;&gt;&lt;/iframe&gt;
+
+
+
+// CONTROLLER
+$scope.PlaceSelected=function(place) {
+    console.log(place);
+    $scope.Place = place;
+}
+</pre>
+    </div>
+</div>
+
+

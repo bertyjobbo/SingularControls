@@ -197,15 +197,7 @@ p {
     font-size: @font-size * 0.9;
 }
 
-.padding{
-    padding: @padding;
-}
-.padding-double{
-    padding: @padding*2;
-}
-.padding-half{
-    padding: @padding /2;
-}
+
 
 section {
     .containsFloatedElements;
@@ -239,6 +231,28 @@ blockquote {
 /*#endregion elements */
 
 /*#region classes*/
+
+.padding{
+    padding: @padding;
+}
+.padding-double{
+    padding: @padding*2;
+}
+.padding-half{
+    padding: @padding /2;
+}
+
+.has-floats{
+    .containsFloatedElements;
+}
+
+.float-left{
+    float:left;
+}
+
+.float-right{
+    float:right !important;
+}
 
 .hidden {
     display: none;

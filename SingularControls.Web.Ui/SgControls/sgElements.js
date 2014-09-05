@@ -163,16 +163,16 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                     var showEventName = "sgLoaderShow-" + evnt.key;
                     if (!evnt.beforeShow) evnt.beforeShow = function (callback) { callback(); }
                     if (!evnt.beforeHide) evnt.beforeHide = function (callback) { callback(); }
-                    
+
                     rootScope.$on(showEventName, function () {
 
                         evnt.beforeShow(function () {
 
                             if (!evnt.set) {
-                                
+
                                 // set
                                 evnt.set = true;
-                                
+
                                 // find elements
                                 evnt.elementObjects = ts.namedLoaderElements[evnt.key];
 
@@ -203,7 +203,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                                     } else {
                                         elObj.element.after(evnt.loader);
                                     }
-                                    
+
 
                                 });
                             } else {
@@ -865,6 +865,285 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         }
     }]);
 
+    // DIRECTIVES
+    app.directive("sgGooglePlaceSearch", ["$sce", "$timeout", function ($sce, $timeout) {
 
+        // get iframe url
+        var getIframeUrl = function (googleObject) {
+
+            var url = "https://maps.google.com/maps?q=" + googleObject.formatted_address + "&output=embed";
+
+            var trust = $sce.trustAsResourceUrl(url);
+
+            return trust;
+        }
+
+        // get street nuber and route
+        var getStreetNumberAndRoute = function (googleObject) {
+
+            // start
+            var output = "";
+
+            // collection
+            var streetNumbers = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("street_number") > -1;
+            });
+
+            if (streetNumbers.length > 0) output += streetNumbers[0].long_name;
+
+            // collection
+            var routes = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("route") > -1;
+            });
+
+            if (routes.length > 0) output += (output == "" ? "" : " ") + routes[0].long_name;
+
+            return output;
+        }
+
+        // get street nuber and route
+        var getAddressLine = function (googleObject, numb) {
+
+            if (numb == 1) return getStreetNumberAndRoute(googleObject);
+
+            var key = "sublocality_level_" + (numb - 1);
+
+            // start
+            var output = "";
+
+            // collection
+            var addLines = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf(key) > -1;
+            });
+
+
+            if (addLines.length < 1) {
+                addLines = googleObject.address_components.filter(function (item) {
+                    return item.types.indexOf("locality") > -1;
+                });
+            }
+
+            if (addLines.length > 0) {
+                output += addLines[0].long_name;
+            }
+
+            
+            return output;
+        }
+
+        // get town / city
+        var getTownCity = function (googleObject) {
+
+            // start
+            var output = "";
+
+            // collection
+            var streetNumbers = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("postal_town") > -1;
+            });
+
+            if (streetNumbers.length > 0) output += streetNumbers[0].long_name;
+
+            return output;
+        }
+
+        // get town / city
+        var getCountyState = function (googleObject) {
+
+            // start
+            var output = "";
+
+            // collection
+            var states = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("administrative_area_level_1") > -1;
+            });
+
+            if (states.length < 1) {
+                states = googleObject.address_components.filter(function (item) {
+                    return item.types.indexOf("administrative_area_level_2") > -1;
+                });
+            }
+
+            if (states.length > 0) output += states[0].long_name;
+
+            return output;
+        }
+
+        // get town / city
+        var getPostcodeZip = function (googleObject) {
+
+            // start
+            var output = "";
+
+            // collection
+            var streetNumbers = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("postal_code") > -1;
+            });
+
+            if (streetNumbers.length > 0) output += streetNumbers[0].long_name;
+
+            return output;
+        }
+
+        // get town / city
+        var getCountry = function (googleObject) {
+
+            // start
+            var output = "";
+
+            // collection
+            var streetNumbers = googleObject.address_components.filter(function (item) {
+                return item.types.indexOf("country") > -1;
+            });
+
+            if (streetNumbers.length > 0) output += streetNumbers[0].long_name;
+
+            return output;
+        }
+
+        // check us
+        var checkUsCounty = function (theOutput, googleObject) {
+
+            if (theOutput.TownCity == "") {
+                // start
+                var output = "";
+
+                // get
+                var counties = googleObject.address_components.filter(function (item) {
+                    return item.types.indexOf("administrative_area_level_2") > -1;
+                });
+
+
+                if (counties.length > 0) output += counties[0].long_name;
+
+                theOutput.TownCity = output;
+            }
+
+        }
+
+        // convert object
+        var createUsefulObject = function (googleObject) {
+
+            // get iframe url
+            var iframeUrl = getIframeUrl(googleObject);
+
+            // initial output
+            var output = {
+                AddressLine1: getAddressLine(googleObject, 1),
+                AddressLine2: getAddressLine(googleObject, 2),
+                AddressLine3: getAddressLine(googleObject, 3),
+                AddressLine4: getAddressLine(googleObject, 4),
+                TownCity: getTownCity(googleObject),
+                CountyState: getCountyState(googleObject),
+                PostcodeZip: getPostcodeZip(googleObject),
+                Country: getCountry(googleObject),
+                MapLink: googleObject.url,
+                IFrameTrustedSrc: iframeUrl,
+                GoogleObject: googleObject
+            }
+
+            if (output.AddressLine4 == output.AddressLine3) {
+                output.AddressLine4 = "";
+            } else {
+                if (output.AddressLine4 == output.TownCity) { output.AddressLine4 = ""; }
+            }
+            if (output.AddressLine3 == output.AddressLine2) {
+                output.AddressLine3 = "";
+            } else {
+                if (output.AddressLine3 == output.TownCity) { output.AddressLine3 = ""; }
+            }
+            if (output.AddressLine2 == output.AddressLine1) {
+                output.AddressLine2 = "";
+            } else {
+                if (output.AddressLine2 == output.TownCity) { output.AddressLine2 = ""; }
+            }
+
+
+            // check us county
+            checkUsCounty(output, googleObject);
+            if (output.AddressLine4 == output.TownCity || output.AddressLine4 == output.CountyState) output.AddressLine4 = "";
+
+
+            // 
+            return output;
+
+        }
+
+        // set link
+        var setLink = function (scope, element, attrs) {
+
+            // add text box
+            element.after("<input id='" + attrs.sgId + "' style='" + attrs.sgStyle + "' class='" + attrs.sgClass + "' type='text' class='form-control' autocomplete='off' />");
+
+            // create ac
+            var autocomplete = new window.google.maps.places.Autocomplete(element.next("input:first")[0], {});
+
+            // add change listener
+            window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+
+                // get place
+                var loc = autocomplete.getPlace();
+
+                if (loc.address_components) {
+
+                    // create and fire
+                    var obj = createUsefulObject(loc);
+                    scope.$apply(function () {
+                        scope.placeFoundMethod({ $googlePlace: obj });
+                    });
+                }
+            });
+
+            // remove
+            if (element[0].tagName == "SG-GOOGLE-PLACE-SEARCH") element.remove();
+
+        }
+
+        // counters
+        var tryCounter = 0, maxCounter = 50;
+
+        // inner
+        var inner = function (scope, element, attrs) {
+
+            if (tryCounter == maxCounter) {
+                element.after("Error with Google Place Search directive: Google maps JavaScript not loaded. Load 'http://maps.googleapis.com/maps/api/js?libraries=places&sensore=false&callback=gMapsCallbackForGooglePlaceSearchRj' manually into your main page");
+                element.remove();
+                return;
+
+            } else {
+                $timeout(function () {
+                    if (window.google !== undefined && window.google.maps !== undefined && window.google.maps.places !== undefined && window.google.maps.places.Autocomplete !== undefined) {
+                        //console.log("Loaded after " + tryCounter + " tries");
+                        setLink(scope, element, attrs);
+
+                    } else {
+                        tryCounter++;
+                        inner(scope, element, attrs);
+                    }
+                }, 100);
+            }
+        }
+
+        return {
+
+            restrict: "AEC",
+            scope: { placeFoundMethod: '&onPlaceSelected' },
+            link: function (scope, element, attrs) {
+
+                // set window func for callback
+                window.gMapsCallbackForGooglePlaceSearchRj = function () {
+                    inner(scope, element, attrs);
+                }
+
+                // set script tag
+                var scriptTag = document.createElement('script');
+                scriptTag.setAttribute("src", "http://maps.googleapis.com/maps/api/js?libraries=places&sensore=false&callback=gMapsCallbackForGooglePlaceSearchRj");
+                document.body.appendChild(scriptTag);
+
+
+            }
+        }
+
+    }]);
 
 })(SgControls.ElementsModule, SgControls);
