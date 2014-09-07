@@ -53,7 +53,7 @@ sgDeviceProviderPreAppStart
                         return "/NgView/GetAreaView/" + area + "/" + controller + "/" + action;
                     })
                     .onPageNotFound("/system/pagenotfound/")
-                    .onError("/system/error/")
+                    //.onError("/system/error/")
                     .finalize($routeProvider);
 
             }]);

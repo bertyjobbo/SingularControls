@@ -865,7 +865,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         }
     }]);
 
-    // DIRECTIVES
+    /* GOOGLE PLACE SEARCH */
     app.directive("sgGooglePlaceSearch", ["$sce", "$timeout", function ($sce, $timeout) {
 
         // get iframe url
@@ -927,7 +927,7 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                 output += addLines[0].long_name;
             }
 
-            
+
             return output;
         }
 
@@ -1072,75 +1072,96 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
         // set link
         var setLink = function (scope, element, attrs) {
 
-            // add text box
-            element.after("<input id='" + attrs.sgId + "' style='" + attrs.sgStyle + "' class='" + attrs.sgClass + "' type='text' class='form-control' autocomplete='off' />");
+            try {
 
-            // create ac
-            var autocomplete = new window.google.maps.places.Autocomplete(element.next("input:first")[0], {});
+                if (!element.__gMapsSetLinkForSgGooglePlaceSearch) {
 
-            // add change listener
-            window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                    // set true
+                    element.__gMapsSetLinkForSgGooglePlaceSearch = true;
 
-                // get place
-                var loc = autocomplete.getPlace();
+                    // create element
+                    element.after("<input type='search' id='" + attrs.sgId + "' class='" + attrs.sgClass + "' style='" + attrs.sgStyle + "' />");
 
-                if (loc.address_components) {
+                    // create ac
+                    var ac = new window.google.maps.places.Autocomplete(element.next("input:first")[0], {});
 
-                    // create and fire
-                    var obj = createUsefulObject(loc);
+                    // remove
+                    if (element[0].tagName == "SG-GOOGLE-PLACE-SEARCH") element.remove();
+
+                    // apply
                     scope.$apply(function () {
-                        scope.placeFoundMethod({ $googlePlace: obj });
+                        
+                        // add change listener
+                        window.google.maps.event.addListener(ac, 'place_changed', function () {
+
+                            // get place
+                            var loc = ac.getPlace();
+
+                            if (loc.address_components) {
+
+                                // create and fire
+                                var obj = createUsefulObject(loc);
+                                scope.$apply(function () {
+                                    scope.placeFoundMethod({ $googlePlace: obj });
+                                });
+                            }
+
+
+                        });
                     });
                 }
-            });
 
-            // remove
-            if (element[0].tagName == "SG-GOOGLE-PLACE-SEARCH") element.remove();
 
-        }
-
-        // counters
-        var tryCounter = 0, maxCounter = 50;
-
-        // inner
-        var inner = function (scope, element, attrs) {
-
-            if (tryCounter == maxCounter) {
-                element.after("Error with Google Place Search directive: Google maps JavaScript not loaded. Load 'http://maps.googleapis.com/maps/api/js?libraries=places&sensore=false&callback=gMapsCallbackForGooglePlaceSearchRj' manually into your main page");
-                element.remove();
-                return;
-
-            } else {
-                $timeout(function () {
-                    if (window.google !== undefined && window.google.maps !== undefined && window.google.maps.places !== undefined && window.google.maps.places.Autocomplete !== undefined) {
-                        //console.log("Loaded after " + tryCounter + " tries");
-                        setLink(scope, element, attrs);
-
-                    } else {
-                        tryCounter++;
-                        inner(scope, element, attrs);
-                    }
-                }, 100);
+            } catch (ex) {
+                console.log(ex);
+                element.after("Error occured loading Google Maps");
             }
         }
 
+        // set window func for callback
+        window.gMapsCallbackForSgGooglePlaceSearch = function () {
+            window.gMapsLoadedForSgGooglePlaceSearch = true;
+        }
+
+        // do loop and set when loaded
+        var doSetLoop = function (scope, element, attrs) {
+            //console.log("Element "  + attrs.sgId + " attempt " + (element.__loadCounter +1));
+            if (window.gMapsLoadedForSgGooglePlaceSearch) {
+                setLink(scope, element, attrs);
+            } else if (element.__loadCounter < element.__maxCounter) {
+
+                $timeout(function () {
+                    element.__loadCounter++;
+                    doSetLoop(scope, element, attrs);
+                }, 100);
+
+            } else {
+                element.after("Error occured loading Google Maps");
+            }
+
+        };
+
+        // GO
         return {
 
             restrict: "AEC",
             scope: { placeFoundMethod: '&onPlaceSelected' },
             link: function (scope, element, attrs) {
 
-                // set window func for callback
-                window.gMapsCallbackForGooglePlaceSearchRj = function () {
-                    inner(scope, element, attrs);
+                element.__loadCounter = 0;
+                element.__maxCounter = 30;
+
+                if (!window.gMapsPreLoadedForSgGooglePlaceSearch) {
+
+                    // set script tag
+                    var scriptTag = document.createElement('script');
+                    scriptTag.setAttribute("src", "http://maps.googleapis.com/maps/api/js?libraries=places&sensore=false&callback=gMapsCallbackForSgGooglePlaceSearch");
+                    document.body.appendChild(scriptTag);
+                    window.gMapsPreLoadedForSgGooglePlaceSearch = true;
+
                 }
 
-                // set script tag
-                var scriptTag = document.createElement('script');
-                scriptTag.setAttribute("src", "http://maps.googleapis.com/maps/api/js?libraries=places&sensore=false&callback=gMapsCallbackForGooglePlaceSearchRj");
-                document.body.appendChild(scriptTag);
-
-
+                doSetLoop(scope, element, attrs);
             }
         }
 
