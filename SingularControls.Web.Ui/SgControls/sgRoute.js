@@ -97,7 +97,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
 
             // do areas first
             for (var area in ts.areas) {
-                
+
                 // name
                 var areaName = ts.areas[area];
 
@@ -202,8 +202,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                     // check route data for redirects etc
                     if (
                         $route.current !== undefined &&
-                        //(routeData.redirectTo === undefined || routeData.redirectTo === null || routeData.redirectTo === "")
-                        true
+                        (routeData.redirectTo === undefined || routeData.redirectTo === null || routeData.redirectTo === "")
                         ) {
 
                         // get route data
@@ -290,7 +289,7 @@ SingularControls.RouteModule = angular.module("sgRoute", ['ng', 'ngRoute']);
                             // compile cached
                             compileTheView(element, scope, cachedTemplate);
 
-                            
+
                         }
                     }
 

@@ -1089,26 +1089,26 @@ SgControls.ElementsModule = angular.module("sgElements", ['ng']);
                     if (element[0].tagName == "SG-GOOGLE-PLACE-SEARCH") element.remove();
 
                     // apply
-                    scope.$apply(function () {
-                        
-                        // add change listener
-                        window.google.maps.event.addListener(ac, 'place_changed', function () {
+                    //scope.$apply(function () {
 
-                            // get place
-                            var loc = ac.getPlace();
+                    // add change listener
+                    window.google.maps.event.addListener(ac, 'place_changed', function () {
 
-                            if (loc.address_components) {
+                        // get place
+                        var loc = ac.getPlace();
 
-                                // create and fire
-                                var obj = createUsefulObject(loc);
-                                scope.$apply(function () {
-                                    scope.placeFoundMethod({ $googlePlace: obj });
-                                });
-                            }
+                        if (loc.address_components) {
+
+                            // create and fire
+                            var obj = createUsefulObject(loc);
+                            scope.$apply(function () {
+                                scope.placeFoundMethod({ $googlePlace: obj });
+                            });
+                        }
 
 
-                        });
                     });
+                    //});
                 }
 
 
