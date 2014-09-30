@@ -137,6 +137,7 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <Content Include="packages.config" />
+    <Content Include="SgControls\pxSpellcheck.js" />
     <Content Include="SgControls\sgFile.css" />
     <Content Include="SgControls\sgDevice.js" />
     <Content Include="SgControls\sgDevice.min.js">
@@ -153,6 +154,10 @@
     <Content Include="SgControls\sgRoute.min.js">
       <DependentUpon>sgRoute.js</DependentUpon>
     </Content>
+    <Content Include="SgControls\SgRouter.js" />
+    <Content Include="SgControls\SgRouter.min.js">
+      <DependentUpon>SgRouter.js</DependentUpon>
+    </Content>
     <Content Include="SgControls\sgTranslate.min.js.map">
       <DependentUpon>sgTranslate.min.js</DependentUpon>
     </Content>
@@ -168,6 +173,104 @@
     </Content>
     <Content Include="SgControls\sgDevice.min.js.map">
       <DependentUpon>sgDevice.min.js</DependentUpon>
+    </Content>
+    <Content Include="SpellCheck\OneDrive-2014-09-10\af-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ar-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ar-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\az-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\be-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\bg-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\bg-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\bn-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\bs-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ca-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\cs-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\cs-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\da-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\da-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\de-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\de-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\de-2012\de-s.log" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\de-2012\de.log" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\el-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\el-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\en-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\en-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\en-2012\en-s.log" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\en-2012\en.log" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\es-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\es-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\et-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\et-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\eu-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fa-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fa-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fi-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fi-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fr-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\fr-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\gl-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\he-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\he-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\hi-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\hr-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\hr-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\hu-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\hu-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\id-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\id-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\is-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\is-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\it-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\it-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\kk-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ko-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\lt-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\lt-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\lv-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\lv-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\mk-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\mk-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ms-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ms-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\nb-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\nl-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\nl-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\no-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pl-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pl-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pt-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pt-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pt_br-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\pt_br.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ro-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ro-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ru-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ru-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\si-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sk-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sk-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sl-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sl-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sq-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sq-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sr-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sr-Cyrl-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sr-Latn-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sv-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\sv-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\th-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\tr-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\tr-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\uk-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\uk-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\ur-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\zh-2011.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\zh-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\zh_cn-2012.zip" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\zh_tw-2012.zip" />
+    <Content Include="SgControls\SgRouter.min.js.map">
+      <DependentUpon>SgRouter.min.js</DependentUpon>
     </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -484,6 +587,14 @@
     <Content Include="SgControls\sgTranslate.min.js">
       <DependentUpon>sgTranslate.js</DependentUpon>
     </Content>
+    <Content Include="SpellCheck\Dictionaries\de-custom.txt" />
+    <Content Include="SpellCheck\Dictionaries\de.txt" />
+    <Content Include="SpellCheck\Dictionaries\en-gb-custom.txt" />
+    <Content Include="SpellCheck\Dictionaries\en-gb.txt" />
+    <Content Include="SpellCheck\FuzzyString.dll" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\de-2012\de.txt" />
+    <Content Include="SpellCheck\OneDrive-2014-09-10\en-2012\en.txt" />
+    <Content Include="SpellCheck\pxSpellcheck.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -494,6 +605,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpellCheck\ISpellCheckService.cs" />
+    <Compile Include="SpellCheck\SpellCheckResult.cs" />
+    <Compile Include="SpellCheck\SpellCheckService.cs" />
     <Compile Include="Translations\ITranslationFactory.cs" />
     <Compile Include="Translations\TranslationCache.cs" />
     <Compile Include="Translations\TranslationFactory.cs" />
